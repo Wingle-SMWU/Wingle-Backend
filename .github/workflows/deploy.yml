@@ -46,7 +46,7 @@ jobs:
         shell: bash
 
       - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
+        run: chmod +x ./wingle/gradlew
 
       - name: Build with Gradle
         run: ./gradlew clean build
