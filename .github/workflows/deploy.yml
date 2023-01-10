@@ -49,7 +49,7 @@ jobs:
         run: chmod +x ./wingle/gradlew
 
       - name: Build with Gradle
-        run: ./gradlew clean build
+        run: ./wingle/gradlew clean build
 
       - name: Make zip file
         run: zip -r ./$GITHUB_SHA.zip .
