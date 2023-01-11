@@ -3,6 +3,7 @@ plugins {
 	id 'org.springframework.boot' version '2.7.7'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 	id 'org.asciidoctor.convert' version '1.5.8'
+	id 'jacoco'
 }
 
 group = 'kr.co'
@@ -22,6 +23,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	implementation 'mysql:mysql-connector-java'
 }
 
 tasks.named('test') {
@@ -32,4 +34,47 @@ tasks.named('test') {
 tasks.named('asciidoctor') {
 	inputs.dir snippetsDir
 	dependsOn test
+}
+
+jacoco {
+	toolVersion = '0.8.8'
+}
+
+test {
+	finalizedBy 'jacocoTestReport'
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		html.enabled true
+		csv.enabled true
+		xml.enabled false
+	}
+	finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			element = 'CLASS'
+			enabled = true
+
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0.80
+			}
+
+			limit {
+				counter = 'METHOD'
+				value = 'COVEREDRATIO'
+				minimum = 0.80
+			}
+		}
+	}
+}
+
+jar {
+	enabled = false
 }
