@@ -24,7 +24,7 @@ import lombok.Getter;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Where(clause = "is_deleted = false")
 @EntityListeners(AuditingEntityListener.class)
-public class BaseEntity {
+public abstract class BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
