@@ -4,15 +4,20 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.SQLDelete;
 
 import kr.co.wingle.common.entity.BaseEntity;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "hello")
 @SQLDelete(sql = "UPDATE hello SET is_deleted = true WHERE id = ?")
+@NoArgsConstructor
+@OnDelete(action = OnDeleteAction.CASCADE)
 public class Hello extends BaseEntity {
 
 	@Column
