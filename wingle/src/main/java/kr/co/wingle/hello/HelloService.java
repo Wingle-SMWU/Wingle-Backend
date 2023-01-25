@@ -12,9 +12,11 @@ public class HelloService {
 	private final HelloRepository helloRepository;
 
 	@Transactional
-	public Long create(HelloDto helloDto) {
+	public HelloDto create(HelloDto helloDto) {
 		Hello hello = Hello.from(helloDto.getName());
-		return helloRepository.save(hello).getId();
+		hello = helloRepository.save(hello);
+		HelloDto savedHelloDto = HelloDto.of(hello.getId(), hello.getName());
+		return savedHelloDto;
 	}
 
 	@Transactional(readOnly = true)
