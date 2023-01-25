@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import kr.co.wingle.common.constants.ErrorCode;
 
 @SpringBootTest
-public class HelloTests {
+public class HelloServiceTest {
 	@Autowired
 	HelloService helloService;
 
