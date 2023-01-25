@@ -32,19 +32,19 @@ public abstract class BaseEntity {
 	@Getter
 	private Long id;
 
-	@Column(name = "created_time", updatable = false)
+	@Column(name = "created_time", updatable = false, nullable = false)
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@CreatedDate
 	@Getter
 	private LocalDateTime createdTime;
 
-	@Column(name = "updated_time")
+	@Column(name = "updated_time", nullable = false)
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@LastModifiedDate
 	@Getter
 	private LocalDateTime updatedTime;
 
-	@Column(name = "is_deleted", columnDefinition = "TINYINT", length = 1)
+	@Column(name = "is_deleted", columnDefinition = "TINYINT", length = 1, nullable = false)
 	@ColumnDefault("0")
-	private Boolean isDeleted;
+	private Boolean isDeleted = false;
 }
