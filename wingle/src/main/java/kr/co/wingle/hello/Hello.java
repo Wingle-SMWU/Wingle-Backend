@@ -8,6 +8,7 @@ import org.hibernate.annotations.SQLDelete;
 
 import kr.co.wingle.common.entity.BaseEntity;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "hello")
@@ -16,6 +17,7 @@ public class Hello extends BaseEntity {
 
 	@Column
 	@Getter
+	@Setter
 	private String name;
 
 	Hello(String name) {
