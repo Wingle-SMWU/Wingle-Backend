@@ -1,4 +1,4 @@
-package kr.co.wingle;
+package kr.co.wingle.hello;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import kr.co.wingle.common.constants.ErrorCode;
-import kr.co.wingle.hello.HelloDto;
-import kr.co.wingle.hello.HelloService;
 
 @SpringBootTest
 public class HelloTests {
@@ -21,14 +19,14 @@ public class HelloTests {
 		HelloDto helloDto = HelloDto.from(name);
 
 		// when
-		Long id = helloService.create(helloDto);
+		HelloDto savedHelloDto = helloService.create(helloDto);
 
 		// then
-		HelloDto readHelloDto = helloService.read(id);
+		HelloDto readHelloDto = helloService.read(savedHelloDto.getId());
 		Assertions.assertEquals(readHelloDto.getName(), name);
 
 		// teardown
-		helloService.delete(id);
+		helloService.delete(savedHelloDto.getId());
 	}
 
 	@Test
@@ -36,7 +34,7 @@ public class HelloTests {
 		// given
 		final String name = "hello read";
 		HelloDto helloDto = HelloDto.from(name);
-		Long id = helloService.create(helloDto);
+		Long id = helloService.create(helloDto).getId();
 
 		// when
 		HelloDto readHelloDto = helloService.read(id);
@@ -69,7 +67,7 @@ public class HelloTests {
 		final String name = "hello";
 		final String updatedName = "hello update";
 		HelloDto helloDto = HelloDto.from(name);
-		Long id = helloService.create(helloDto);
+		Long id = helloService.create(helloDto).getId();
 
 		// when
 		helloService.update(id, updatedName);
@@ -87,7 +85,7 @@ public class HelloTests {
 		// given
 		final String name = "hello delete";
 		HelloDto helloDto = HelloDto.from(name);
-		Long id = helloService.create(helloDto);
+		Long id = helloService.create(helloDto).getId();
 
 		// when
 		helloService.delete(id);
