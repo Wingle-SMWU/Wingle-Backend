@@ -62,6 +62,25 @@ public class HelloServiceTest {
 	}
 
 	@Test
+	void 논리_삭제된_아이템_읽기() {
+		// given
+		final String name = "논리_삭제된_아이템_읽기";
+		Long id = helloService.create(name).getId();
+
+		// when
+		helloService.softDelete(id);
+
+		// then
+		IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+			() -> {
+				HelloResponseDto readHelloDto = helloService.read(id);
+				System.out.println(readHelloDto.getName());
+			});
+
+		Assertions.assertEquals(thrown.getMessage(), ErrorCode.ALREADY_DELETED.getMessage());
+	}
+
+	@Test
 	void 수정() {
 		// given
 		final String name = "hello";
@@ -81,22 +100,22 @@ public class HelloServiceTest {
 	}
 
 	@Test
-	void 삭제() {
+	void 논리_삭제() {
 		// given
-		final String name = "hello delete";
-		HelloDto helloDto = HelloDto.from(name);
-		Long id = helloService.create(helloDto).getId();
+		final String name = "논리_삭제";
+		Long id = helloService.create(name).getId();
 
 		// when
-		helloService.delete(id);
+		helloService.softDelete(id);
 
 		// then
-		IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
-			() -> {
-				HelloDto readHelloDto = helloService.read(id);
-				System.out.println(readHelloDto.getName());
-			});
+		Hello softDeletedHello = helloRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException(ErrorCode.NO_ID.getMessage()));
 
-		Assertions.assertEquals(thrown.getMessage(), ErrorCode.NO_ID.getMessage());
+		Assertions.assertEquals(softDeletedHello.isDeleted(), true);
+
+		// teardown
+		helloRepository.deleteById(id);
 	}
+
 }
