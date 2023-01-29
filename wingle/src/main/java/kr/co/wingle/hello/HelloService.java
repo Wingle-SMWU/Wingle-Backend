@@ -38,7 +38,12 @@ public class HelloService {
 	}
 
 	@Transactional
-	public void delete(Long id) {
-		helloRepository.deleteById(id);
+	public HelloResponseDto softDelete(Long id) {
+		Hello hello = helloRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException(ErrorCode.NO_ID.getMessage()));
+		hello.softDelete();
+		hello = helloRepository.save(hello);
+		HelloResponseDto helloDto = HelloResponseDto.of(hello.getId(), hello.getName());
+		return helloDto;
 	}
 }
