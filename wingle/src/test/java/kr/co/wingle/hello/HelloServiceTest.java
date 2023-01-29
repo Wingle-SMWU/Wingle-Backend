@@ -6,44 +6,47 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import kr.co.wingle.common.constants.ErrorCode;
+import kr.co.wingle.hello.dto.HelloResponseDto;
 
 @SpringBootTest
 public class HelloServiceTest {
 	@Autowired
 	HelloService helloService;
+	@Autowired
+	HelloRepository helloRepository;
 
 	@Test
 	void 생성() {
 		// given
-		final String name = "hello create";
-		HelloDto helloDto = HelloDto.from(name);
+		final String name = "😊헬로 create";
 
 		// when
-		HelloDto savedHelloDto = helloService.create(helloDto);
+		HelloResponseDto savedHelloDto = helloService.create(name);
 
 		// then
-		HelloDto readHelloDto = helloService.read(savedHelloDto.getId());
-		Assertions.assertEquals(readHelloDto.getName(), name);
+		Hello hello = helloRepository.findById(savedHelloDto.getId())
+			.orElseThrow(() -> new IllegalArgumentException(ErrorCode.NO_ID.getMessage()));
+
+		Assertions.assertEquals(hello.getName(), name);
 
 		// teardown
-		helloService.delete(savedHelloDto.getId());
+		helloRepository.deleteById(savedHelloDto.getId());
 	}
 
 	@Test
-	void 읽기() {
+	void 읽기_정상동작() {
 		// given
-		final String name = "hello read";
-		HelloDto helloDto = HelloDto.from(name);
-		Long id = helloService.create(helloDto).getId();
+		final String name = "헬로 read";
+		Long id = helloService.create(name).getId();
 
 		// when
-		HelloDto readHelloDto = helloService.read(id);
+		HelloResponseDto readHelloDto = helloService.read(id);
 
 		// then
 		Assertions.assertEquals(readHelloDto.getName(), name);
 
 		// teardown
-		helloService.delete(id);
+		helloRepository.deleteById(id);
 	}
 
 	@Test
@@ -54,7 +57,7 @@ public class HelloServiceTest {
 		// when
 		IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
 			() -> {
-				HelloDto readHelloDto = helloService.read(nonexistentId);
+				HelloResponseDto readHelloDto = helloService.read(nonexistentId);
 			});
 
 		// then
@@ -85,18 +88,17 @@ public class HelloServiceTest {
 		// given
 		final String name = "hello";
 		final String updatedName = "hello update";
-		HelloDto helloDto = HelloDto.from(name);
-		Long id = helloService.create(helloDto).getId();
+		Long id = helloService.create(name).getId();
 
 		// when
 		helloService.update(id, updatedName);
 
 		// then
-		HelloDto readHelloDto = helloService.read(id);
+		HelloResponseDto readHelloDto = helloService.read(id);
 		Assertions.assertEquals(readHelloDto.getName(), updatedName);
 
 		// teardown
-		helloService.delete(id);
+		helloRepository.deleteById(id);
 	}
 
 	@Test
