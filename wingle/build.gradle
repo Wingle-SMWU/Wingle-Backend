@@ -1,9 +1,9 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '2.7.7'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-	id 'org.asciidoctor.convert' version '1.5.8'
-	id 'jacoco'
+    id 'java'
+    id 'org.springframework.boot' version '2.7.7'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.asciidoctor.convert' version '1.5.8'
+    id 'jacoco'
 }
 
 group = 'kr.co'
@@ -11,74 +11,75 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 ext {
-	set('snippetsDir', file("build/generated-snippets"))
+    set('snippetsDir', file("build/generated-snippets"))
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	implementation 'mysql:mysql-connector-java'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    implementation 'mysql:mysql-connector-java'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-	implementation 'org.projectlombok:lombok:1.18.20'
-	annotationProcessor ('org.projectlombok:lombok')
+    implementation 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor('org.projectlombok:lombok')
 }
 
 tasks.named('test') {
-	outputs.dir snippetsDir
-	useJUnitPlatform()
+    outputs.dir snippetsDir
+    useJUnitPlatform()
 }
 
 tasks.named('asciidoctor') {
-	inputs.dir snippetsDir
-	dependsOn test
+    inputs.dir snippetsDir
+    dependsOn test
 }
 
 jacoco {
-	toolVersion = '0.8.8'
+    toolVersion = '0.8.8'
 }
 
 test {
-	finalizedBy 'jacocoTestReport'
+    finalizedBy 'jacocoTestReport'
 }
 
 jacocoTestReport {
-	dependsOn test
-	reports {
-		html.enabled true
-		csv.enabled true
-		xml.enabled false
-	}
-	finalizedBy 'jacocoTestCoverageVerification'
+    dependsOn test
+    reports {
+        html.enabled true
+        csv.enabled true
+        xml.enabled false
+    }
+    finalizedBy 'jacocoTestCoverageVerification'
 }
 
 jacocoTestCoverageVerification {
-	violationRules {
-		rule {
-			element = 'CLASS'
-			enabled = true
+    violationRules {
+        rule {
+            element = 'CLASS'
+            enabled = true
 
-			limit {
-				counter = 'LINE'
-				value = 'COVEREDRATIO'
-				minimum = 0.80
-			}
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.80
+            }
 
-			limit {
-				counter = 'METHOD'
-				value = 'COVEREDRATIO'
-				minimum = 0.80
-			}
-		}
-	}
+            limit {
+                counter = 'METHOD'
+                value = 'COVEREDRATIO'
+                minimum = 0.80
+            }
+        }
+    }
 }
 
 jar {
-	enabled = false
+    enabled = false
 }
