@@ -66,4 +66,62 @@ public class WritingServiceTest {
 		// then
 		assertEquals(exception.getMessage(), ErrorCode.NO_ID.getMessage());
 	}
+
+	@Test
+	void 삭제_정상() {
+		// given
+		Long memberId = 1L;
+		String content = "😀 글 내용이야!";
+		WritingDto writingDto = writingService.create(memberId, content);
+
+		// when
+		WritingDto deletedWritingDto = writingService.softDelete(memberId, writingDto.getId());
+		// then
+		assertEquals(deletedWritingDto.isDeleted(), true);
+	}
+
+	@Test
+	void 삭제_존재하지_않는_유저_오류() {
+		// given
+		Long memberId = 1L;
+		Long nonExistMemberId = -1L;
+		String content = "😀 글 내용이야!";
+		WritingDto writingDto = writingService.create(memberId, content);
+		// when
+		Throwable exception = assertThrows(RuntimeException.class, () -> {
+			writingService.softDelete(nonExistMemberId, writingDto.getId());
+		});
+		// then
+		assertEquals(exception.getMessage(), ErrorCode.NO_ID.getMessage());
+	}
+
+	@Test
+	void 삭제_존재하지_않는_글_오류() {
+		// given
+		Long memberId = 1L;
+		Long nonExistWritingId = -1L;
+		String content = "😀 글 내용이야!";
+		WritingDto writingDto = writingService.create(memberId, content);
+		// when
+		Throwable exception = assertThrows(RuntimeException.class, () -> {
+			writingService.softDelete(memberId, nonExistWritingId);
+		});
+		// then
+		assertEquals(exception.getMessage(), ErrorCode.NO_ID.getMessage());
+	}
+
+	@Test
+	void 삭제_접근_권한_오류() {
+		// given
+		Long memberId = 1L;
+		Long noAccessMemberId = 2L;
+		String content = "😀 글 내용이야!";
+		WritingDto writingDto = writingService.create(memberId, content);
+		// when
+		Throwable exception = assertThrows(RuntimeException.class, () -> {
+			writingService.softDelete(noAccessMemberId, writingDto.getId());
+		});
+		// then
+		assertEquals(exception.getMessage(), ErrorCode.NO_ACCESS.getMessage());
+	}
 }
