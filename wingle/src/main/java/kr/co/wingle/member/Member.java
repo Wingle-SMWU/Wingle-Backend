@@ -40,9 +40,8 @@ public class Member extends BaseEntity {
 	@Setter
 	private int permission;
 
-	public static Member createMember(String name, String idCardImageUrl, String email, String password,
-		Permission permission) {
-		return new Member(name, idCardImageUrl, email, password, permission.getStatus());
+	public static Member createMember(String name, String idCardImageUrl, String email, String password) {
+		return new Member(name, idCardImageUrl, email, password, Permission.WAIT.getStatus());
 	}
 }
 
