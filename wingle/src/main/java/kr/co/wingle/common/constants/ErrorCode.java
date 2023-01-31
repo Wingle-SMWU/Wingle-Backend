@@ -12,7 +12,8 @@ import lombok.Getter;
 public enum ErrorCode {
 	EXAMPLE_ERROR(BAD_REQUEST, "예시 실패"),
 	NO_ID(BAD_REQUEST, "존재하지 않는 id 입니다"),
-	ALREADY_DELETED(BAD_REQUEST, "이미 삭제된 값입니다");
+	ALREADY_DELETED(BAD_REQUEST, "이미 삭제된 값입니다"),
+	NO_ACCESS(FORBIDDEN, "접근 권한이 없습니다");
 
 	private final HttpStatus status;
 	private final String message;
