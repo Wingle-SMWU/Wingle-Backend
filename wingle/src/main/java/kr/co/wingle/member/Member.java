@@ -2,13 +2,14 @@ package kr.co.wingle.member;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.ColumnDefault;
 
 import kr.co.wingle.common.entity.BaseEntity;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +18,6 @@ import lombok.Setter;
 @Table(name = "member")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Member extends BaseEntity {
 
 	@Column(nullable = false)
@@ -38,8 +38,21 @@ public class Member extends BaseEntity {
 	@Setter
 	private int permission;
 
-	public static Member createMember(String name, String idCardImageUrl, String email, String password) {
-		return new Member(name, idCardImageUrl, email, password, Permission.WAIT.getStatus());
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	@ColumnDefault("'ROLE_USER'")
+	private Authority authority = Authority.ROLE_USER;
+
+	public static Member createMember(String name, String idCardImageUrl, String email, String password,
+		Authority authority) {
+		Member member = new Member();
+		member.name = name;
+		member.idCardImageUrl = idCardImageUrl;
+		member.email = email;
+		member.password = password;
+		member.permission = Permission.WAIT.getStatus();
+		member.authority = authority;
+		return member;
 	}
 }
 
