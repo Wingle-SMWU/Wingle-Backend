@@ -1,4 +1,4 @@
-package kr.co.wingle.writing;
+package kr.co.wingle.community.writing;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
