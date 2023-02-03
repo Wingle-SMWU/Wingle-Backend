@@ -15,6 +15,8 @@ public enum ErrorCode {
 	ALREADY_DELETED(BAD_REQUEST, "이미 삭제된 값입니다"),
 	BAD_FILE_NAME(BAD_REQUEST, "파일 이름이 올바르지 않습니다."),
 	BAD_FILE_EXTENSION(BAD_REQUEST, "지원하지 않는 파일 형식입니다."),
+	EMAIL_BAD_REQUEST(BAD_REQUEST, "이메일 형식이 유효하지 않습니다."),
+	DUPLICATE_EMAIL(BAD_REQUEST, "이미 가입된 유저입니다."),
 	FILE_UPLOAD_FAIL(INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
 
 	private final HttpStatus status;
