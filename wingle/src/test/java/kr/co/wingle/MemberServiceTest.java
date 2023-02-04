@@ -39,4 +39,26 @@ public class MemberServiceTest {
 		if (!isMemberExisted)
 			memberRepository.deleteById(inputMember.getId());
 	}
+
+	@Test
+	void 등록되지_않는_이메일_중복_검사() {
+		// given
+		final String email = "wingle@gmail.com";
+		Member existingMember = null;
+		boolean isMemberExisted = false;
+
+		// when
+		isMemberExisted = memberRepository.existsByEmail("wingle@gmail.com");
+		if (isMemberExisted) {
+			existingMember = memberRepository.findByEmail("wingle@gmail.com").get();
+			memberRepository.delete(existingMember);
+		}
+
+		//then
+		Assertions.assertEquals(false, memberService.isDuplicated(email));
+
+		//teardown
+		if (isMemberExisted)
+			memberRepository.save(existingMember);
+	}
 }
