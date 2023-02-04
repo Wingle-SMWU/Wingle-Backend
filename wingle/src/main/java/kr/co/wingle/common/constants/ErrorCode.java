@@ -21,6 +21,7 @@ public enum ErrorCode {
 	UNAUTHORIZED_USER(UNAUTHORIZED, "인증된 사용자가 아닙니다."),
 
 	/* 403 FORBIDDEN: 권한 없음 */
+    NO_ACCESS(FORBIDDEN, "접근 권한이 없습니다"),
 
 	/* 404 NOT_FOUND: 리소스를 찾을 수 없음 */
 	DATA_NOT_FOUND(NOT_FOUND, "해당 데이터를 찾을 수 없습니다."),
