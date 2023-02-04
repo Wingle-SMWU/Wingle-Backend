@@ -3,6 +3,7 @@ package kr.co.wingle.common.exception;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -25,8 +26,16 @@ public class RestExceptionHandler {
 	@ExceptionHandler(value = {MethodArgumentNotValidException.class})
 	protected ApiResponse<Object> handleMethodArgNotValidException(MethodArgumentNotValidException e,
 		HttpServletRequest request) {
-		log.info(String.format("[400 Error] : %s %s", request.getMethod(), request.getRequestURI()));
-		return ApiResponse.error(HttpStatus.BAD_REQUEST,
-			e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+		String message = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+		log.info(String.format("[400 Error] : %s %s %s", request.getMethod(), request.getRequestURI(), message));
+		return ApiResponse.error(HttpStatus.BAD_REQUEST, message);
+	}
+
+	// @ModelAttribute valid 에러
+	@ExceptionHandler(value = {BindException.class})
+	protected ApiResponse<Object> handleMethodArgNotValidException(BindException e, HttpServletRequest request) {
+		String message = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+		log.info(String.format("[400 Error] : %s %s %s", request.getMethod(), request.getRequestURI(), message));
+		return ApiResponse.error(HttpStatus.BAD_REQUEST, message);
 	}
 }
