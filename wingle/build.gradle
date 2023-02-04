@@ -57,6 +57,20 @@ jacocoTestReport {
         csv.enabled true
         xml.enabled false
     }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    // 보고서에서 제외
+                    "**/common/*",
+                    "**/dto/*",
+                    "**/config/*",
+                    "**/hello/*",
+                    "**/WingleApplication*"
+            ])
+        }))
+    }
+
     finalizedBy 'jacocoTestCoverageVerification'
 }
 
@@ -77,6 +91,15 @@ jacocoTestCoverageVerification {
                 value = 'COVEREDRATIO'
                 minimum = 0.80
             }
+
+            // 테스트 검증 대상 제외
+            excludes = [
+                    "**.common.*",
+                    "**.dto.*",
+                    "**.config.*",
+                    "**.hello.*",
+                    "**.WingleApplication"
+            ]
         }
     }
 }
