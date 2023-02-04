@@ -31,12 +31,11 @@ class AuthServiceTest {
 
 		//when
 		SignupResponseDto response = authService.signup(requestDto);
-
-		//then
 		Member member = memberRepository.findById(response.getId())
 			.orElseThrow(() -> new IllegalArgumentException(ErrorCode.NO_ID.getMessage()));
 
-		assertThat(member.getName()).isEqualTo(response.getName());
+		//then
+		assertThat(member.getEmail()).isEqualTo(requestDto.getEmail());
 	}
 
 	@Test
