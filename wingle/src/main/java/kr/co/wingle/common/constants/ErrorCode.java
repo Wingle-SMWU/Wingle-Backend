@@ -14,6 +14,8 @@ public enum ErrorCode {
 	EXAMPLE_ERROR(BAD_REQUEST, "예시 실패"),
 	NO_ID(BAD_REQUEST, "존재하지 않는 id 입니다"),
 	ALREADY_DELETED(BAD_REQUEST, "이미 삭제된 값입니다"),
+	BAD_FILE_NAME(BAD_REQUEST, "파일 이름이 올바르지 않습니다."),
+	BAD_FILE_EXTENSION(BAD_REQUEST, "지원하지 않는 파일 형식입니다."),
 	BAD_PARAMETER(BAD_REQUEST, "요청 파라미터가 잘못되었습니다."),
 	BAD_PARAMETER_TYPE(BAD_REQUEST, "지원하지 않는 파라미터 형식입니다."),
 
@@ -26,6 +28,7 @@ public enum ErrorCode {
 	DATA_NOT_FOUND(NOT_FOUND, "해당 데이터를 찾을 수 없습니다."),
 
 	/* 500 INTERNAL_SERVER_ERROR : 서버 오류 */
+  FILE_UPLOAD_FAIL(INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다."),
 	SERVER_ERROR(INTERNAL_SERVER_ERROR, "서버 내부 오류로 인해 응답을 제공할 수 없습니다.");
 
 	private final HttpStatus status;
