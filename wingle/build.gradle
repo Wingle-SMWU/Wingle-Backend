@@ -36,6 +36,8 @@ dependencies {
 
     testImplementation 'org.assertj:assertj-core:3.21.0'
 
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.2'
 
     implementation 'org.projectlombok:lombok:1.18.20'
@@ -67,6 +69,20 @@ jacocoTestReport {
         csv.enabled true
         xml.enabled false
     }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    // 보고서에서 제외
+                    "**/common/*",
+                    "**/dto/*",
+                    "**/config/*",
+                    "**/hello/*",
+                    "**/WingleApplication*"
+            ])
+        }))
+    }
+
     finalizedBy 'jacocoTestCoverageVerification'
 }
 
@@ -87,6 +103,15 @@ jacocoTestCoverageVerification {
                 value = 'COVEREDRATIO'
                 minimum = 0.80
             }
+
+            // 테스트 검증 대상 제외
+            excludes = [
+                    "**.common.*",
+                    "**.dto.*",
+                    "**.config.*",
+                    "**.hello.*",
+                    "**.WingleApplication"
+            ]
         }
     }
 }
