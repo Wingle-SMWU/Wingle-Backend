@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -29,9 +30,18 @@ public class RestExceptionHandler {
 	@ExceptionHandler(value = {MethodArgumentNotValidException.class})
 	protected ApiResponse<Object> handleMethodArgNotValidException(MethodArgumentNotValidException exception,
 		HttpServletRequest request) {
-		logInfo(request, "400 BAD_REQUEST", exception.getBindingResult().getAllErrors().get(0).getDefaultMessage());
-		return ApiResponse.error(HttpStatus.BAD_REQUEST,
-			exception.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+		String message = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+		logInfo(request, "400 BAD_REQUEST", message);
+		return ApiResponse.error(HttpStatus.BAD_REQUEST, message);
+	}
+
+	// @ModelAttribute valid 에러
+	@ExceptionHandler(value = {BindException.class})
+	protected ApiResponse<Object> handleMethodArgNotValidException(BindException exception,
+		HttpServletRequest request) {
+		String message = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+		logInfo(request, "400 BAD_REQUEST", message);
+		return ApiResponse.error(HttpStatus.BAD_REQUEST, message);
 	}
 
 	@ExceptionHandler(Exception.class)
