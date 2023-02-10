@@ -35,7 +35,6 @@ jobs:
             ${{ runner.os }}-gradle-
   
       - name: make application.yml
-        if: contains(github.ref, 'develop')
         run: |
           sudo mkdir -p ./src/main/resources
           sudo chmod 777 ./src/main/resources
