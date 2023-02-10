@@ -17,9 +17,6 @@ public class SecurityUtil {
 		if (authentication == null || authentication.getName() == null) {
 			throw new CustomException(ErrorCode.UNAUTHORIZED_USER);
 		}
-		if (authentication.getName().equals("anonymousUser")) {
-			throw new CustomException(ErrorCode.ACCESS_DENIED);
-		}
 
 		return authentication.getName();
 	}

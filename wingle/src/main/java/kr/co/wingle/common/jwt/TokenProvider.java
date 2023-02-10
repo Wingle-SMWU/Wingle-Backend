@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,9 +25,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import kr.co.wingle.common.constants.ErrorCode;
-import kr.co.wingle.common.dto.TokenDto;
-import kr.co.wingle.common.exception.CustomException;
+import kr.co.wingle.member.dto.TokenDto;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -58,7 +58,7 @@ public class TokenProvider {
 			.signWith(key, SignatureAlgorithm.HS512)
 			.compact();
 
-		return TokenDto.of(TokenInfo.BEARER_TYPE, accessToken, refreshToken);
+		return TokenDto.of(accessToken, refreshToken);
 	}
 
 	public Authentication getAuthentication(String accessToken) {
@@ -78,24 +78,22 @@ public class TokenProvider {
 		return new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
 	}
 
-	public boolean validateToken(String token) {
+	public boolean validateToken(String token, HttpServletRequest request) {
 		try {
 			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 			return true;
-		} catch (io.jsonwebtoken.security.SignatureException | MalformedJwtException e) {
-			log.info("잘못된 JWT 서명을 가진 토큰입니다.");
-			throw new CustomException(ErrorCode.WRONG_TYPE_TOKEN);
-		} catch (ExpiredJwtException e) {
-			log.info("만료된 JWT 토큰입니다.");
-			throw new CustomException(ErrorCode.EXPIRED_TOKEN);
-		} catch (UnsupportedJwtException e) {
-			log.info("지원하지 않는 JWT 토큰입니다.");
-			throw new CustomException(ErrorCode.UNSUPPORTED_TOKEN);
-		} catch (IllegalArgumentException e) {
-			log.info("잘못된 JWT 토큰입니다.");
-			throw new CustomException(ErrorCode.WRONG_TOKEN);
-		} catch (Exception e) {
-			throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+		} catch (io.jsonwebtoken.security.SignatureException | MalformedJwtException exception) {
+			logInfo("잘못된 JWT 서명을 가진 토큰입니다.", request);
+			throw exception;
+		} catch (ExpiredJwtException exception) {
+			logInfo("만료된 JWT 토큰입니다.", request);
+			throw exception;
+		} catch (UnsupportedJwtException exception) {
+			logInfo("지원하지 않는 JWT 토큰입니다.", request);
+			throw exception;
+		} catch (IllegalArgumentException exception) {
+			logInfo("잘못된 JWT 토큰입니다.", request);
+			throw exception;
 		}
 	}
 
@@ -105,5 +103,9 @@ public class TokenProvider {
 		} catch (ExpiredJwtException e) {
 			return e.getClaims();
 		}
+	}
+
+	private void logInfo(String message, HttpServletRequest request) {
+		log.info("{} {} : {}", request.getMethod(), request.getRequestURI(), message);
 	}
 }
