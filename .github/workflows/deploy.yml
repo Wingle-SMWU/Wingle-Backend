@@ -37,16 +37,18 @@ jobs:
       - name: make application.yml
         run: |
           sudo mkdir -p ./src/main/resources
-          sudo mkdir -p ./src/test/resources
           sudo chmod 777 ./src/main/resources
-          sudo chmod 777 ./src/test/resources
-          
-          touch ./src/main/resources/application.yml
+          cd ./src/main/resources
+          touch ./application.yml
           echo "${{ secrets.MAIN_YML }}" > ./application.yml 
-          
-          touch ./src/test/resources/application.yml
-          echo "${{ secrets.TEST_YML }}" > ./application.yml 
         shell: bash
+        
+      - name: Setup MySQL
+        uses: mirromutth/mysql-action@v1.1
+        with:
+          mysql database: 'wingle-test' 
+          mysql user: 'wingle'
+          mysql password: ${{ secrets.MYSQL_PASSWORD }}
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./wingle/gradlew
