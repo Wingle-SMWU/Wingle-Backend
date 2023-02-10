@@ -11,23 +11,26 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RestControllerAdvice
 public class RestExceptionHandler {
 
-	@ExceptionHandler(value = {CustomException.class})
+	@ExceptionHandler(CustomException.class)
 	protected ApiResponse<Object> handleCustomException(CustomException exception, HttpServletRequest request) {
 		logInfo(request, exception.getErrorCode().getStatus().toString(), exception.getErrorCode().getMessage());
 		return ApiResponse.error(exception.getErrorCode());
 	}
 
 	// @RequestBody valid 에러
-	@ExceptionHandler(value = {MethodArgumentNotValidException.class})
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(MethodArgumentNotValidException.class)
 	protected ApiResponse<Object> handleMethodArgNotValidException(MethodArgumentNotValidException exception,
 		HttpServletRequest request) {
 		String message = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
@@ -36,7 +39,8 @@ public class RestExceptionHandler {
 	}
 
 	// @ModelAttribute valid 에러
-	@ExceptionHandler(value = {BindException.class})
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(BindException.class)
 	protected ApiResponse<Object> handleMethodArgNotValidException(BindException exception,
 		HttpServletRequest request) {
 		String message = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
@@ -44,6 +48,13 @@ public class RestExceptionHandler {
 		return ApiResponse.error(HttpStatus.BAD_REQUEST, message);
 	}
 
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ExceptionHandler(BadCredentialsException.class)
+	protected ApiResponse<Object> handleBadCredentialsException(BadCredentialsException exception) {
+		return ApiResponse.error(ErrorCode.USER_NOT_FOUND);
+	}
+
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(Exception.class)
 	public ApiResponse<Object> unhandledExceptionHandler(Exception exception, HttpServletRequest request) {
 		logWarn(request, exception);
