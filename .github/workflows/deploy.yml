@@ -22,13 +22,6 @@ jobs:
         with:
           distribution: zulu
           java-version: "17"
-     
-      - name: Setup MySQL     
-      - uses: samin/mysql-action@v1
-        with:
-          mysql database: 'wingle_test'
-          mysql user: 'wingle'
-          mysql password: ${{ secrets.MYSQL_PASSWORD }}
 
       - name: Gradle Caching
         uses: actions/cache@v3
@@ -60,11 +53,18 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./wingle/gradlew
+        
+      - name: Test
+        run: |
+          cd ./wingle
+          ./gradlew clean test
+        shell: bash
 
       - name: Build with Gradle
         run: |
           cd ./wingle
-          ./gradlew clean build
+          ./gradlew clean build -x test
+        shell: bash
 
       - name: Make zip file
         run: zip -r ./$GITHUB_SHA.zip .
