@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "term")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Term extends BaseEntity {
 
 	@Column(nullable = false)
@@ -28,8 +27,4 @@ public class Term extends BaseEntity {
 	@Column(nullable = false, columnDefinition = "TINYINT", length = 1)
 	@ColumnDefault("1")
 	private boolean necessity = true;
-
-	public static Term createTerm(int code, String name, boolean necessity) {
-		return new Term(code, name, necessity);
-	}
 }
