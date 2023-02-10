@@ -37,13 +37,17 @@ jobs:
       - name: make application.yml
         run: |
           sudo mkdir -p ./src/main/resources
+          sudo mkdir -p ./src/test/resources
           sudo chmod 777 ./src/main/resources
+          sudo chmod 777 ./src/test/resources
+          
           cd ./src/main/resources
           touch ./application.yml
           # GitHub-Actions에서 설정한 값을 application.yml 파일에 쓰기
           echo "${{ secrets.MAIN_YML }}" > ./application.yml 
           
           cd ../../test/resources
+          touch ./application.yml
           echo "${{ secrets.TEST_YML }}" > ./application.yml 
         shell: bash
 
