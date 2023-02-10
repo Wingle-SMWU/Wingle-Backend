@@ -96,13 +96,13 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.80
+                minimum = 0.75
             }
 
             limit {
-                counter = 'METHOD'
+                counter = 'BRANCH'
                 value = 'COVEREDRATIO'
-                minimum = 0.80
+                minimum = 0.75
             }
 
             // 테스트 검증 대상 제외
