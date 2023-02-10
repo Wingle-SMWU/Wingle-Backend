@@ -25,8 +25,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
+import kr.co.wingle.member.dto.LoginRequestDto;
+import kr.co.wingle.member.dto.MemberResponseDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
+import kr.co.wingle.member.dto.TokenDto;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -73,6 +76,44 @@ class AuthControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(content().string(
 				mapper.writeValueAsString(ApiResponse.success(SuccessCode.SIGNUP_SUCCESS, responseDto))))
+			.andDo(print());
+	}
+
+	@Test
+	void 로그인() throws Exception {
+		LoginRequestDto requestDto = LoginRequestDto.of(MemberTemplate.EMAIL, MemberTemplate.PASSWORD);
+		TokenDto tokenDto = TokenDto.of("accessToken", "refreshToken");
+		given(authService.login(any(LoginRequestDto.class)))
+			.willReturn(tokenDto);
+
+		MockHttpServletRequestBuilder builder = post("/api/v1/auth/login")
+			.content(mapper.writeValueAsString(requestDto))
+			.contentType(MediaType.APPLICATION_JSON);
+
+		mockMvc.perform(builder)
+			.andExpect(status().isOk())
+			.andExpect(content().string(
+				mapper.writeValueAsString(ApiResponse.success(SuccessCode.LOGIN_SUCCESS, tokenDto))
+			))
+			.andDo(print());
+	}
+
+	@Test
+	void 계정_조회() throws Exception {
+		Member member = MemberTemplate.makeTestMember();
+		MemberResponseDto responseDto = MemberResponseDto.from(member);
+
+		given(authService.findMember())
+			.willReturn(member);
+
+		MockHttpServletRequestBuilder builder = get("/api/v1/auth/me")
+			.contentType(MediaType.APPLICATION_JSON);
+
+		mockMvc.perform(builder)
+			.andExpect(status().isOk())
+			.andExpect(content().string(
+				mapper.writeValueAsString(ApiResponse.success(SuccessCode.ACCOUNT_READ_SUCCESS, responseDto))
+			))
 			.andDo(print());
 	}
 }
