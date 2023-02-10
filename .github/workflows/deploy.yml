@@ -23,7 +23,8 @@ jobs:
           distribution: zulu
           java-version: "17"
       
-      - uses: samin/mysql-actions@v1
+      - name: Start MySQL
+        uses: samin/mysql-actions@v1
         with:
           host port: ${{ secrets.MYSQL_HOST }}
           mysql database: wingle-test
