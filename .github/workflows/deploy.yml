@@ -22,6 +22,13 @@ jobs:
         with:
           distribution: zulu
           java-version: "17"
+      
+      - uses: samin/mysql-actions@v1
+        with:
+          host port: ${{ secrets.MYSQL_HOST }}
+          mysql database: wingle-test
+          mysql user: wingle
+          mysql password: ${{ secrets.MYSQL_PASSWORD }}
 
       - name: Gradle Caching
         uses: actions/cache@v3
@@ -67,10 +74,12 @@ jobs:
         shell: bash
 
       - name: Make zip file
+        if: contains(github.ref, 'main')
         run: zip -r ./$GITHUB_SHA.zip .
         shell: bash
 
       - name: Configure AWS credentials
+        if: contains(github.ref, 'main')
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -78,6 +87,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
   
       - name: Upload to AWS S3
+        if: contains(github.ref, 'main')
         run: |
           cd ./wingle
           aws deploy push \
@@ -88,6 +98,7 @@ jobs:
   
       # S3 버킷에 있는 파일을 대상으로 CodeDeploy 실행
       - name: Deploy to AWS EC2 from S3
+        if: contains(github.ref, 'main')
         run: |
           aws deploy create-deployment \
             --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
