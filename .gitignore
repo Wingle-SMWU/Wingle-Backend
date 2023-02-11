@@ -25,15 +25,11 @@ hs_err_pid*
 #Mac
 .DS_Store
 
-#intellij
-.idea
-
 
 # Coding Convention
 **/rule-config
 
 HELP.md
-.gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
