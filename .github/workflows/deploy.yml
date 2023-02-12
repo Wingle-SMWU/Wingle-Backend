@@ -44,11 +44,11 @@ jobs:
           echo "${{ secrets.MAIN_YML }}" > ./application.yml 
       - run: |
           pwd
-          ls -a
+          ls -a ./src/main/resources
       - uses: actions/upload-artifact@v3
         with:
           name: application.yml
-          path: application.yml
+          path: ./src/main/resources/application.yml
           if-no-files-found: 'error'
 
       - name: Grant execute permission for gradlew
