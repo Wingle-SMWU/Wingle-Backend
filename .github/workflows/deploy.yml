@@ -43,6 +43,7 @@ jobs:
           touch ./application.yml
           echo "${{ secrets.MAIN_YML }}" > ./application.yml 
 
+      # 파일 없으면 빌드 에러
       - uses: actions/upload-artifact@v3
         with:
           name: application.yml
@@ -57,11 +58,21 @@ jobs:
           touch ./application.yml
           echo "${{ secrets.TEST_YML }}" > ./application.yml 
           
+      # 파일 없으면 빌드 에러    
       - uses: actions/upload-artifact@v3
         with:
           name: application.yml
           path: ./wingle/src/test/resources/application.yml
           if-no-files-found: 'error'
+
+      - name: Make log directories
+        run: |
+          cd ./wingle
+          mkdir log
+          cd ./log
+          mkdir info
+          mkdir warn
+          mkdir error
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./wingle/gradlew
