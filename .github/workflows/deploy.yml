@@ -35,21 +35,27 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
   
-      - name: make application.yml
+      - name: make main application.yml
         run: |
           sudo mkdir -p ./src/main/resources
           sudo chmod 777 ./src/main/resources
           cd ./src/main/resources
           touch ./application.yml
           echo "${{ secrets.MAIN_YML }}" > ./application.yml 
-      - run: |
-          pwd
-          ls -a ./src/main/resources
+
       - uses: actions/upload-artifact@v3
         with:
           name: application.yml
           path: ./src/main/resources/application.yml
           if-no-files-found: 'error'
+
+      - name: make test application.yml
+        run: |
+          sudo mkdir -p ./src/test/resources
+          sudo chmod 777 ./src/test/resources
+          cd ./src/test/resources
+          touch ./application.yml
+          echo "${{ secrets.TEST_YML }}" > ./application.yml 
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./wingle/gradlew
@@ -57,7 +63,7 @@ jobs:
       - name: Build with Gradle
         run: |
           cd ./wingle
-          ./gradlew clean build -x test
+          ./gradlew clean build
         shell: bash
 
       - name: Make zip file
