@@ -68,6 +68,8 @@ jobs:
 
       - name: Build with Gradle
         run: |
+          ls -a ./src/main/resources/
+          ls -a ./src/test/resources/
           cd ./wingle
           ./gradlew clean build
         shell: bash
