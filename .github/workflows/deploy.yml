@@ -46,6 +46,7 @@ jobs:
       - name: Setup MySQL
         uses: mirromutth/mysql-action@v1.1
         with:
+          host port: ${{ secrets.MYSQL_HOST }}
           mysql database: 'wingle-database' 
           mysql user: 'wingle'
           mysql password: ${{ secrets.MYSQL_PASSWORD }}
