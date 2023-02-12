@@ -29,6 +29,7 @@ public enum ErrorCode {
 	/* 404 NOT_FOUND: 리소스를 찾을 수 없음 */
 	DATA_NOT_FOUND(NOT_FOUND, "해당 데이터를 찾을 수 없습니다."),
 	USER_NOT_FOUND(NOT_FOUND, "유저를 찾을 수 없습니다."),
+	REFRESH_TOKEN_NOT_FOUND(NOT_FOUND, "로그아웃된 사용자입니다. 다시 로그인해주세요."),
 
 	/* 500 INTERNAL_SERVER_ERROR : 서버 오류 */
 	FILE_UPLOAD_FAIL(INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다."),
