@@ -30,6 +30,7 @@ import kr.co.wingle.member.dto.MemberResponseDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
 import kr.co.wingle.member.dto.TokenDto;
+import kr.co.wingle.member.dto.TokenRequestDto;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -113,6 +114,25 @@ class AuthControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(content().string(
 				mapper.writeValueAsString(ApiResponse.success(SuccessCode.ACCOUNT_READ_SUCCESS, responseDto))
+			))
+			.andDo(print());
+	}
+
+	@Test
+	void 토큰_재발급() throws Exception {
+		TokenRequestDto requestDto = TokenRequestDto.of("refreshToken");
+		TokenDto tokenDto = TokenDto.of("accessToken", "refreshToken");
+		given(authService.reissue(any(TokenRequestDto.class)))
+			.willReturn(tokenDto);
+
+		MockHttpServletRequestBuilder builder = post("/api/v1/auth/refresh")
+			.content(mapper.writeValueAsString(requestDto))
+			.contentType(MediaType.APPLICATION_JSON);
+
+		mockMvc.perform(builder)
+			.andExpect(status().isOk())
+			.andExpect(content().string(
+				mapper.writeValueAsString(ApiResponse.success(SuccessCode.TOKEN_REISSUE_SUCCESS, tokenDto))
 			))
 			.andDo(print());
 	}
