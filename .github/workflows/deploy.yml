@@ -63,8 +63,6 @@ jobs:
           sudo service mysql start
           mysql -uroot -proot -e "CREATE DATABASE WINGLE"
           mysql -uroot -proot -e "SHOW DATABASES"
-      - name: test
-        run: |
           cd ./wingle
           ./gradlew clean test
 
