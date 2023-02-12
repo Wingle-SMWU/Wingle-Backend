@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.wingle.common.constants.ErrorCode;
+import kr.co.wingle.common.exception.DuplicateException;
+import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.common.jwt.TokenInfo;
 import kr.co.wingle.common.util.RedisUtil;
 import kr.co.wingle.member.dto.TokenDto;
@@ -22,6 +24,7 @@ import kr.co.wingle.common.util.SecurityUtil;
 import kr.co.wingle.member.dto.LoginRequestDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
+import kr.co.wingle.member.dto.TokenRequestDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -57,20 +60,33 @@ public class AuthService {
 		String email = loginRequestDto.getEmail();
 		validateEmail(email);
 		memberRepository.findByEmail(email)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
-		return getTokenDto(loginRequestDto);
+		UsernamePasswordAuthenticationToken authenticationToken = loginRequestDto.toAuthentication();
+		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+		return getRedisTokenKey(authentication);
 	}
 
 	@Transactional(readOnly = true)
 	public Member findMember() {
 		return memberRepository.findByEmail(SecurityUtil.getCurrentUserEmail())
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 	}
 
-	private TokenDto getTokenDto(LoginRequestDto loginRequestDto) {
-		UsernamePasswordAuthenticationToken authenticationToken = loginRequestDto.toAuthentication();
-		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+	@Transactional
+	public TokenDto reissue(TokenRequestDto tokenRequestDto) {
+		String key = RedisUtil.PREFIX_REFRESH_TOKEN + tokenRequestDto.getRefreshToken();
+		String refreshToken = redisUtil.getData(key);
+		if (refreshToken == null) {
+			throw new NotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+		}
+		redisUtil.deleteData(key);
+
+		Authentication authentication = tokenProvider.getAuthentication(refreshToken);
+		return getRedisTokenKey(authentication);
+	}
+
+	private TokenDto getRedisTokenKey(Authentication authentication) {
 		TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
 
 		String uuid = generateUUID();
@@ -99,7 +115,7 @@ public class AuthService {
 	private void checkDuplicateEmail(String email) {
 		// TODO: interface 구현
 		if (memberRepository.existsByEmail(email)) {
-			throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
+			throw new DuplicateException(ErrorCode.DUPLICATE_EMAIL);
 		}
 	}
 
