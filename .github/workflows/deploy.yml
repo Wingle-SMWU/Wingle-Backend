@@ -37,30 +37,32 @@ jobs:
   
       - name: make main application.yml
         run: |
-          sudo mkdir -p ./src/main/resources
-          sudo chmod 777 ./src/main/resources
-          cd ./src/main/resources
+          pwd
+          ls -a
+          sudo mkdir -p ./wingle/src/main/resources
+          sudo chmod 777 ./wingle/src/main/resources
+          cd ./wingle/src/main/resources
           touch ./application.yml
           echo "${{ secrets.MAIN_YML }}" > ./application.yml 
 
       - uses: actions/upload-artifact@v3
         with:
           name: application.yml
-          path: ./src/main/resources/application.yml
+          path: ./wingle/src/main/resources/application.yml
           if-no-files-found: 'error'
 
       - name: make test application.yml
         run: |
-          sudo mkdir -p ./src/test/resources
-          sudo chmod 777 ./src/test/resources
-          cd ./src/test/resources
+          sudo mkdir -p ./wingle/src/test/resources
+          sudo chmod 777 ./wingle/src/test/resources
+          cd ./wingle/src/test/resources
           touch ./application.yml
           echo "${{ secrets.TEST_YML }}" > ./application.yml 
           
       - uses: actions/upload-artifact@v3
         with:
           name: application.yml
-          path: ./src/test/resources/application.yml
+          path: ./wingle/src/test/resources/application.yml
           if-no-files-found: 'error'
 
       - name: Grant execute permission for gradlew
@@ -68,8 +70,9 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          ls -a ./src/main/resources/
-          ls -a ./src/test/resources/
+          la -al ./wingle
+          ls -al ./wingle/src/main/resources/
+          ls -al ./wingle/src/test/resources/
           cd ./wingle
           ./gradlew clean build
         shell: bash
