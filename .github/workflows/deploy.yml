@@ -36,20 +36,20 @@ jobs:
             ${{ runner.os }}-gradle-
   
       - name: make application.yml
-        run: |
+      - run: |
           sudo mkdir -p ./src/main/resources
           sudo chmod 777 ./src/main/resources
           cd ./src/main/resources
           touch ./application.yml
           echo "${{ secrets.MAIN_YML }}" > ./application.yml 
+      - run: |
           pwd
-          ls -al
-      
-      - name: upload application.yml
-        uses: actions/upload-artifact@v3
+          ls -a
+      - uses: actions/upload-artifact@v3
         with:
           name: application.yml
-          path: ./application.yml
+          path: application.yml
+          if-no-files-found: 'error'
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./wingle/gradlew
