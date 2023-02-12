@@ -70,7 +70,7 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          la -al ./wingle
+          l -al ./wingle
           ls -al ./wingle/src/main/resources/
           ls -al ./wingle/src/test/resources/
           cd ./wingle
