@@ -65,6 +65,12 @@ jobs:
           mysql -uroot -proot -e "SHOW DATABASES"
           cd ./wingle
           ./gradlew clean test
+        env:
+          CI: true
+          MYSQL_DATABASE: WINGLE
+          DB_USERNAME: root
+          DB_PASSWORD: root
+          DB_PORT: $
 
       - name: Build with Gradle
         run: |
