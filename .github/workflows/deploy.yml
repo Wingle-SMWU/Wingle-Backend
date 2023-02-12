@@ -15,16 +15,6 @@ env:
 jobs:
   CI-CD:
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_user: test
-          MYSQL_PASSWORD: test
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: WINGLE
-        ports:
-          - 3306
     
     steps:
       - uses: actions/checkout@v3
@@ -56,21 +46,6 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./wingle/gradlew
-        
-      - name: setup mysql
-        run: |
-          sudo apt-get install -y mysql-client
-          sudo service mysql start
-          mysql -uroot -proot -e "CREATE DATABASE WINGLE"
-          mysql -uroot -proot -e "SHOW DATABASES"
-          cd ./wingle
-          ./gradlew clean test
-        env:
-          CI: true
-          MYSQL_DATABASE: WINGLE
-          DB_USERNAME: root
-          DB_PASSWORD: root
-          DB_PORT: $
 
       - name: Build with Gradle
         run: |
