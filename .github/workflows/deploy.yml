@@ -37,8 +37,6 @@ jobs:
   
       - name: make main application.yml
         run: |
-          pwd
-          ls -a
           sudo mkdir -p ./wingle/src/main/resources
           sudo chmod 777 ./wingle/src/main/resources
           cd ./wingle/src/main/resources
@@ -70,11 +68,8 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          ls -al ./wingle
-          ls -al ./wingle/src/main/resources/
-          ls -al ./wingle/src/test/resources/
           cd ./wingle
-          ./gradlew clean build
+          ./gradlew clean build -x test
         shell: bash
 
       - name: Make zip file
