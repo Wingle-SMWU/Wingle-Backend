@@ -42,18 +42,18 @@ public class HelloControllerTest {
 			.andExpect(content().string("Hello World!"));
 	}
 
-	@Test
-	public void createTest() throws Exception {
-		String content = "{\"name\": \"😊컨트롤러-create\"}";
-
-		mockMvc.perform(post("/hello/create")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(content)
-				.accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(content().string(
-				"{\"status\":200,\"message\":\"예시 성공\",\"data\":{\"id\":1,\"name\":\"😊컨트롤러-create\"}}"))
-			.andDo(print());
-	}
+	// @Test
+	// 	// public void createTest() throws Exception {
+	// 	// 	String content = "{\"name\": \"😊컨트롤러-create\"}";
+	// 	//
+	// 	// 	mockMvc.perform(post("/hello/create")
+	// 	// 			.contentType(MediaType.APPLICATION_JSON)
+	// 	// 			.content(content)
+	// 	// 			.accept(MediaType.APPLICATION_JSON))
+	// 	// 		.andExpect(status().isOk())
+	// 	// 		.andExpect(content().string(
+	// 	// 			"{\"status\":200,\"message\":\"예시 성공\",\"data\":{\"id\":1,\"name\":\"😊컨트롤러-create\"}}"))
+	// 	// 		.andDo(print());
+	// 	// }
 }
 

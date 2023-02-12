@@ -19,7 +19,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "term_member")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TermMember extends BaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -33,8 +32,4 @@ public class TermMember extends BaseEntity {
 	@Column(nullable = false, columnDefinition = "TINYINT", length = 1)
 	@ColumnDefault("0")
 	private boolean agreement = false;
-
-	public static TermMember createTermMember(Term term, Member member, boolean agreement) {
-		return new TermMember(term, member, agreement);
-	}
 }
