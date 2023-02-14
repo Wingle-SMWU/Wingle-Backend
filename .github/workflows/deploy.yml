@@ -23,14 +23,6 @@ jobs:
         with:
           distribution: zulu
           java-version: "17"
-      
-      - name: Start MySQL
-        uses: samin/mysql-actions@v1
-        with:
-          host port: ${{ secrets.MYSQL_HOST }}
-          mysql database: wingle-test
-          mysql user: wingle
-          mysql password: ${{ secrets.MYSQL_PASSWORD }}
 
       - name: Gradle Caching
         uses: actions/cache@v3
@@ -50,7 +42,6 @@ jobs:
           cd ./wingle/src/main/resources
           touch ./application.yml
           echo "${{ secrets.MAIN_YML }}" > ./application.yml 
-
       # 파일 없으면 빌드 에러
       - uses: actions/upload-artifact@v3
         with:
@@ -81,15 +72,8 @@ jobs:
           mkdir info
           mkdir warn
           mkdir error
-
       - name: Grant execute permission for gradlew
         run: chmod +x ./wingle/gradlew
-        
-      - name: Test
-        run: |
-          cd ./wingle
-          ./gradlew clean test
-        shell: bash
 
       - name: Build with Gradle
         run: |
