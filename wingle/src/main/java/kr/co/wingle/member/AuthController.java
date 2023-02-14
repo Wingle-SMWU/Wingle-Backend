@@ -16,6 +16,7 @@ import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
+import kr.co.wingle.member.dto.TokenRequestDto;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -41,5 +42,11 @@ public class AuthController {
 		Member member = authService.findMember();
 		MemberResponseDto response = MemberResponseDto.from(member);
 		return ApiResponse.success(SuccessCode.ACCOUNT_READ_SUCCESS, response);
+	}
+
+	@PostMapping("/refresh")
+	public ApiResponse<TokenDto> refresh(@RequestBody @Valid TokenRequestDto tokenRequestDto) {
+		TokenDto response = authService.reissue(tokenRequestDto);
+		return ApiResponse.success(SuccessCode.TOKEN_REISSUE_SUCCESS, response);
 	}
 }
