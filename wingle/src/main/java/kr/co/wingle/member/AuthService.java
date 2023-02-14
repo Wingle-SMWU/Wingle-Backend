@@ -101,23 +101,6 @@ public class AuthService {
 		return tokenDto;
 	}
 
-	private TokenDto getTokenDto(LoginRequestDto loginRequestDto) {
-		UsernamePasswordAuthenticationToken authenticationToken = loginRequestDto.toAuthentication();
-		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-		TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-
-		String uuid = generateUUID();
-		String refreshTokenKey = RedisUtil.PREFIX_REFRESH_TOKEN + uuid;
-		while (redisUtil.getData(refreshTokenKey) != null) {
-			uuid = generateUUID();
-			refreshTokenKey = RedisUtil.PREFIX_REFRESH_TOKEN + uuid;
-		}
-		redisUtil.setDataExpire(refreshTokenKey, tokenDto.getRefreshToken(), TokenInfo.REFRESH_TOKEN_EXPIRE_TIME);
-
-		tokenDto.setRefreshToken(uuid);
-		return tokenDto;
-	}
-
 	private String generateUUID() {
 		return UUID.randomUUID().toString().substring(0, 6);
 	}

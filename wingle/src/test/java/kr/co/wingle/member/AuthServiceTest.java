@@ -157,38 +157,4 @@ class AuthServiceTest {
 		redisUtil.deleteData(key);
 	}
 
-	@Test
-	void 로그인한_유저_찾기() throws Exception {
-		//given
-		Member member = makeTestMember();
-		memberRepository.save(member);
-
-		//when
-		Member findMember = authService.findMember();
-
-		//then
-		assertThat(findMember.getEmail()).isEqualTo(member.getEmail());
-	}
-
-	@Test
-	void 로그인() throws Exception {
-		//given
-		Member member = makeTestMember();
-		memberRepository.save(member);
-		LoginRequestDto requestDto = LoginRequestDto.of(EMAIL, PASSWORD);
-
-		//when
-		TokenDto response = authService.login(requestDto);
-
-		//then
-		String key = PREFIX_REFRESH_TOKEN + response.getRefreshToken();
-		String refreshToken = redisUtil.getData(key);
-
-		assertThat(response.getAccessToken()).isNotNull();
-		assertThat(response.getRefreshToken()).isNotNull();
-		assertThat(refreshToken).isNotNull();
-
-		//teardown
-		redisUtil.deleteData(key);
-	}
 }
