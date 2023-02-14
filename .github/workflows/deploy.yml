@@ -15,6 +15,7 @@ env:
 jobs:
   CI-CD:
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 17
@@ -42,22 +43,44 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
   
-      - name: make application.yml
+      - name: make main application.yml
         run: |
-          sudo mkdir -p ./src/main/resources
-          sudo mkdir -p ./src/test/resources
-          sudo chmod 777 ./src/main/resources
-          sudo chmod 777 ./src/test/resources
-          
-          cd ./src/main/resources
+          sudo mkdir -p ./wingle/src/main/resources
+          sudo chmod 777 ./wingle/src/main/resources
+          cd ./wingle/src/main/resources
           touch ./application.yml
-          # GitHub-Actions에서 설정한 값을 application.yml 파일에 쓰기
           echo "${{ secrets.MAIN_YML }}" > ./application.yml 
-          
-          cd ../../test/resources
+
+      # 파일 없으면 빌드 에러
+      - uses: actions/upload-artifact@v3
+        with:
+          name: application.yml
+          path: ./wingle/src/main/resources/application.yml
+          if-no-files-found: 'error'
+
+      - name: make test application.yml
+        run: |
+          sudo mkdir -p ./wingle/src/test/resources
+          sudo chmod 777 ./wingle/src/test/resources
+          cd ./wingle/src/test/resources
           touch ./application.yml
           echo "${{ secrets.TEST_YML }}" > ./application.yml 
-        shell: bash
+          
+      # 파일 없으면 빌드 에러    
+      - uses: actions/upload-artifact@v3
+        with:
+          name: application.yml
+          path: ./wingle/src/test/resources/application.yml
+          if-no-files-found: 'error'
+
+      - name: Make log directories
+        run: |
+          cd ./wingle
+          mkdir log
+          cd ./log
+          mkdir info
+          mkdir warn
+          mkdir error
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./wingle/gradlew
