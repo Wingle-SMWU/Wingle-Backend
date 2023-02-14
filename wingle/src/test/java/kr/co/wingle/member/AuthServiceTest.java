@@ -181,7 +181,7 @@ class AuthServiceTest {
 		TokenDto response = authService.login(requestDto);
 
 		//then
-		String key = PREFIX_REFRESH_TOKEN + member.getEmail() + response.getRefreshToken();
+		String key = PREFIX_REFRESH_TOKEN + response.getRefreshToken();
 		String refreshToken = redisUtil.getData(key);
 
 		assertThat(response.getAccessToken()).isNotNull();
