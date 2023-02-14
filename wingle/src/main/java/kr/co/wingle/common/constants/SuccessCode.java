@@ -14,8 +14,7 @@ public enum SuccessCode {
     LOGIN_SUCCESS(OK, "로그인 성공"),
     LOGOUT_SUCCESS(OK, "로그아웃 성공"),
     ACCOUNT_READ_SUCCESS(OK, "계정 조회 성공"),
-    TOKEN_REISSUE_SUCCESS(OK, "토큰 재발급 성공"),
-    ACCOUNT_READ_SUCCESS(OK, "계정 조회 성공");
+    TOKEN_REISSUE_SUCCESS(OK, "토큰 재발급 성공");
 
     private final HttpStatus status;
     private final String message;
