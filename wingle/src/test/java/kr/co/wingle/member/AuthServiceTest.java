@@ -65,6 +65,16 @@ class AuthServiceTest {
 	}
 
 	@Test
+	void 닉네임_검사() throws Exception {
+
+	}
+
+	@Test
+	void 닉네임_검사_실패_중복된_닉네임() throws Exception {
+
+	}
+
+	@Test
 	void 현재_로그인한_유저_찾기() throws Exception {
 		//given
 		Member member = makeTestMember();
@@ -156,5 +166,4 @@ class AuthServiceTest {
 		String key = PREFIX_REFRESH_TOKEN + tokenDto.getRefreshToken();
 		redisUtil.deleteData(key);
 	}
-
 }
