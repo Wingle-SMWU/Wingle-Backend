@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
-import kr.co.wingle.member.dto.MemberResponseDto;
-import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
+import kr.co.wingle.member.dto.MemberResponseDto;
+import kr.co.wingle.member.dto.NicknameRequestDto;
+import kr.co.wingle.member.dto.NicknameResponseDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
+import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.TokenRequestDto;
 import lombok.RequiredArgsConstructor;
 
@@ -48,5 +50,11 @@ public class AuthController {
 	public ApiResponse<TokenDto> refresh(@RequestBody @Valid TokenRequestDto tokenRequestDto) {
 		TokenDto response = authService.reissue(tokenRequestDto);
 		return ApiResponse.success(SuccessCode.TOKEN_REISSUE_SUCCESS, response);
+	}
+
+	@PostMapping("/nickname")
+	public ApiResponse<NicknameResponseDto> checkNickname(@RequestBody @Valid NicknameRequestDto nicknameRequestDto) {
+		NicknameResponseDto response = authService.checkDuplicateNickname(nicknameRequestDto);
+		return ApiResponse.success(SuccessCode.NICKNAME_CHECK_SUCCESS, response);
 	}
 }

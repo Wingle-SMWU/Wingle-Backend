@@ -12,25 +12,29 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.wingle.common.constants.ErrorCode;
+import kr.co.wingle.common.exception.CustomException;
 import kr.co.wingle.common.exception.DuplicateException;
 import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.common.jwt.TokenInfo;
-import kr.co.wingle.common.util.RedisUtil;
-import kr.co.wingle.member.dto.TokenDto;
-import kr.co.wingle.common.exception.CustomException;
 import kr.co.wingle.common.jwt.TokenProvider;
+import kr.co.wingle.common.util.RedisUtil;
 import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.common.util.SecurityUtil;
 import kr.co.wingle.member.dto.LoginRequestDto;
+import kr.co.wingle.member.dto.NicknameRequestDto;
+import kr.co.wingle.member.dto.NicknameResponseDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
+import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.TokenRequestDto;
+import kr.co.wingle.profile.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 	private final MemberRepository memberRepository;
+	private final ProfileRepository profileRepository;
 	private final TokenProvider tokenProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final PasswordEncoder passwordEncoder;
@@ -42,7 +46,8 @@ public class AuthService {
 		String email = request.getEmail();
 		validateEmail(email);
 		checkDuplicateEmail(email);
-		// TODO: 닉네임 중복 검사
+		// TODO: 닉네임 중복 검사가 통과했는지 여부
+		String nickname = request.getNickname();
 		// TODO: 약관 데이터 넣고 TermMember 저장
 
 		String idCardImageUrl = uploadIdCardImage(request.getIdCardImage());
@@ -113,10 +118,17 @@ public class AuthService {
 	}
 
 	private void checkDuplicateEmail(String email) {
-		// TODO: interface 구현
 		if (memberRepository.existsByEmail(email)) {
 			throw new DuplicateException(ErrorCode.DUPLICATE_EMAIL);
 		}
+	}
+
+	public NicknameResponseDto checkDuplicateNickname(NicknameRequestDto request) {
+		String nickname = request.getNickname();
+		if (profileRepository.existsByNickname(nickname)) {
+			throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
+		}
+		return NicknameResponseDto.of(true);
 	}
 
 	private String uploadIdCardImage(MultipartFile idCardImage) {
