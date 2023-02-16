@@ -3,6 +3,7 @@ package kr.co.wingle.member;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -14,6 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.wingle.common.constants.ErrorCode;
+import kr.co.wingle.common.exception.CustomException;
 import kr.co.wingle.common.exception.DuplicateException;
 import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.common.jwt.TokenInfo;
@@ -22,11 +24,15 @@ import kr.co.wingle.member.dto.LogoutRequestDto;
 import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.common.exception.CustomException;
 import kr.co.wingle.common.jwt.TokenProvider;
+import kr.co.wingle.common.util.RedisUtil;
 import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.common.util.SecurityUtil;
+import kr.co.wingle.member.dto.EmailRequestDto;
+import kr.co.wingle.member.dto.EmailResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
+import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.TokenRequestDto;
 import lombok.RequiredArgsConstructor;
 
@@ -39,6 +45,9 @@ public class AuthService {
 	private final PasswordEncoder passwordEncoder;
 	private final S3Util s3Util;
 	private final RedisUtil redisUtil;
+
+	@Autowired
+	MailService mailService;
 
 	@Transactional
 	public SignupResponseDto signup(SignupRequestDto request) {
@@ -142,5 +151,11 @@ public class AuthService {
 
 	private String uploadIdCardImage(MultipartFile idCardImage) {
 		return s3Util.idCardImageUpload(idCardImage);
+	}
+
+	public EmailResponseDto sendEmailCode(EmailRequestDto emailRequestDto) {
+		String to = emailRequestDto.getEmail();
+		String certificationKey = mailService.sendEmailCode(to);
+		return EmailResponseDto.of(certificationKey);
 	}
 }

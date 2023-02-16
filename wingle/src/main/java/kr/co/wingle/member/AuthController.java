@@ -15,9 +15,13 @@ import kr.co.wingle.common.dto.ApiResponse;
 import kr.co.wingle.member.dto.LogoutRequestDto;
 import kr.co.wingle.member.dto.MemberResponseDto;
 import kr.co.wingle.member.dto.TokenDto;
+import kr.co.wingle.member.dto.EmailRequestDto;
+import kr.co.wingle.member.dto.EmailResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
+import kr.co.wingle.member.dto.MemberResponseDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
+import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.TokenRequestDto;
 import lombok.RequiredArgsConstructor;
 
@@ -56,5 +60,10 @@ public class AuthController {
 	public ApiResponse<Object> logout(@RequestBody @Valid LogoutRequestDto logoutRequestDto) {
 		authService.logout(logoutRequestDto);
 		return ApiResponse.success(SuccessCode.LOGOUT_SUCCESS, null);
+
+	@PostMapping("/email")
+	public ApiResponse<EmailResponseDto> email(@RequestBody @Valid EmailRequestDto emailRequestDto) {
+		EmailResponseDto response = authService.sendEmailCode(emailRequestDto);
+		return ApiResponse.success(SuccessCode.EMAIL_SEND_SUCCESS, response);
 	}
 }
