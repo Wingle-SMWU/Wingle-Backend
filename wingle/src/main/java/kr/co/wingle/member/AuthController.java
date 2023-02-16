@@ -60,6 +60,7 @@ public class AuthController {
 	public ApiResponse<Object> logout(@RequestBody @Valid LogoutRequestDto logoutRequestDto) {
 		authService.logout(logoutRequestDto);
 		return ApiResponse.success(SuccessCode.LOGOUT_SUCCESS, null);
+	}
 
 	@PostMapping("/email")
 	public ApiResponse<EmailResponseDto> email(@RequestBody @Valid EmailRequestDto emailRequestDto) {
