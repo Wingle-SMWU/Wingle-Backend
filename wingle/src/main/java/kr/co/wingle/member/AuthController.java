@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
+import kr.co.wingle.member.dto.CertificationRequestDto;
+import kr.co.wingle.member.dto.CertificationResponseDto;
 import kr.co.wingle.member.dto.EmailRequestDto;
 import kr.co.wingle.member.dto.EmailResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
@@ -56,5 +58,12 @@ public class AuthController {
 	public ApiResponse<EmailResponseDto> email(@RequestBody @Valid EmailRequestDto emailRequestDto) {
 		EmailResponseDto response = authService.sendEmailCode(emailRequestDto);
 		return ApiResponse.success(SuccessCode.EMAIL_SEND_SUCCESS, response);
+	}
+
+	@PostMapping("/email/certification")
+	public ApiResponse<CertificationResponseDto> email(
+		@RequestBody @Valid CertificationRequestDto certificationRequestDto) {
+		CertificationResponseDto response = authService.checkEmailAndCode(certificationRequestDto);
+		return ApiResponse.success(SuccessCode.EMAIL_CERTIFICATION_SUCCESS, response);
 	}
 }
