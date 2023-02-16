@@ -6,9 +6,11 @@ import java.util.regex.Pattern;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.wingle.common.constants.ErrorCode;
@@ -16,6 +18,7 @@ import kr.co.wingle.common.exception.DuplicateException;
 import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.common.jwt.TokenInfo;
 import kr.co.wingle.common.util.RedisUtil;
+import kr.co.wingle.member.dto.LogoutRequestDto;
 import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.common.exception.CustomException;
 import kr.co.wingle.common.jwt.TokenProvider;
@@ -84,6 +87,24 @@ public class AuthService {
 
 		Authentication authentication = tokenProvider.getAuthentication(refreshToken);
 		return getRedisTokenKey(authentication);
+	}
+
+	@Transactional
+	public void logout(LogoutRequestDto logoutRequestDto) {
+		String accessToken = logoutRequestDto.getAccessToken();
+		if (!tokenProvider.validateToken(accessToken)) {
+			throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+		}
+
+		String refreshTokenKey = RedisUtil.PREFIX_REFRESH_TOKEN + logoutRequestDto.getRefreshToken();
+
+		String refreshToken = redisUtil.getData(refreshTokenKey);
+		if (refreshToken == null) {
+			throw new NotFoundException(ErrorCode.TOKEN_NOT_FOUND);
+		}
+		redisUtil.deleteData(refreshTokenKey);
+
+		redisUtil.setDataExpire(RedisUtil.PREFIX_LOGOUT + accessToken, "logout", TokenInfo.ACCESS_TOKEN_EXPIRE_TIME);
 	}
 
 	private TokenDto getRedisTokenKey(Authentication authentication) {

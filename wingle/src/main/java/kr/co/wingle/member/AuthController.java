@@ -6,11 +6,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
+import kr.co.wingle.member.dto.LogoutRequestDto;
 import kr.co.wingle.member.dto.MemberResponseDto;
 import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
@@ -48,5 +50,11 @@ public class AuthController {
 	public ApiResponse<TokenDto> refresh(@RequestBody @Valid TokenRequestDto tokenRequestDto) {
 		TokenDto response = authService.reissue(tokenRequestDto);
 		return ApiResponse.success(SuccessCode.TOKEN_REISSUE_SUCCESS, response);
+	}
+
+	@GetMapping("/logout")
+	public ApiResponse<Object> logout(@RequestBody @Valid LogoutRequestDto logoutRequestDto) {
+		authService.logout(logoutRequestDto);
+		return ApiResponse.success(SuccessCode.LOGOUT_SUCCESS, null);
 	}
 }
