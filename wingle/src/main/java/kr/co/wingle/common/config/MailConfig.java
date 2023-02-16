@@ -12,4 +12,5 @@ public class MailConfig {
 	private String username;
 	private final String title = "윙글(Wingle) 이메일 인증코드";
 	private final String name = "wingle";
+	private final long validTime = 60 * 3L; // 3분
 }

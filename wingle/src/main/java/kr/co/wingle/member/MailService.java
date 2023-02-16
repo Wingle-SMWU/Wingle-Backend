@@ -17,19 +17,22 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import kr.co.wingle.common.config.MailConfig;
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.CustomException;
+import kr.co.wingle.common.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class MailService {
 	private final MailConfig mailConfig;
+	private final RedisUtil redisUtil;
 	private final JavaMailSender emailSender;
 	private final SpringTemplateEngine templateEngine;
 
 	public String sendEmailCode(String to) {
-		final String certificationKey = createCode();
 		try {
 			final String code = createCode();
+			redisUtil.setDataExpire(to, code, mailConfig.getValidTime());
+			MimeMessage message = createMessage(to, code);
 			emailSender.send(message);
 		} catch (MailException | MessagingException | UnsupportedEncodingException es) {
 			throw new CustomException(ErrorCode.EMAIL_SEND_FAIL);
