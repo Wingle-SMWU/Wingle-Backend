@@ -29,12 +29,12 @@ public class MailService {
 	public String sendEmailCode(String to) {
 		final String certificationKey = createCode();
 		try {
-			MimeMessage message = createMessage(to, certificationKey);
+			final String code = createCode();
 			emailSender.send(message);
 		} catch (MailException | MessagingException | UnsupportedEncodingException es) {
 			throw new CustomException(ErrorCode.EMAIL_SEND_FAIL);
 		}
-		return certificationKey;
+		return to;
 	}
 
 	private String createCode() {
