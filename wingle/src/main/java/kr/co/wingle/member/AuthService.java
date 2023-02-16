@@ -21,6 +21,8 @@ import kr.co.wingle.common.jwt.TokenProvider;
 import kr.co.wingle.common.util.RedisUtil;
 import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.common.util.SecurityUtil;
+import kr.co.wingle.member.dto.CertificationRequestDto;
+import kr.co.wingle.member.dto.CertificationResponseDto;
 import kr.co.wingle.member.dto.EmailRequestDto;
 import kr.co.wingle.member.dto.EmailResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
@@ -133,5 +135,16 @@ public class AuthService {
 		String to = emailRequestDto.getEmail();
 		String certificationKey = mailService.sendEmailCode(to);
 		return EmailResponseDto.of(certificationKey);
+	}
+
+	public CertificationResponseDto checkEmailAndCode(CertificationRequestDto certificationRequestDto) {
+		String email = certificationRequestDto.getCertificationKey();
+		String inputCode = certificationRequestDto.getCertificationCode();
+		String code = redisUtil.getData(email);
+		if (code == null)
+			throw new CustomException(ErrorCode.NO_EMAIL_CODE);
+		if (!code.equals(inputCode))
+			throw new CustomException(ErrorCode.INCONSISTENT_CODE);
+		return CertificationResponseDto.of(true);
 	}
 }
