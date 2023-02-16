@@ -18,6 +18,8 @@ public enum ErrorCode {
 	BAD_FILE_EXTENSION(BAD_REQUEST, "지원하지 않는 파일 형식입니다."),
 	EMAIL_BAD_REQUEST(BAD_REQUEST, "이메일 형식이 유효하지 않습니다."),
 	EMAIL_SEND_FAIL(BAD_REQUEST, "이메일을 전송할 수 없습니다."),
+	NO_EMAIL_CODE(BAD_REQUEST, "해당 이메일에 유효한 인증정보가 없습니다."),
+	INCONSISTENT_CODE(BAD_REQUEST, "인증정보가 일치하지 않습니다."),
 	DUPLICATE_EMAIL(BAD_REQUEST, "이미 가입된 유저입니다."),
 	BAD_PARAMETER(BAD_REQUEST, "요청 파라미터가 잘못되었습니다."),
 	BAD_PARAMETER_TYPE(BAD_REQUEST, "지원하지 않는 파라미터 형식입니다."),
