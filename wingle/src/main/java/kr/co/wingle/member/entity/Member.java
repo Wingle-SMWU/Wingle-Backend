@@ -1,4 +1,4 @@
-package kr.co.wingle.member;
+package kr.co.wingle.member.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -1,4 +1,4 @@
-package kr.co.wingle.member;
+package kr.co.wingle.member.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

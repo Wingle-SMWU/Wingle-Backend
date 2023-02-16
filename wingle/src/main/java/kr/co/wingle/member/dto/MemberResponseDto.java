@@ -1,6 +1,6 @@
 package kr.co.wingle.member.dto;
 
-import kr.co.wingle.member.Member;
+import kr.co.wingle.member.entity.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

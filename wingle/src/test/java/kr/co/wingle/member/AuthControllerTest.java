@@ -31,6 +31,8 @@ import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
 import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.TokenRequestDto;
+import kr.co.wingle.member.entity.Member;
+import kr.co.wingle.member.service.AuthService;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
