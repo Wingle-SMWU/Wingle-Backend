@@ -6,8 +6,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,6 +23,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import kr.co.wingle.common.util.RedisUtil;
 import kr.co.wingle.member.dto.TokenDto;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,10 +31,12 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class TokenProvider {
 	private final Key key;
+	private final RedisUtil redisUtil;
 
-	public TokenProvider(@Value("${jwt.secret}") String secret) {
+	public TokenProvider(@Value("${jwt.secret}") String secret, RedisUtil redisUtil) {
 		byte[] keyBytes = Decoders.BASE64.decode(secret);
 		this.key = Keys.hmacShaKeyFor(keyBytes);
+		this.redisUtil = redisUtil;
 	}
 
 	public TokenDto generateTokenDto(Authentication authentication) {
@@ -80,23 +81,25 @@ public class TokenProvider {
 		return new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
 	}
 
-	public boolean validateToken(String token, HttpServletRequest request) {
+	public boolean validateToken(String token) {
 		try {
 			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 			return true;
 		} catch (io.jsonwebtoken.security.SignatureException | MalformedJwtException exception) {
-			logInfo("잘못된 JWT 서명을 가진 토큰입니다.", request);
-			throw exception;
+			log.info("잘못된 JWT 서명을 가진 토큰입니다.");
 		} catch (ExpiredJwtException exception) {
-			logInfo("만료된 JWT 토큰입니다.", request);
-			throw exception;
+			log.info("만료된 JWT 토큰입니다.");
 		} catch (UnsupportedJwtException exception) {
-			logInfo("지원하지 않는 JWT 토큰입니다.", request);
-			throw exception;
+			log.info("지원하지 않는 JWT 토큰입니다.");
 		} catch (IllegalArgumentException exception) {
-			logInfo("잘못된 JWT 토큰입니다.", request);
-			throw exception;
+			log.info("잘못된 JWT 토큰입니다.");
 		}
+		return false;
+	}
+
+	public boolean isLogout(String accessToken) {
+		String data = redisUtil.getData(RedisUtil.PREFIX_LOGOUT + accessToken);
+		return data != null;
 	}
 
 	private Claims parseClaims(String accessToken) {
@@ -105,9 +108,5 @@ public class TokenProvider {
 		} catch (ExpiredJwtException e) {
 			return e.getClaims();
 		}
-	}
-
-	private void logInfo(String message, HttpServletRequest request) {
-		log.info("{} {} : {}", request.getMethod(), request.getRequestURI(), message);
 	}
 }
