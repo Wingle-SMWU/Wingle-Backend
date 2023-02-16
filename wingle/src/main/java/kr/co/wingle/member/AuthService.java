@@ -78,7 +78,7 @@ public class AuthService {
 		String key = RedisUtil.PREFIX_REFRESH_TOKEN + tokenRequestDto.getRefreshToken();
 		String refreshToken = redisUtil.getData(key);
 		if (refreshToken == null) {
-			throw new NotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+			throw new NotFoundException(ErrorCode.TOKEN_NOT_FOUND);
 		}
 		redisUtil.deleteData(key);
 
