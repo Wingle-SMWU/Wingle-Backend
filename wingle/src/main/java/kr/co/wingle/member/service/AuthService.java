@@ -1,4 +1,4 @@
-package kr.co.wingle.member;
+package kr.co.wingle.member.service;
 
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -21,6 +21,7 @@ import kr.co.wingle.common.jwt.TokenProvider;
 import kr.co.wingle.common.util.RedisUtil;
 import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.common.util.SecurityUtil;
+import kr.co.wingle.member.MemberRepository;
 import kr.co.wingle.member.dto.EmailRequestDto;
 import kr.co.wingle.member.dto.EmailResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
@@ -28,6 +29,7 @@ import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
 import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.TokenRequestDto;
+import kr.co.wingle.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 
 @Service

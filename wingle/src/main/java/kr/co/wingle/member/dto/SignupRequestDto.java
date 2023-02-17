@@ -7,8 +7,8 @@ import javax.validation.constraints.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 
-import kr.co.wingle.member.Authority;
-import kr.co.wingle.member.Member;
+import kr.co.wingle.member.entity.Authority;
+import kr.co.wingle.member.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

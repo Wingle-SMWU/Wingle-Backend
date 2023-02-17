@@ -1,4 +1,4 @@
-package kr.co.wingle.member;
+package kr.co.wingle.member.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +11,6 @@ import org.hibernate.annotations.ColumnDefault;
 
 import kr.co.wingle.common.entity.BaseEntity;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

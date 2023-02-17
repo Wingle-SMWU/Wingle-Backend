@@ -1,4 +1,4 @@
-package kr.co.wingle.member;
+package kr.co.wingle.member.service;
 
 import java.util.Collections;
 
@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import kr.co.wingle.common.constants.ErrorCode;
+import kr.co.wingle.member.MemberRepository;
+import kr.co.wingle.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 
 @Service

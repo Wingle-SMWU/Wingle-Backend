@@ -1,7 +1,8 @@
-package kr.co.wingle.member;
+package kr.co.wingle.member.service;
 
 import org.springframework.stereotype.Service;
 
+import kr.co.wingle.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
