@@ -70,6 +70,13 @@ public class RestExceptionHandler {
 		return ApiResponse.error(exception.getCode());
 	}
 
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	@ExceptionHandler(ForbiddenException.class)
+	public ApiResponse<Object> handlerForbiddenException(ForbiddenException exception, HttpServletRequest request) {
+		logInfo(request, exception.getCode().getStatus(), exception.getMessage());
+		return ApiResponse.error(exception.getCode());
+	}
+
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(Exception.class)
 	public ApiResponse<Object> unhandledExceptionHandler(Exception exception, HttpServletRequest request) {
