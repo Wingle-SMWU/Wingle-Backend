@@ -21,14 +21,14 @@ import lombok.NoArgsConstructor;
 public class MemberSns extends BaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name= "member_id")
+	@JoinColumn(name = "member_id")
 	private Member member;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sns_id")
 	private Sns sns;
 
-	public static MemberSns createMemberSns(Member member, Sns sns){
-		return new MemberSns (member,sns);
+	public static MemberSns createMemberSns(Member member, Sns sns) {
+		return new MemberSns(member, sns);
 	}
 }

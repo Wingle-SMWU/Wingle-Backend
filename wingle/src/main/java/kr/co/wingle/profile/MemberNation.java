@@ -21,14 +21,14 @@ import lombok.NoArgsConstructor;
 public class MemberNation extends BaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name= "member_id")
+	@JoinColumn(name = "member_id")
 	private Member member;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "nation_id")
 	private Nation nation;
 
-	public static MemberNation createMemberNation(Member member, Nation nation){
-		return new MemberNation (member,nation);
+	public static MemberNation createMemberNation(Member member, Nation nation) {
+		return new MemberNation(member, nation);
 	}
 }

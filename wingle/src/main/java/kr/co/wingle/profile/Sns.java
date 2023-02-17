@@ -15,20 +15,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="sns")
+@Table(name = "sns")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Sns extends BaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="member_id",nullable = false)
+	@JoinColumn(name = "member_id", nullable = false)
 	private Member member;
 
 	@Column(nullable = false)
-	String url;
+	private String url;
 
-	public static Sns createSns(Member member, String url){
+	public static Sns createSns(Member member, String url) {
 		return new Sns(member, url);
 	}
 }

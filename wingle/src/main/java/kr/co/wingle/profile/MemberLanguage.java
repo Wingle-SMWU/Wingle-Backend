@@ -21,14 +21,14 @@ import lombok.NoArgsConstructor;
 public class MemberLanguage extends BaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name= "member_id")
+	@JoinColumn(name = "member_id")
 	private Member member;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "language_id")
 	private Language language;
 
-	public static MemberLanguage createMemberSns(Member member, Language language){
-		return new MemberLanguage (member,language);
+	public static MemberLanguage createMemberSns(Member member, Language language) {
+		return new MemberLanguage(member, language);
 	}
 }

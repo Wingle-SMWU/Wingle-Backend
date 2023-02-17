@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="profile")
+@Table(name = "profile")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Profile extends BaseEntity {
@@ -21,7 +21,7 @@ public class Profile extends BaseEntity {
 	@Column(nullable = false)
 	private String nickname;
 
-	@Column(nullable = false)
+	@Column(columnDefinition = "TEXT")
 	private String introduction;
 
 	@Column(nullable = false)
@@ -32,15 +32,14 @@ public class Profile extends BaseEntity {
 	@Setter
 	private boolean registration;
 
-	public static Profile createProfile(String nickname, String introduction,boolean gender, boolean registration){
+	public static Profile createProfile(String nickname, String introduction, boolean gender, boolean registration) {
 		Profile profile = new Profile();
-		profile.nickname= nickname;
-		profile.introduction=introduction;
-		profile.gender=gender;
-		profile.registration= registration;
+		profile.nickname = nickname;
+		profile.introduction = introduction;
+		profile.gender = gender;
+		profile.registration = registration;
 
 		return profile;
 	}
-
 
 }

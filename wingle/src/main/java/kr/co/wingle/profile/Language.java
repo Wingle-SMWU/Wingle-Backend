@@ -15,21 +15,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="language")
+@Table(name = "language")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Language extends BaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id",nullable = false)
+	@JoinColumn(name = "member_id", nullable = false)
 	private Member member;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "nation_id",nullable = false)
+	@JoinColumn(name = "nation_id", nullable = false)
 	private Nation nation;
 
-	public static Language createLanguage(Member member,Nation nation){
-		return new Language(member,nation);
+	public static Language createLanguage(Member member, Nation nation) {
+		return new Language(member, nation);
 	}
 }
