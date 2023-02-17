@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kr.co.wingle.common.entity.BaseEntity;
-import kr.co.wingle.member.Member;
+import kr.co.wingle.member.entity.Member;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
