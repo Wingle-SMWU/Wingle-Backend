@@ -14,7 +14,8 @@ public class RedisUtil {
 
 	private final RedisTemplate<String, String> redisTemplate;
 
-	public static final String PREFIX_REFRESH_TOKEN = "REFRESH_TOKEN_";
+	public static final String PREFIX_REFRESH_TOKEN = "REFRESH_TOKEN:";
+	public static final String PREFIX_LOGOUT = "LOGOUT:";
 
 	public String getData(String key) {
 		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();

@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
 import kr.co.wingle.member.dto.LoginRequestDto;
+import kr.co.wingle.member.dto.LogoutRequestDto;
 import kr.co.wingle.member.dto.MemberResponseDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
@@ -135,6 +136,22 @@ class AuthControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(content().string(
 				mapper.writeValueAsString(ApiResponse.success(SuccessCode.TOKEN_REISSUE_SUCCESS, tokenDto))
+			))
+			.andDo(print());
+	}
+
+	@Test
+	void 로그아웃() throws Exception {
+		LogoutRequestDto requestDto = LogoutRequestDto.of("accessToken", "refreshToken");
+
+		MockHttpServletRequestBuilder builder = get("/api/v1/auth/logout")
+			.content(mapper.writeValueAsString(requestDto))
+			.contentType(MediaType.APPLICATION_JSON);
+
+		mockMvc.perform(builder)
+			.andExpect(status().isOk())
+			.andExpect(content().string(
+				mapper.writeValueAsString(ApiResponse.success(SuccessCode.LOGOUT_SUCCESS, null))
 			))
 			.andDo(print());
 	}

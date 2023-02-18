@@ -17,7 +17,6 @@ public class MemberTemplate {
 	public static final String NICKNAME = "nickname";
 	public static final boolean GENDER = true;
 	public static final String NATION = "KR";
-	public static final String PREFIX_REFRESH_TOKEN = "REFRESH_TOKEN_";
 
 	private static final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
