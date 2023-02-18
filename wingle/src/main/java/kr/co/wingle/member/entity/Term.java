@@ -8,9 +8,9 @@ import org.hibernate.annotations.ColumnDefault;
 
 import kr.co.wingle.common.entity.BaseEntity;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "term")
@@ -19,7 +19,8 @@ import lombok.NoArgsConstructor;
 public class Term extends BaseEntity {
 
 	@Column(nullable = false)
-	private int code;
+	@Setter
+	private Long code;
 
 	@Column(nullable = false)
 	private String name;
@@ -27,4 +28,12 @@ public class Term extends BaseEntity {
 	@Column(nullable = false, columnDefinition = "TINYINT", length = 1)
 	@ColumnDefault("1")
 	private boolean necessity = true;
+
+	public static Term createTerm(long code, String name, boolean necessity) {
+		Term term = new Term();
+		term.code = code;
+		term.name = name;
+		term.necessity = necessity;
+		return term;
+	}
 }
