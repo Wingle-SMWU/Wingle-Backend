@@ -18,7 +18,8 @@ public enum SuccessCode {
 	TOKEN_REISSUE_SUCCESS(OK, "토큰 재발급 성공"),
 	EMAIL_SEND_SUCCESS(OK, "이메일 인증코드 전송 성공"),
 	EMAIL_CERTIFICATION_SUCCESS(OK, "이메일 인증 성공"),
-	ACCEPTANCE_SUCCESS(OK, "회원가입 수락 전송 성공");
+	ACCEPTANCE_SUCCESS(OK, "회원가입 수락 전송 성공"),
+	REJECTION_SUCCESS(OK, "회원가입 거절 전송 성공");
 
 	private final HttpStatus status;
 	private final String message;
