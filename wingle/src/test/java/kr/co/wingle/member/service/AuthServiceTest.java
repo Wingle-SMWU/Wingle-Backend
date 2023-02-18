@@ -209,4 +209,14 @@ class AuthServiceTest {
   @Test
 	void 이메일로_인증번호_전송_성공() {
 	}
+
+	@Test
+	void 인증번호_일치_검사_성공() {
+
+	}
+
+	@Test
+	void 인증번호_불일치_검사_실패() {
+
+	}
 }

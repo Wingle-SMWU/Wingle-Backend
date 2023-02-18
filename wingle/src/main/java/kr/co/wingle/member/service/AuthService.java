@@ -7,11 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.wingle.common.constants.ErrorCode;
@@ -19,18 +17,17 @@ import kr.co.wingle.common.exception.CustomException;
 import kr.co.wingle.common.exception.DuplicateException;
 import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.common.jwt.TokenInfo;
-import kr.co.wingle.common.util.RedisUtil;
-import kr.co.wingle.member.dto.LogoutRequestDto;
-import kr.co.wingle.member.dto.TokenDto;
-import kr.co.wingle.common.exception.CustomException;
 import kr.co.wingle.common.jwt.TokenProvider;
 import kr.co.wingle.common.util.RedisUtil;
 import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.common.util.SecurityUtil;
 import kr.co.wingle.member.MemberRepository;
+import kr.co.wingle.member.dto.CertificationRequestDto;
+import kr.co.wingle.member.dto.CertificationResponseDto;
 import kr.co.wingle.member.dto.EmailRequestDto;
 import kr.co.wingle.member.dto.EmailResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
+import kr.co.wingle.member.dto.LogoutRequestDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
 import kr.co.wingle.member.dto.TokenDto;
@@ -159,5 +156,16 @@ public class AuthService {
 		String to = emailRequestDto.getEmail();
 		String certificationKey = mailService.sendEmailCode(to);
 		return EmailResponseDto.of(certificationKey);
+	}
+
+	public CertificationResponseDto checkEmailAndCode(CertificationRequestDto certificationRequestDto) {
+		String email = certificationRequestDto.getCertificationKey();
+		String inputCode = certificationRequestDto.getCertificationCode();
+		String code = redisUtil.getData(email);
+		if (code == null)
+			throw new CustomException(ErrorCode.NO_EMAIL_CODE);
+		if (!code.equals(inputCode))
+			throw new CustomException(ErrorCode.INCONSISTENT_CODE);
+		return CertificationResponseDto.of(true);
 	}
 }
