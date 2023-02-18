@@ -200,6 +200,7 @@ public class AuthService {
 			throw new CustomException(ErrorCode.ALREADY_DENY);
 
 		member.setPermission(Permission.DENY.getStatus());
+		// TODO: 거절 사유 저장
 		mailService.sendEmail(member.getEmail(), new RejectionMail(rejectionRequestDto.getReason()));
 		return PermissionResponseDto.of(userId, false);
 	}
