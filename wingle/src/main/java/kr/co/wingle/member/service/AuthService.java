@@ -1,9 +1,8 @@
 package kr.co.wingle.member.service;
 
+import java.util.Optional;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -22,6 +21,8 @@ import kr.co.wingle.common.util.RedisUtil;
 import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.common.util.SecurityUtil;
 import kr.co.wingle.member.MemberRepository;
+import kr.co.wingle.member.TermMemberRepository;
+import kr.co.wingle.member.TermRepository;
 import kr.co.wingle.member.dto.CertificationRequestDto;
 import kr.co.wingle.member.dto.CertificationResponseDto;
 import kr.co.wingle.member.dto.EmailRequestDto;
@@ -33,35 +34,49 @@ import kr.co.wingle.member.dto.SignupResponseDto;
 import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.TokenRequestDto;
 import kr.co.wingle.member.entity.Member;
+import kr.co.wingle.member.entity.Term;
+import kr.co.wingle.member.entity.TermMember;
+import kr.co.wingle.profile.Profile;
+import kr.co.wingle.profile.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 	private final MemberRepository memberRepository;
+	private final ProfileRepository profileRepository;
+	private final TermRepository termRepository;
+	private final TermMemberRepository termMemberRepository;
 	private final TokenProvider tokenProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final PasswordEncoder passwordEncoder;
 	private final S3Util s3Util;
 	private final RedisUtil redisUtil;
-
-	@Autowired
-	MailService mailService;
+	private final MailService mailService;
 
 	@Transactional
 	public SignupResponseDto signup(SignupRequestDto request) {
 		String email = request.getEmail();
-		validateEmail(email);
 		checkDuplicateEmail(email);
-		// TODO: 닉네임 중복 검사
-		// TODO: 약관 데이터 넣고 TermMember 저장
 
+		// upload S3
 		String idCardImageUrl = uploadIdCardImage(request.getIdCardImage());
 
+		// save member
 		Member member = request.toMember(idCardImageUrl, passwordEncoder);
 		memberRepository.save(member);
 
-		// TODO: Profile 테이블에 유저 정보 저장
+		// save termMember
+		final String TERMS_OF_USE = "서비스 이용약관";
+		final String TERMS_OF_PERSONAL_INFORMATION = "개인정보 수집 및 이용 동의";
+		final String TERMS_OF_PROMOTION = "이벤트, 프로모션 알림 메일 수신";
+		getTermAndSaveTermMember(member, TERMS_OF_USE, request.isTermsOfUse(), true);
+		getTermAndSaveTermMember(member, TERMS_OF_PERSONAL_INFORMATION, request.isTermsOfPersonalInformation(), true);
+		getTermAndSaveTermMember(member, TERMS_OF_PROMOTION, request.isTermsOfPromotion(), false);
+
+		// save profile
+		Profile profile = Profile.createProfile(member, request.getNickname(), request.isGender(), request.getNation());
+		profileRepository.save(profile);
 
 		return SignupResponseDto.of(member.getId(), member.getName(), "nickname");
 	}
@@ -69,7 +84,6 @@ public class AuthService {
 	@Transactional
 	public TokenDto login(LoginRequestDto loginRequestDto) {
 		String email = loginRequestDto.getEmail();
-		validateEmail(email);
 		memberRepository.findByEmail(email)
 			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
@@ -115,6 +129,36 @@ public class AuthService {
 		redisUtil.setDataExpire(RedisUtil.PREFIX_LOGOUT + accessToken, "logout", TokenInfo.ACCESS_TOKEN_EXPIRE_TIME);
 	}
 
+	public EmailResponseDto sendEmailCode(EmailRequestDto emailRequestDto) {
+		String to = emailRequestDto.getEmail();
+		String certificationKey = mailService.sendEmailCode(to);
+		return EmailResponseDto.of(certificationKey);
+	}
+
+	public CertificationResponseDto checkEmailAndCode(CertificationRequestDto certificationRequestDto) {
+		String email = certificationRequestDto.getCertificationKey();
+		String inputCode = certificationRequestDto.getCertificationCode();
+		String code = redisUtil.getData(email);
+		if (code == null)
+			throw new CustomException(ErrorCode.NO_EMAIL_CODE);
+		if (!code.equals(inputCode))
+			throw new CustomException(ErrorCode.INCONSISTENT_CODE);
+		return CertificationResponseDto.of(true);
+	}
+
+	private void getTermAndSaveTermMember(Member member, String termName, boolean agreement, boolean termNecessity) {
+		Optional<Term> termOptional = termRepository.findByName(termName);
+		if (termOptional.isEmpty()) {
+			Term term = Term.createTerm(0, termName, termNecessity);
+			termRepository.save(term);
+			TermMember termMember = TermMember.createTermMember(term, member, agreement);
+			termMemberRepository.save(termMember);
+		} else {
+			TermMember termMember = TermMember.createTermMember(termOptional.get(), member, agreement);
+			termMemberRepository.save(termMember);
+		}
+	}
+
 	private TokenDto getRedisTokenKey(Authentication authentication) {
 		TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
 
@@ -134,15 +178,7 @@ public class AuthService {
 		return UUID.randomUUID().toString().substring(0, 6);
 	}
 
-	private void validateEmail(String email) {
-		Pattern emailPattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-		if (!emailPattern.matcher(email).matches()) {
-			throw new CustomException(ErrorCode.EMAIL_BAD_REQUEST);
-		}
-	}
-
 	private void checkDuplicateEmail(String email) {
-		// TODO: interface 구현
 		if (memberRepository.existsByEmail(email)) {
 			throw new DuplicateException(ErrorCode.DUPLICATE_EMAIL);
 		}
@@ -150,22 +186,5 @@ public class AuthService {
 
 	private String uploadIdCardImage(MultipartFile idCardImage) {
 		return s3Util.idCardImageUpload(idCardImage);
-	}
-
-	public EmailResponseDto sendEmailCode(EmailRequestDto emailRequestDto) {
-		String to = emailRequestDto.getEmail();
-		String certificationKey = mailService.sendEmailCode(to);
-		return EmailResponseDto.of(certificationKey);
-	}
-
-	public CertificationResponseDto checkEmailAndCode(CertificationRequestDto certificationRequestDto) {
-		String email = certificationRequestDto.getCertificationKey();
-		String inputCode = certificationRequestDto.getCertificationCode();
-		String code = redisUtil.getData(email);
-		if (code == null)
-			throw new CustomException(ErrorCode.NO_EMAIL_CODE);
-		if (!code.equals(inputCode))
-			throw new CustomException(ErrorCode.INCONSISTENT_CODE);
-		return CertificationResponseDto.of(true);
 	}
 }
