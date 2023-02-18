@@ -18,6 +18,8 @@ public enum ErrorCode {
 	BAD_FILE_EXTENSION(BAD_REQUEST, "지원하지 않는 파일 형식입니다."),
 	EMAIL_BAD_REQUEST(BAD_REQUEST, "이메일 형식이 유효하지 않습니다."),
 	EMAIL_SEND_FAIL(BAD_REQUEST, "이메일을 전송할 수 없습니다."),
+	NO_EMAIL_CODE(BAD_REQUEST, "해당 이메일에 유효한 인증정보가 없습니다."),
+	INCONSISTENT_CODE(BAD_REQUEST, "인증정보가 일치하지 않습니다."),
 	DUPLICATE_EMAIL(BAD_REQUEST, "이미 가입된 유저입니다."),
 	BAD_PARAMETER(BAD_REQUEST, "요청 파라미터가 잘못되었습니다."),
 	BAD_PARAMETER_TYPE(BAD_REQUEST, "지원하지 않는 파라미터 형식입니다."),
@@ -31,7 +33,7 @@ public enum ErrorCode {
 	/* 404 NOT_FOUND: 리소스를 찾을 수 없음 */
 	DATA_NOT_FOUND(NOT_FOUND, "해당 데이터를 찾을 수 없습니다."),
 	USER_NOT_FOUND(NOT_FOUND, "유저를 찾을 수 없습니다."),
-	REFRESH_TOKEN_NOT_FOUND(NOT_FOUND, "로그아웃된 사용자입니다. 다시 로그인해주세요."),
+	TOKEN_NOT_FOUND(NOT_FOUND, "다시 로그인해주세요."),
 
 	/* 500 INTERNAL_SERVER_ERROR : 서버 오류 */
 	FILE_UPLOAD_FAIL(INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다."),

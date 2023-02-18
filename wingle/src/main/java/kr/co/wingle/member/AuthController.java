@@ -6,11 +6,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
+import kr.co.wingle.member.dto.LogoutRequestDto;
+import kr.co.wingle.member.dto.MemberResponseDto;
+import kr.co.wingle.member.dto.TokenDto;
+import kr.co.wingle.member.dto.CertificationRequestDto;
+import kr.co.wingle.member.dto.CertificationResponseDto;
 import kr.co.wingle.member.dto.EmailRequestDto;
 import kr.co.wingle.member.dto.EmailResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
@@ -54,9 +60,22 @@ public class AuthController {
 		return ApiResponse.success(SuccessCode.TOKEN_REISSUE_SUCCESS, response);
 	}
 
+	@GetMapping("/logout")
+	public ApiResponse<Object> logout(@RequestBody @Valid LogoutRequestDto logoutRequestDto) {
+		authService.logout(logoutRequestDto);
+		return ApiResponse.success(SuccessCode.LOGOUT_SUCCESS, null);
+	}
+
 	@PostMapping("/email")
 	public ApiResponse<EmailResponseDto> email(@RequestBody @Valid EmailRequestDto emailRequestDto) {
 		EmailResponseDto response = authService.sendEmailCode(emailRequestDto);
 		return ApiResponse.success(SuccessCode.EMAIL_SEND_SUCCESS, response);
+	}
+
+	@PostMapping("/email/certification")
+	public ApiResponse<CertificationResponseDto> email(
+		@RequestBody @Valid CertificationRequestDto certificationRequestDto) {
+		CertificationResponseDto response = authService.checkEmailAndCode(certificationRequestDto);
+		return ApiResponse.success(SuccessCode.EMAIL_CERTIFICATION_SUCCESS, response);
 	}
 }

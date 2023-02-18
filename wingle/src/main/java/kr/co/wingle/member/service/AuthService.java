@@ -22,9 +22,12 @@ import kr.co.wingle.common.util.RedisUtil;
 import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.common.util.SecurityUtil;
 import kr.co.wingle.member.MemberRepository;
+import kr.co.wingle.member.dto.CertificationRequestDto;
+import kr.co.wingle.member.dto.CertificationResponseDto;
 import kr.co.wingle.member.dto.EmailRequestDto;
 import kr.co.wingle.member.dto.EmailResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
+import kr.co.wingle.member.dto.LogoutRequestDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
 import kr.co.wingle.member.dto.TokenDto;
@@ -86,12 +89,30 @@ public class AuthService {
 		String key = RedisUtil.PREFIX_REFRESH_TOKEN + tokenRequestDto.getRefreshToken();
 		String refreshToken = redisUtil.getData(key);
 		if (refreshToken == null) {
-			throw new NotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+			throw new NotFoundException(ErrorCode.TOKEN_NOT_FOUND);
 		}
 		redisUtil.deleteData(key);
 
 		Authentication authentication = tokenProvider.getAuthentication(refreshToken);
 		return getRedisTokenKey(authentication);
+	}
+
+	@Transactional
+	public void logout(LogoutRequestDto logoutRequestDto) {
+		String accessToken = logoutRequestDto.getAccessToken();
+		if (!tokenProvider.validateToken(accessToken)) {
+			throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+		}
+
+		String refreshTokenKey = RedisUtil.PREFIX_REFRESH_TOKEN + logoutRequestDto.getRefreshToken();
+
+		String refreshToken = redisUtil.getData(refreshTokenKey);
+		if (refreshToken == null) {
+			throw new NotFoundException(ErrorCode.TOKEN_NOT_FOUND);
+		}
+		redisUtil.deleteData(refreshTokenKey);
+
+		redisUtil.setDataExpire(RedisUtil.PREFIX_LOGOUT + accessToken, "logout", TokenInfo.ACCESS_TOKEN_EXPIRE_TIME);
 	}
 
 	private TokenDto getRedisTokenKey(Authentication authentication) {
@@ -135,5 +156,16 @@ public class AuthService {
 		String to = emailRequestDto.getEmail();
 		String certificationKey = mailService.sendEmailCode(to);
 		return EmailResponseDto.of(certificationKey);
+	}
+
+	public CertificationResponseDto checkEmailAndCode(CertificationRequestDto certificationRequestDto) {
+		String email = certificationRequestDto.getCertificationKey();
+		String inputCode = certificationRequestDto.getCertificationCode();
+		String code = redisUtil.getData(email);
+		if (code == null)
+			throw new CustomException(ErrorCode.NO_EMAIL_CODE);
+		if (!code.equals(inputCode))
+			throw new CustomException(ErrorCode.INCONSISTENT_CODE);
+		return CertificationResponseDto.of(true);
 	}
 }
