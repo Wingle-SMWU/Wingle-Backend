@@ -22,6 +22,8 @@ import kr.co.wingle.common.util.RedisUtil;
 import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.common.util.SecurityUtil;
 import kr.co.wingle.member.MemberRepository;
+import kr.co.wingle.member.dto.AcceptanceRequestDto;
+import kr.co.wingle.member.dto.AcceptanceResponseDto;
 import kr.co.wingle.member.dto.CertificationRequestDto;
 import kr.co.wingle.member.dto.CertificationResponseDto;
 import kr.co.wingle.member.dto.EmailRequestDto;
@@ -33,6 +35,9 @@ import kr.co.wingle.member.dto.SignupResponseDto;
 import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.TokenRequestDto;
 import kr.co.wingle.member.entity.Member;
+import kr.co.wingle.member.entity.Permission;
+import kr.co.wingle.member.mailVo.AcceptanceMail;
+import kr.co.wingle.member.mailVo.CodeMail;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -154,7 +159,7 @@ public class AuthService {
 
 	public EmailResponseDto sendEmailCode(EmailRequestDto emailRequestDto) {
 		String to = emailRequestDto.getEmail();
-		String certificationKey = mailService.sendEmailCode(to);
+		String certificationKey = mailService.sendEmail(to, new CodeMail());
 		return EmailResponseDto.of(certificationKey);
 	}
 
@@ -167,5 +172,20 @@ public class AuthService {
 		if (!code.equals(inputCode))
 			throw new CustomException(ErrorCode.INCONSISTENT_CODE);
 		return CertificationResponseDto.of(true);
+	}
+
+	@Transactional
+	public AcceptanceResponseDto accept(AcceptanceRequestDto acceptanceRequestDto) {
+		Long userId = acceptanceRequestDto.getUserId();
+		memberRepository.findById(userId)
+			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+		Member member = memberRepository.findById(userId).get();
+		if (member.getPermission() == Permission.APPROVE.getStatus())
+			throw new CustomException(ErrorCode.ALREADY_ACCEPTANCE);
+
+		member.setPermission(Permission.APPROVE.getStatus());
+		mailService.sendEmail(member.getEmail(), new AcceptanceMail(member.getName()));
+		return AcceptanceResponseDto.of(userId);
 	}
 }
