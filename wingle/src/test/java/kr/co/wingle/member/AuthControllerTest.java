@@ -155,4 +155,14 @@ class AuthControllerTest {
 			))
 			.andDo(print());
 	}
+
+	@Test
+	void 회원가입_거절_전송_성공() {
+
+	}
+
+	@Test
+	void 회원가입_거절_전송_실패() {
+
+	}
 }
