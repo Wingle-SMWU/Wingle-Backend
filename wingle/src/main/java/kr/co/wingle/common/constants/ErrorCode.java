@@ -21,6 +21,7 @@ public enum ErrorCode {
 	NO_EMAIL_CODE(BAD_REQUEST, "해당 이메일에 유효한 인증정보가 없습니다."),
 	INCONSISTENT_CODE(BAD_REQUEST, "인증정보가 일치하지 않습니다."),
 	DUPLICATE_EMAIL(BAD_REQUEST, "이미 가입된 유저입니다."),
+	ALREADY_ACCEPTANCE(BAD_REQUEST, "이미 가입 승인한 유저입니다."),
 	BAD_PARAMETER(BAD_REQUEST, "요청 파라미터가 잘못되었습니다."),
 	BAD_PARAMETER_TYPE(BAD_REQUEST, "지원하지 않는 파라미터 형식입니다."),
 
@@ -28,6 +29,7 @@ public enum ErrorCode {
 	UNAUTHORIZED_USER(UNAUTHORIZED, "만료되었거나 잘못된 토큰입니다. 토큰을 확인해주세요."),
 
 	/* 403 FORBIDDEN: 권한 없음 */
+	FORBIDDEN_USER(FORBIDDEN, "권한이 없는 사용자 입니다."),
 
 	/* 404 NOT_FOUND: 리소스를 찾을 수 없음 */
 	DATA_NOT_FOUND(NOT_FOUND, "해당 데이터를 찾을 수 없습니다."),
