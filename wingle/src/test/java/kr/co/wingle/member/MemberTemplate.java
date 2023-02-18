@@ -11,7 +11,9 @@ import kr.co.wingle.member.entity.Member;
 
 public class MemberTemplate {
 	public static final String EMAIL = "wingle@example.com";
-	public static final String ANOTHER_EMAIL = "mingle@example.com";
+	public static final String EMAIL2 = "wingle2@example.com";
+	public static final String EMAIL3 = "wingle3@example.com";
+	public static final String EMAIL4 = "wingle4@example.com";
 	public static final String PASSWORD = "Wingle1234!$";
 	public static final String NAME = "윙글";
 	public static final String NICKNAME = "nickname";
@@ -26,8 +28,18 @@ public class MemberTemplate {
 	}
 
 	public static Member makeTestMember2() {
-		return Member.createMember(NAME, "imageUrl", ANOTHER_EMAIL, bCryptPasswordEncoder.encode(PASSWORD),
+		return Member.createMember(NAME, "imageUrl", EMAIL2, bCryptPasswordEncoder.encode(PASSWORD),
 			Authority.ROLE_USER);
+	}
+
+	public static Member makeTestMember3() {
+		return Member.createMember(NAME, "imageUrl", EMAIL3, bCryptPasswordEncoder.encode(PASSWORD),
+			Authority.ROLE_USER);
+	}
+
+	public static Member makeTestAdminMember() {
+		return Member.createMember(NAME, "imageUrl", EMAIL4, bCryptPasswordEncoder.encode(PASSWORD),
+			Authority.ROLE_ADMIN);
 	}
 
 	public static SignupRequestDto makeTestSignUpRequestDto() throws Exception {

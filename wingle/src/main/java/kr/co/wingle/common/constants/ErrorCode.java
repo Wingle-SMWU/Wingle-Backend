@@ -28,6 +28,7 @@ public enum ErrorCode {
 	UNAUTHORIZED_USER(UNAUTHORIZED, "만료되었거나 잘못된 토큰입니다. 토큰을 확인해주세요."),
 
 	/* 403 FORBIDDEN: 권한 없음 */
+	FORBIDDEN_USER(FORBIDDEN, "접근 권한이 없는 유저입니다."),
 
 	/* 404 NOT_FOUND: 리소스를 찾을 수 없음 */
 	DATA_NOT_FOUND(NOT_FOUND, "해당 데이터를 찾을 수 없습니다."),
