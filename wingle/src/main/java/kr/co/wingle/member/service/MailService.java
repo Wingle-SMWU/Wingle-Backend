@@ -1,4 +1,4 @@
-package kr.co.wingle.member;
+package kr.co.wingle.member.service;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Random;

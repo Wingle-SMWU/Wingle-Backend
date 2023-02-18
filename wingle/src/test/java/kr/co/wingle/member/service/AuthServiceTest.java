@@ -1,4 +1,4 @@
-package kr.co.wingle.member;
+package kr.co.wingle.member.service;
 
 import static kr.co.wingle.member.MemberTemplate.*;
 import static org.assertj.core.api.Assertions.*;
@@ -15,12 +15,14 @@ import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.DuplicateException;
 import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.common.util.RedisUtil;
+import kr.co.wingle.member.MemberRepository;
 import kr.co.wingle.member.dto.LoginRequestDto;
 import kr.co.wingle.member.dto.LogoutRequestDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
 import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.TokenRequestDto;
+import kr.co.wingle.member.entity.Member;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

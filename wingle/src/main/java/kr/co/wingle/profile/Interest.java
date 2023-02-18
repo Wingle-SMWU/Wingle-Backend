@@ -1,10 +1,8 @@
-package kr.co.wingle.member;
+package kr.co.wingle.profile;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.ColumnDefault;
 
 import kr.co.wingle.common.entity.BaseEntity;
 import lombok.AccessLevel;
@@ -13,18 +11,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "term")
+@Table(name = "interest")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Term extends BaseEntity {
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class Interest extends BaseEntity {
 
-	@Column(nullable = false)
-	private int code;
-
-	@Column(nullable = false)
+	//관심사 명 (ex. kpop,운동...)
+	@Column(nullable = false, unique = true)
 	private String name;
 
-	@Column(nullable = false, columnDefinition = "TINYINT", length = 1)
-	@ColumnDefault("1")
-	private boolean necessity = true;
+	public static Interest createInterest(String name) {
+		return new Interest(name);
+	}
+
 }

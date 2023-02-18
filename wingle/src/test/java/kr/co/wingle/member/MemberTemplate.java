@@ -6,6 +6,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import kr.co.wingle.member.dto.SignupRequestDto;
+import kr.co.wingle.member.entity.Authority;
+import kr.co.wingle.member.entity.Member;
 
 public class MemberTemplate {
 	public static final String EMAIL = "wingle@example.com";
