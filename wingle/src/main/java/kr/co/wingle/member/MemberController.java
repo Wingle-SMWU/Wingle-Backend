@@ -2,7 +2,6 @@ package kr.co.wingle.member;
 
 import javax.validation.Valid;
 
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,11 +21,6 @@ import lombok.RequiredArgsConstructor;
 public class MemberController {
 	private final MemberService memberService;
 	private final AuthService authService;
-
-	@GetMapping("")
-	public void hello() {
-		System.out.println("hello");
-	}
 
 	@PostMapping("/permission/acceptance")
 	public ApiResponse<AcceptanceResponseDto> accept(@RequestBody @Valid AcceptanceRequestDto acceptanceRequestDto) {
