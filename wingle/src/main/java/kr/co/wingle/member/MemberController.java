@@ -40,7 +40,7 @@ public class MemberController {
 
 	@PostMapping("/permission/acceptance")
 	public ApiResponse<AcceptanceResponseDto> accept(@RequestBody @Valid AcceptanceRequestDto acceptanceRequestDto) {
-		//checkAdminAccount();
+		checkAdminAccount();
 		AcceptanceResponseDto response = authService.accept(acceptanceRequestDto);
 		return ApiResponse.success(SuccessCode.ACCEPTANCE_SUCCESS, response);
 	}
