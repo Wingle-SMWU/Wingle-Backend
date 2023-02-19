@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import kr.co.wingle.member.entity.Member;
 
 public interface ProfileRepository extends JpaRepository<Profile, Long> {
-	@Query("select p from Profile p where p.member = :member")
+	@Query("select p.nation from Profile p where p.member = :member")
 	String findNationByMember(@Param("member") Member member);
 
 	Optional<Profile> findByMember(Member member);
