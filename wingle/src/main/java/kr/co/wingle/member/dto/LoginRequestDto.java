@@ -1,5 +1,6 @@
 package kr.co.wingle.member.dto;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LoginRequestDto {
+	@Email
 	@NotBlank(message = "이메일이 없습니다.")
 	private String email;
 

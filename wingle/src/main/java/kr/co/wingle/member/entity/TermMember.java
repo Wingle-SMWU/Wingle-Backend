@@ -31,4 +31,12 @@ public class TermMember extends BaseEntity {
 	@Column(nullable = false, columnDefinition = "TINYINT", length = 1)
 	@ColumnDefault("0")
 	private boolean agreement = false;
+
+	public static TermMember createTermMember(Term term, Member member, boolean agreement) {
+		TermMember termMember = new TermMember();
+		termMember.term = term;
+		termMember.member = member;
+		termMember.agreement = agreement;
+		return termMember;
+	}
 }

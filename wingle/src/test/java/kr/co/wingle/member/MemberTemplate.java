@@ -43,7 +43,8 @@ public class MemberTemplate {
 	}
 
 	public static SignupRequestDto makeTestSignUpRequestDto() throws Exception {
-		return new SignupRequestDto(getTestIdCardImage(), EMAIL, PASSWORD, NAME, NICKNAME, GENDER, NATION, true, true);
+		return new SignupRequestDto(getTestIdCardImage(), EMAIL, PASSWORD, NAME, true, NICKNAME, GENDER, NATION, true,
+			true, false);
 	}
 
 	public static MockMultipartFile getTestIdCardImage() throws Exception {
