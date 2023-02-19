@@ -1,6 +1,7 @@
 package kr.co.wingle.member.dto;
 
 import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -21,6 +22,7 @@ public class SignupRequestDto {
 	@NotNull(message = "파일이 없습니다.")
 	private MultipartFile idCardImage;
 
+	@Email
 	@NotBlank(message = "이메일이 없습니다.")
 	private String email;
 
@@ -29,6 +31,9 @@ public class SignupRequestDto {
 
 	@NotBlank(message = "이름이 없습니다.")
 	private String name;
+
+	@AssertTrue(message = "닉네임 중복 검사를 통과해야 합니다.")
+	private boolean isNicknameChecked;
 
 	@NotBlank(message = "닉네임이 없습니다.")
 	private String nickname;
@@ -43,7 +48,10 @@ public class SignupRequestDto {
 	private boolean termsOfUse;
 
 	@AssertTrue(message = "약관에 필수로 동의해야 합니다.")
-	private boolean collectionOfPersonalInformation;
+	private boolean termsOfPersonalInformation;
+
+	@NotNull
+	private boolean termsOfPromotion;
 
 	public Member toMember(String idCardImageUrl, PasswordEncoder passwordEncoder) {
 		return Member.createMember(name, idCardImageUrl, email, passwordEncoder.encode(password), Authority.ROLE_USER);

@@ -69,11 +69,13 @@ class AuthControllerTest {
 			.param("email", requestDto.getEmail())
 			.param("password", requestDto.getPassword())
 			.param("name", requestDto.getName())
+			.param("isNicknameChecked", String.valueOf(requestDto.isNicknameChecked()))
 			.param("nickname", requestDto.getNickname())
 			.param("gender", String.valueOf(requestDto.isGender()))
 			.param("nation", requestDto.getNation())
 			.param("termsOfUse", String.valueOf(requestDto.isTermsOfUse()))
-			.param("collectionOfPersonalInformation", String.valueOf(requestDto.isCollectionOfPersonalInformation()))
+			.param("termsOfPersonalInformation", String.valueOf(requestDto.isTermsOfPersonalInformation()))
+			.param("termsOfPromotion", String.valueOf(requestDto.isTermsOfPromotion()))
 			.contentType(MediaType.MULTIPART_FORM_DATA);
 
 		mockMvc.perform(builder)
@@ -154,5 +156,15 @@ class AuthControllerTest {
 				mapper.writeValueAsString(ApiResponse.success(SuccessCode.LOGOUT_SUCCESS, null))
 			))
 			.andDo(print());
+	}
+
+	@Test
+	void 회원가입_거절_전송_성공() {
+
+	}
+
+	@Test
+	void 회원가입_거절_전송_실패() {
+
 	}
 }

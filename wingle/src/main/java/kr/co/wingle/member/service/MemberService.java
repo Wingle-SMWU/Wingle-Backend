@@ -6,14 +6,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.co.wingle.common.constants.ErrorCode;
-import kr.co.wingle.common.exception.CustomException;
-import kr.co.wingle.common.exception.ForbiddenException;
-import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.member.MemberRepository;
 import kr.co.wingle.member.dto.WaitingListResponseDto;
-import kr.co.wingle.member.entity.Authority;
-import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.entity.Permission;
 import kr.co.wingle.profile.ProfileRepository;
 import lombok.RequiredArgsConstructor;

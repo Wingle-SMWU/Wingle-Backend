@@ -6,20 +6,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
-import kr.co.wingle.member.dto.LogoutRequestDto;
-import kr.co.wingle.member.dto.MemberResponseDto;
-import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.CertificationRequestDto;
 import kr.co.wingle.member.dto.CertificationResponseDto;
 import kr.co.wingle.member.dto.EmailRequestDto;
 import kr.co.wingle.member.dto.EmailResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
+import kr.co.wingle.member.dto.LogoutRequestDto;
 import kr.co.wingle.member.dto.MemberResponseDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
@@ -68,7 +65,7 @@ public class AuthController {
 
 	@PostMapping("/email")
 	public ApiResponse<EmailResponseDto> email(@RequestBody @Valid EmailRequestDto emailRequestDto) {
-		EmailResponseDto response = authService.sendEmailCode(emailRequestDto);
+		EmailResponseDto response = authService.sendCodeMail(emailRequestDto);
 		return ApiResponse.success(SuccessCode.EMAIL_SEND_SUCCESS, response);
 	}
 

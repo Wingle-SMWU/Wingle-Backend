@@ -30,6 +30,7 @@ public class Profile extends BaseEntity {
 	private String nickname;
 
 	@Column(columnDefinition = "TEXT")
+	@Setter
 	private String introduction;
 
 	@Column(nullable = false)
@@ -43,14 +44,13 @@ public class Profile extends BaseEntity {
 	@Column(nullable = false)
 	private String nation;
 
-	public static Profile createProfile(Member member, String nickname, String introduction, boolean gender,
-		boolean registration, String nation) {
+	public static Profile createProfile(Member member, String nickname, boolean gender, String nation) {
 		Profile profile = new Profile();
 		profile.member = member;
 		profile.nickname = nickname;
-		profile.introduction = introduction;
+		profile.introduction = null;
 		profile.gender = gender;
-		profile.registration = registration;
+		profile.registration = false;
 		profile.nation = nation;
 		return profile;
 	}

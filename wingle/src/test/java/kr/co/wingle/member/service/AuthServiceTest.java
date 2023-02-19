@@ -3,19 +3,23 @@ package kr.co.wingle.member.service;
 import static kr.co.wingle.member.MemberTemplate.*;
 import static org.assertj.core.api.Assertions.*;
 
-import org.junit.jupiter.api.AfterEach;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.DuplicateException;
 import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.common.util.RedisUtil;
+import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.member.MemberRepository;
+import kr.co.wingle.member.TermMemberRepository;
 import kr.co.wingle.member.dto.LoginRequestDto;
 import kr.co.wingle.member.dto.LogoutRequestDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
@@ -23,10 +27,14 @@ import kr.co.wingle.member.dto.SignupResponseDto;
 import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.TokenRequestDto;
 import kr.co.wingle.member.entity.Member;
+import kr.co.wingle.member.entity.TermMember;
+import kr.co.wingle.profile.Profile;
+import kr.co.wingle.profile.ProfileRepository;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @WithMockUser(value = EMAIL, password = PASSWORD)
+@Transactional
 class AuthServiceTest {
 	@Autowired
 	private AuthService authService;
@@ -35,10 +43,18 @@ class AuthServiceTest {
 	private MemberRepository memberRepository;
 
 	@Autowired
+	private ProfileRepository profileRepository;
+
+	@Autowired
+	private TermMemberRepository termMemberRepository;
+
+	@Autowired
 	private RedisUtil redisUtil;
 
+	@Autowired
+	private S3Util s3Util;
+
 	@BeforeAll
-	@AfterEach
 	void cleanUp() {
 		memberRepository.deleteAll();
 	}
@@ -52,9 +68,19 @@ class AuthServiceTest {
 		SignupResponseDto response = authService.signup(requestDto);
 		Member member = memberRepository.findById(response.getId())
 			.orElseThrow(() -> new IllegalArgumentException(ErrorCode.NO_ID.getMessage()));
+		Profile profile = profileRepository.findByMember(member)
+			.orElseThrow(() -> new NotFoundException(ErrorCode.DATA_NOT_FOUND));
+		List<TermMember> termMemberList = termMemberRepository.findAllByMember(member);
 
 		//then
 		assertThat(member.getEmail()).isEqualTo(requestDto.getEmail());
+		assertThat(profile.getNickname()).isEqualTo(requestDto.getNickname());
+		assertThat(profile.getNation()).isEqualTo(requestDto.getNation());
+		assertThat(profile.isGender()).isEqualTo(requestDto.isGender());
+		assertThat(termMemberList).hasSize(3);
+
+		//teardown
+		s3Util.delete(member.getIdCardImageUrl());
 	}
 
 	@Test
@@ -243,4 +269,15 @@ class AuthServiceTest {
 	void 인증번호_불일치_검사_실패() {
 
 	}
+
+	@Test
+	void 회원가입_수락_전송_성공() {
+
+	}
+
+	@Test
+	void 회원가입_수락_전송_실패() {
+
+	}
+
 }

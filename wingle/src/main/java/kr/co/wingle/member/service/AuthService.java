@@ -1,9 +1,8 @@
 package kr.co.wingle.member.service;
 
+import java.util.Optional;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -22,47 +21,69 @@ import kr.co.wingle.common.util.RedisUtil;
 import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.common.util.SecurityUtil;
 import kr.co.wingle.member.MemberRepository;
+import kr.co.wingle.member.TermMemberRepository;
+import kr.co.wingle.member.TermRepository;
+import kr.co.wingle.member.dto.AcceptanceRequestDto;
 import kr.co.wingle.member.dto.CertificationRequestDto;
 import kr.co.wingle.member.dto.CertificationResponseDto;
 import kr.co.wingle.member.dto.EmailRequestDto;
 import kr.co.wingle.member.dto.EmailResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
 import kr.co.wingle.member.dto.LogoutRequestDto;
+import kr.co.wingle.member.dto.PermissionResponseDto;
+import kr.co.wingle.member.dto.RejectionRequestDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
 import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.TokenRequestDto;
 import kr.co.wingle.member.entity.Authority;
 import kr.co.wingle.member.entity.Member;
+import kr.co.wingle.member.entity.Permission;
+import kr.co.wingle.member.entity.Term;
+import kr.co.wingle.member.entity.TermCode;
+import kr.co.wingle.member.entity.TermMember;
+import kr.co.wingle.member.mailVo.AcceptanceMail;
+import kr.co.wingle.member.mailVo.CodeMail;
+import kr.co.wingle.member.mailVo.RejectionMail;
+import kr.co.wingle.profile.Profile;
+import kr.co.wingle.profile.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 	private final MemberRepository memberRepository;
+	private final ProfileRepository profileRepository;
+	private final TermRepository termRepository;
+	private final TermMemberRepository termMemberRepository;
 	private final TokenProvider tokenProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final PasswordEncoder passwordEncoder;
 	private final S3Util s3Util;
 	private final RedisUtil redisUtil;
-
-	@Autowired
-	MailService mailService;
+	private final MailService mailService;
 
 	@Transactional
 	public SignupResponseDto signup(SignupRequestDto request) {
 		String email = request.getEmail();
-		validateEmail(email);
 		checkDuplicateEmail(email);
-		// TODO: 닉네임 중복 검사
-		// TODO: 약관 데이터 넣고 TermMember 저장
 
+		// upload S3
 		String idCardImageUrl = uploadIdCardImage(request.getIdCardImage());
 
+		// save member
 		Member member = request.toMember(idCardImageUrl, passwordEncoder);
 		memberRepository.save(member);
 
-		// TODO: Profile 테이블에 유저 정보 저장
+		// save termMember
+		getTermAndSaveTermMember(member, TermCode.TERMS_OF_USE, request.isTermsOfUse());
+		getTermAndSaveTermMember(member, TermCode.TERMS_OF_PERSONAL_INFORMATION,
+			request.isTermsOfPersonalInformation());
+		getTermAndSaveTermMember(member, TermCode.TERMS_OF_PROMOTION, request.isTermsOfPromotion());
+
+		// save profile
+		Profile profile = Profile.createProfile(member, request.getNickname(), request.isGender(), request.getNation());
+		profileRepository.save(profile);
 
 		return SignupResponseDto.of(member.getId(), member.getName(), "nickname");
 	}
@@ -70,7 +91,6 @@ public class AuthService {
 	@Transactional
 	public TokenDto login(LoginRequestDto loginRequestDto) {
 		String email = loginRequestDto.getEmail();
-		validateEmail(email);
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
@@ -118,6 +138,63 @@ public class AuthService {
 		redisUtil.setDataExpire(RedisUtil.PREFIX_LOGOUT + accessToken, "logout", TokenInfo.ACCESS_TOKEN_EXPIRE_TIME);
 	}
 
+	public EmailResponseDto sendCodeMail(EmailRequestDto emailRequestDto) {
+		String to = emailRequestDto.getEmail();
+		String certificationKey = mailService.sendEmail(to, new CodeMail());
+		return EmailResponseDto.of(certificationKey);
+	}
+
+	public CertificationResponseDto checkEmailAndCode(CertificationRequestDto certificationRequestDto) {
+		String email = certificationRequestDto.getCertificationKey();
+		String inputCode = certificationRequestDto.getCertificationCode();
+		String code = redisUtil.getData(email);
+		if (code == null)
+			throw new CustomException(ErrorCode.NO_EMAIL_CODE);
+		if (!code.equals(inputCode))
+			throw new CustomException(ErrorCode.INCONSISTENT_CODE);
+		return CertificationResponseDto.of(true);
+	}
+
+	@Transactional
+	public PermissionResponseDto sendAcceptanceMail(AcceptanceRequestDto acceptanceRequestDto) {
+		Long userId = acceptanceRequestDto.getUserId();
+		Member member = validateMember(userId);
+		if (member.getPermission() == Permission.APPROVE.getStatus())
+			throw new CustomException(ErrorCode.ALREADY_ACCEPTANCE);
+
+		member.setPermission(Permission.APPROVE.getStatus());
+		mailService.sendEmail(member.getEmail(), new AcceptanceMail(member.getName()));
+		return PermissionResponseDto.of(userId, true);
+	}
+
+	@Transactional
+	public PermissionResponseDto sendRejectionMail(RejectionRequestDto rejectionRequestDto) {
+		Long userId = rejectionRequestDto.getUserId();
+		Member member = validateMember(userId);
+		if (member.getPermission() == Permission.DENY.getStatus())
+			throw new CustomException(ErrorCode.ALREADY_DENY);
+		if (member.getPermission() == Permission.APPROVE.getStatus())
+			throw new CustomException(ErrorCode.ALREADY_ACCEPTANCE);
+
+		member.setPermission(Permission.DENY.getStatus());
+		// TODO: 거절 사유 저장
+		mailService.sendEmail(member.getEmail(), new RejectionMail(rejectionRequestDto.getReason()));
+		return PermissionResponseDto.of(userId, false);
+	}
+
+	private void getTermAndSaveTermMember(Member member, TermCode termCode, boolean agreement) {
+		Optional<Term> termOptional = termRepository.findByName(termCode.getName());
+		if (termOptional.isEmpty()) {
+			Term term = Term.createTerm(termCode.getCode(), termCode.getName(), termCode.isNecessity());
+			termRepository.save(term);
+			TermMember termMember = TermMember.createTermMember(term, member, agreement);
+			termMemberRepository.save(termMember);
+		} else {
+			TermMember termMember = TermMember.createTermMember(termOptional.get(), member, agreement);
+			termMemberRepository.save(termMember);
+		}
+	}
+
 	private TokenDto getRedisTokenKey(Authentication authentication) {
 		TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
 
@@ -137,15 +214,7 @@ public class AuthService {
 		return UUID.randomUUID().toString().substring(0, 6);
 	}
 
-	private void validateEmail(String email) {
-		Pattern emailPattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-		if (!emailPattern.matcher(email).matches()) {
-			throw new CustomException(ErrorCode.EMAIL_BAD_REQUEST);
-		}
-	}
-
 	private void checkDuplicateEmail(String email) {
-		// TODO: interface 구현
 		if (memberRepository.existsByEmail(email)) {
 			throw new DuplicateException(ErrorCode.DUPLICATE_EMAIL);
 		}
@@ -155,20 +224,8 @@ public class AuthService {
 		return s3Util.idCardImageUpload(idCardImage);
 	}
 
-	public EmailResponseDto sendEmailCode(EmailRequestDto emailRequestDto) {
-		String to = emailRequestDto.getEmail();
-		String certificationKey = mailService.sendEmailCode(to);
-		return EmailResponseDto.of(certificationKey);
-	}
-
-	public CertificationResponseDto checkEmailAndCode(CertificationRequestDto certificationRequestDto) {
-		String email = certificationRequestDto.getCertificationKey();
-		String inputCode = certificationRequestDto.getCertificationCode();
-		String code = redisUtil.getData(email);
-		if (code == null)
-			throw new CustomException(ErrorCode.NO_EMAIL_CODE);
-		if (!code.equals(inputCode))
-			throw new CustomException(ErrorCode.INCONSISTENT_CODE);
-		return CertificationResponseDto.of(true);
+	private Member validateMember(Long userId) {
+		return memberRepository.findById(userId)
+			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 	}
 }
