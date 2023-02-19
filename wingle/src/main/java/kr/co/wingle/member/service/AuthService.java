@@ -1,5 +1,3 @@
-
-
 package kr.co.wingle.member.service;
 
 import java.util.Optional;
@@ -23,7 +21,6 @@ import kr.co.wingle.common.util.RedisUtil;
 import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.common.util.SecurityUtil;
 import kr.co.wingle.member.MemberRepository;
-import kr.co.wingle.member.entity.TermCode;
 import kr.co.wingle.member.TermMemberRepository;
 import kr.co.wingle.member.TermRepository;
 import kr.co.wingle.member.dto.AcceptanceRequestDto;
@@ -40,14 +37,15 @@ import kr.co.wingle.member.dto.SignupResponseDto;
 import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.TokenRequestDto;
 import kr.co.wingle.member.entity.Member;
-import kr.co.wingle.member.entity.Term;
-import kr.co.wingle.member.entity.TermMember;
-import kr.co.wingle.profile.Profile;
-import kr.co.wingle.profile.ProfileRepository;
 import kr.co.wingle.member.entity.Permission;
+import kr.co.wingle.member.entity.Term;
+import kr.co.wingle.member.entity.TermCode;
+import kr.co.wingle.member.entity.TermMember;
 import kr.co.wingle.member.mailVo.AcceptanceMail;
 import kr.co.wingle.member.mailVo.CodeMail;
 import kr.co.wingle.member.mailVo.RejectionMail;
+import kr.co.wingle.profile.Profile;
+import kr.co.wingle.profile.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -172,6 +170,8 @@ public class AuthService {
 		Member member = validateMember(userId);
 		if (member.getPermission() == Permission.DENY.getStatus())
 			throw new CustomException(ErrorCode.ALREADY_DENY);
+		if (member.getPermission() == Permission.APPROVE.getStatus())
+			throw new CustomException(ErrorCode.ALREADY_ACCEPTANCE);
 
 		member.setPermission(Permission.DENY.getStatus());
 		// TODO: 거절 사유 저장
