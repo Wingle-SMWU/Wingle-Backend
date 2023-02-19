@@ -204,9 +204,9 @@ class AuthServiceTest {
 
 		//teardown
 		redisUtil.deleteData(RedisUtil.PREFIX_LOGOUT + requestDto.getAccessToken());
-  }
-  
-  @Test
+	}
+
+	@Test
 	void 이메일로_인증번호_전송_성공() {
 	}
 
@@ -219,4 +219,15 @@ class AuthServiceTest {
 	void 인증번호_불일치_검사_실패() {
 
 	}
+
+	@Test
+	void 회원가입_수락_전송_성공() {
+
+	}
+
+	@Test
+	void 회원가입_수락_전송_실패() {
+
+	}
+
 }

@@ -17,8 +17,9 @@ public enum SuccessCode {
 	ACCOUNT_READ_SUCCESS(OK, "계정 조회 성공"),
 	TOKEN_REISSUE_SUCCESS(OK, "토큰 재발급 성공"),
 	EMAIL_SEND_SUCCESS(OK, "이메일 인증코드 전송 성공"),
-	WAITING_LIST_READ_SUCCESS(OK, "수락 대기 목록 조회 성공"),
-	EMAIL_CERTIFICATION_SUCCESS(OK, "이메일 인증 성공");
+	EMAIL_CERTIFICATION_SUCCESS(OK, "이메일 인증 성공"),
+	ACCEPTANCE_SUCCESS(OK, "회원가입 수락 전송 성공"),
+	WAITING_LIST_READ_SUCCESS(OK, "수락 대기 목록 조회 성공");
 
 	private final HttpStatus status;
 	private final String message;
