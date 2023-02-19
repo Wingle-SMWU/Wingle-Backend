@@ -21,6 +21,7 @@ import kr.co.wingle.common.util.RedisUtil;
 import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.common.util.SecurityUtil;
 import kr.co.wingle.member.MemberRepository;
+import kr.co.wingle.member.entity.TermCode;
 import kr.co.wingle.member.TermMemberRepository;
 import kr.co.wingle.member.TermRepository;
 import kr.co.wingle.member.dto.CertificationRequestDto;
@@ -67,12 +68,10 @@ public class AuthService {
 		memberRepository.save(member);
 
 		// save termMember
-		final String TERMS_OF_USE = "서비스 이용약관";
-		final String TERMS_OF_PERSONAL_INFORMATION = "개인정보 수집 및 이용 동의";
-		final String TERMS_OF_PROMOTION = "이벤트, 프로모션 알림 메일 수신";
-		getTermAndSaveTermMember(member, TERMS_OF_USE, request.isTermsOfUse(), true);
-		getTermAndSaveTermMember(member, TERMS_OF_PERSONAL_INFORMATION, request.isTermsOfPersonalInformation(), true);
-		getTermAndSaveTermMember(member, TERMS_OF_PROMOTION, request.isTermsOfPromotion(), false);
+		getTermAndSaveTermMember(member, TermCode.TERMS_OF_USE, request.isTermsOfUse());
+		getTermAndSaveTermMember(member, TermCode.TERMS_OF_PERSONAL_INFORMATION,
+			request.isTermsOfPersonalInformation());
+		getTermAndSaveTermMember(member, TermCode.TERMS_OF_PROMOTION, request.isTermsOfPromotion());
 
 		// save profile
 		Profile profile = Profile.createProfile(member, request.getNickname(), request.isGender(), request.getNation());
@@ -146,10 +145,10 @@ public class AuthService {
 		return CertificationResponseDto.of(true);
 	}
 
-	private void getTermAndSaveTermMember(Member member, String termName, boolean agreement, boolean termNecessity) {
-		Optional<Term> termOptional = termRepository.findByName(termName);
+	private void getTermAndSaveTermMember(Member member, TermCode termCode, boolean agreement) {
+		Optional<Term> termOptional = termRepository.findByName(termCode.getName());
 		if (termOptional.isEmpty()) {
-			Term term = Term.createTerm(0, termName, termNecessity);
+			Term term = Term.createTerm(termCode.getCode(), termCode.getName(), termCode.isNecessity());
 			termRepository.save(term);
 			TermMember termMember = TermMember.createTermMember(term, member, agreement);
 			termMemberRepository.save(termMember);
