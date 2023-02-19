@@ -36,6 +36,7 @@ import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
 import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.TokenRequestDto;
+import kr.co.wingle.member.entity.Authority;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.entity.Permission;
 import kr.co.wingle.member.entity.Term;
@@ -90,12 +91,14 @@ public class AuthService {
 	@Transactional
 	public TokenDto login(LoginRequestDto loginRequestDto) {
 		String email = loginRequestDto.getEmail();
-		memberRepository.findByEmail(email)
+		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
 		UsernamePasswordAuthenticationToken authenticationToken = loginRequestDto.toAuthentication();
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-		return getRedisTokenKey(authentication);
+		TokenDto tokenDto = getRedisTokenKey(authentication);
+		tokenDto.setAdmin(member.getAuthority() == Authority.ROLE_ADMIN);
+		return tokenDto;
 	}
 
 	@Transactional(readOnly = true)

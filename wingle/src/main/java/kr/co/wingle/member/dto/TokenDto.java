@@ -14,6 +14,9 @@ public class TokenDto {
 	@Setter
 	private String refreshToken;
 
+	@Setter
+	private boolean isAdmin;
+
 	public static TokenDto of(String accessToken, String refreshToken) {
 		TokenDto tokenDto = new TokenDto();
 		tokenDto.accessToken = accessToken;

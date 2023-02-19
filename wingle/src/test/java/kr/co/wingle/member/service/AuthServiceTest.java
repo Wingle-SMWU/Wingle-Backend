@@ -122,11 +122,11 @@ class AuthServiceTest {
 	}
 
 	@Test
-	void 로그인() throws Exception {
+	void 일반유저_로그인() throws Exception {
 		//given
 		Member member = makeTestMember();
 		memberRepository.save(member);
-		LoginRequestDto requestDto = LoginRequestDto.of(EMAIL, PASSWORD);
+		LoginRequestDto requestDto = LoginRequestDto.of(member.getEmail(), PASSWORD);
 
 		//when
 		TokenDto response = authService.login(requestDto);
@@ -138,6 +138,30 @@ class AuthServiceTest {
 		assertThat(response.getAccessToken()).isNotNull();
 		assertThat(response.getRefreshToken()).isNotNull();
 		assertThat(refreshToken).isNotNull();
+		assertThat(response.isAdmin()).isFalse();
+
+		//teardown
+		redisUtil.deleteData(key);
+	}
+
+	@Test
+	void 관리자_로그인() throws Exception {
+		//given
+		Member member = makeTestAdminMember();
+		memberRepository.save(member);
+		LoginRequestDto requestDto = LoginRequestDto.of(member.getEmail(), PASSWORD);
+
+		//when
+		TokenDto response = authService.login(requestDto);
+
+		//then
+		String key = RedisUtil.PREFIX_REFRESH_TOKEN + response.getRefreshToken();
+		String refreshToken = redisUtil.getData(key);
+
+		assertThat(response.getAccessToken()).isNotNull();
+		assertThat(response.getRefreshToken()).isNotNull();
+		assertThat(refreshToken).isNotNull();
+		assertThat(response.isAdmin()).isTrue();
 
 		//teardown
 		redisUtil.deleteData(key);
