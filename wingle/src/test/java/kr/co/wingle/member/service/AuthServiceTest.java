@@ -245,4 +245,15 @@ class AuthServiceTest {
 	void 인증번호_불일치_검사_실패() {
 
 	}
+
+	@Test
+	void 회원가입_수락_전송_성공() {
+
+	}
+
+	@Test
+	void 회원가입_수락_전송_실패() {
+
+	}
+
 }

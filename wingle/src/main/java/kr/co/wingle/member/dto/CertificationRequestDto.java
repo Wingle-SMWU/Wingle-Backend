@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class CertificationRequestDto {
 	@Email
 	@NotBlank(message = "이메일이 없습니다.")
-	String certificationKey;
+	private String certificationKey;
 	@NotBlank(message = "인증정보가 없습니다.")
-	String certificationCode;
+	private String certificationCode;
 }

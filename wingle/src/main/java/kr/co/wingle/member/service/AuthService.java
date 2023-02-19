@@ -1,3 +1,5 @@
+
+
 package kr.co.wingle.member.service;
 
 import java.util.Optional;
@@ -24,12 +26,15 @@ import kr.co.wingle.member.MemberRepository;
 import kr.co.wingle.member.entity.TermCode;
 import kr.co.wingle.member.TermMemberRepository;
 import kr.co.wingle.member.TermRepository;
+import kr.co.wingle.member.dto.AcceptanceRequestDto;
 import kr.co.wingle.member.dto.CertificationRequestDto;
 import kr.co.wingle.member.dto.CertificationResponseDto;
 import kr.co.wingle.member.dto.EmailRequestDto;
 import kr.co.wingle.member.dto.EmailResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
 import kr.co.wingle.member.dto.LogoutRequestDto;
+import kr.co.wingle.member.dto.PermissionResponseDto;
+import kr.co.wingle.member.dto.RejectionRequestDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
 import kr.co.wingle.member.dto.TokenDto;
@@ -39,6 +44,10 @@ import kr.co.wingle.member.entity.Term;
 import kr.co.wingle.member.entity.TermMember;
 import kr.co.wingle.profile.Profile;
 import kr.co.wingle.profile.ProfileRepository;
+import kr.co.wingle.member.entity.Permission;
+import kr.co.wingle.member.mailVo.AcceptanceMail;
+import kr.co.wingle.member.mailVo.CodeMail;
+import kr.co.wingle.member.mailVo.RejectionMail;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -128,9 +137,9 @@ public class AuthService {
 		redisUtil.setDataExpire(RedisUtil.PREFIX_LOGOUT + accessToken, "logout", TokenInfo.ACCESS_TOKEN_EXPIRE_TIME);
 	}
 
-	public EmailResponseDto sendEmailCode(EmailRequestDto emailRequestDto) {
+	public EmailResponseDto sendCodeMail(EmailRequestDto emailRequestDto) {
 		String to = emailRequestDto.getEmail();
-		String certificationKey = mailService.sendEmailCode(to);
+		String certificationKey = mailService.sendEmail(to, new CodeMail());
 		return EmailResponseDto.of(certificationKey);
 	}
 
@@ -143,6 +152,31 @@ public class AuthService {
 		if (!code.equals(inputCode))
 			throw new CustomException(ErrorCode.INCONSISTENT_CODE);
 		return CertificationResponseDto.of(true);
+	}
+
+	@Transactional
+	public PermissionResponseDto sendAcceptanceMail(AcceptanceRequestDto acceptanceRequestDto) {
+		Long userId = acceptanceRequestDto.getUserId();
+		Member member = validateMember(userId);
+		if (member.getPermission() == Permission.APPROVE.getStatus())
+			throw new CustomException(ErrorCode.ALREADY_ACCEPTANCE);
+
+		member.setPermission(Permission.APPROVE.getStatus());
+		mailService.sendEmail(member.getEmail(), new AcceptanceMail(member.getName()));
+		return PermissionResponseDto.of(userId, true);
+	}
+
+	@Transactional
+	public PermissionResponseDto sendRejectionMail(RejectionRequestDto rejectionRequestDto) {
+		Long userId = rejectionRequestDto.getUserId();
+		Member member = validateMember(userId);
+		if (member.getPermission() == Permission.DENY.getStatus())
+			throw new CustomException(ErrorCode.ALREADY_DENY);
+
+		member.setPermission(Permission.DENY.getStatus());
+		// TODO: 거절 사유 저장
+		mailService.sendEmail(member.getEmail(), new RejectionMail(rejectionRequestDto.getReason()));
+		return PermissionResponseDto.of(userId, false);
 	}
 
 	private void getTermAndSaveTermMember(Member member, TermCode termCode, boolean agreement) {
@@ -185,5 +219,10 @@ public class AuthService {
 
 	private String uploadIdCardImage(MultipartFile idCardImage) {
 		return s3Util.idCardImageUpload(idCardImage);
+	}
+
+	private Member validateMember(Long userId) {
+		return memberRepository.findById(userId)
+			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 	}
 }
