@@ -23,13 +23,14 @@ import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.common.util.SecurityUtil;
 import kr.co.wingle.member.MemberRepository;
 import kr.co.wingle.member.dto.AcceptanceRequestDto;
-import kr.co.wingle.member.dto.AcceptanceResponseDto;
 import kr.co.wingle.member.dto.CertificationRequestDto;
 import kr.co.wingle.member.dto.CertificationResponseDto;
 import kr.co.wingle.member.dto.EmailRequestDto;
 import kr.co.wingle.member.dto.EmailResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
 import kr.co.wingle.member.dto.LogoutRequestDto;
+import kr.co.wingle.member.dto.PermissionResponseDto;
+import kr.co.wingle.member.dto.RejectionRequestDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
 import kr.co.wingle.member.dto.TokenDto;
@@ -38,6 +39,7 @@ import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.entity.Permission;
 import kr.co.wingle.member.mailVo.AcceptanceMail;
 import kr.co.wingle.member.mailVo.CodeMail;
+import kr.co.wingle.member.mailVo.RejectionMail;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -157,7 +159,7 @@ public class AuthService {
 		return s3Util.idCardImageUpload(idCardImage);
 	}
 
-	public EmailResponseDto sendEmailCode(EmailRequestDto emailRequestDto) {
+	public EmailResponseDto sendCodeMail(EmailRequestDto emailRequestDto) {
 		String to = emailRequestDto.getEmail();
 		String certificationKey = mailService.sendEmail(to, new CodeMail());
 		return EmailResponseDto.of(certificationKey);
@@ -175,10 +177,9 @@ public class AuthService {
 	}
 
 	@Transactional
-	public AcceptanceResponseDto accept(AcceptanceRequestDto acceptanceRequestDto) {
+	public PermissionResponseDto sendAcceptanceMail(AcceptanceRequestDto acceptanceRequestDto) {
 		Long userId = acceptanceRequestDto.getUserId();
-		memberRepository.findById(userId)
-			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+		validateMember(userId);
 
 		Member member = memberRepository.findById(userId).get();
 		if (member.getPermission() == Permission.APPROVE.getStatus())
@@ -186,6 +187,27 @@ public class AuthService {
 
 		member.setPermission(Permission.APPROVE.getStatus());
 		mailService.sendEmail(member.getEmail(), new AcceptanceMail(member.getName()));
-		return AcceptanceResponseDto.of(userId);
+		return PermissionResponseDto.of(userId, true);
+	}
+
+	@Transactional
+	public PermissionResponseDto sendRejectionMail(RejectionRequestDto rejectionRequestDto) {
+		Long userId = rejectionRequestDto.getUserId();
+		validateMember(userId);
+
+		Member member = memberRepository.findById(userId).get();
+		if (member.getPermission() == Permission.DENY.getStatus())
+			throw new CustomException(ErrorCode.ALREADY_DENY);
+
+		member.setPermission(Permission.DENY.getStatus());
+		// TODO: 거절 사유 저장
+		mailService.sendEmail(member.getEmail(), new RejectionMail(rejectionRequestDto.getReason()));
+		return PermissionResponseDto.of(userId, false);
+	}
+
+	@Transactional
+	private void validateMember(Long userId) {
+		memberRepository.findById(userId)
+			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 	}
 }

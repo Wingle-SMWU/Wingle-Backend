@@ -22,6 +22,8 @@ public enum ErrorCode {
 	INCONSISTENT_CODE(BAD_REQUEST, "인증정보가 일치하지 않습니다."),
 	DUPLICATE_EMAIL(BAD_REQUEST, "이미 가입된 유저입니다."),
 	ALREADY_ACCEPTANCE(BAD_REQUEST, "이미 가입 승인한 유저입니다."),
+	ALREADY_DENY(BAD_REQUEST, "이미 가입 거절한 유저입니다."),
+
 	BAD_PARAMETER(BAD_REQUEST, "요청 파라미터가 잘못되었습니다."),
 	BAD_PARAMETER_TYPE(BAD_REQUEST, "지원하지 않는 파라미터 형식입니다."),
 

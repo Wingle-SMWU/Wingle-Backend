@@ -16,7 +16,8 @@ import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
 import kr.co.wingle.common.exception.ForbiddenException;
 import kr.co.wingle.member.dto.AcceptanceRequestDto;
-import kr.co.wingle.member.dto.AcceptanceResponseDto;
+import kr.co.wingle.member.dto.PermissionResponseDto;
+import kr.co.wingle.member.dto.RejectionRequestDto;
 import kr.co.wingle.member.dto.WaitingListResponseDto;
 import kr.co.wingle.member.entity.Authority;
 import kr.co.wingle.member.entity.Member;
@@ -39,10 +40,17 @@ public class MemberController {
 	}
 
 	@PostMapping("/permission/acceptance")
-	public ApiResponse<AcceptanceResponseDto> accept(@RequestBody @Valid AcceptanceRequestDto acceptanceRequestDto) {
+	public ApiResponse<PermissionResponseDto> accept(@RequestBody @Valid AcceptanceRequestDto acceptanceRequestDto) {
 		checkAdminAccount();
-		AcceptanceResponseDto response = authService.accept(acceptanceRequestDto);
+		PermissionResponseDto response = authService.sendAcceptanceMail(acceptanceRequestDto);
 		return ApiResponse.success(SuccessCode.ACCEPTANCE_SUCCESS, response);
+	}
+
+	@PostMapping("/permission/rejection")
+	public ApiResponse<PermissionResponseDto> reject(@RequestBody @Valid RejectionRequestDto rejectionRequestDto) {
+		checkAdminAccount();
+		PermissionResponseDto response = authService.sendRejectionMail(rejectionRequestDto);
+		return ApiResponse.success(SuccessCode.REJECTION_SUCCESS, response);
 	}
 
 	private void checkAdminAccount() {
