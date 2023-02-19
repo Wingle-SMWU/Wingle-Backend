@@ -8,8 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.wingle.member.MemberRepository;
 import kr.co.wingle.member.dto.WaitingListResponseDto;
-import kr.co.wingle.member.entity.Permiss
-ion;
+import kr.co.wingle.member.entity.Permission;
 import kr.co.wingle.profile.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 
