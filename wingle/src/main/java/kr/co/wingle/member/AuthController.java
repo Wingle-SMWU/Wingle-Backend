@@ -67,20 +67,21 @@ public class AuthController {
 	}
 
 	@PostMapping("/email")
-	public ApiResponse<EmailResponseDto> email(@RequestBody @Valid EmailRequestDto emailRequestDto) {
+	public ApiResponse<EmailResponseDto> sendCodeMail(@RequestBody @Valid EmailRequestDto emailRequestDto) {
 		EmailResponseDto response = authService.sendCodeMail(emailRequestDto);
 		return ApiResponse.success(SuccessCode.EMAIL_SEND_SUCCESS, response);
 	}
 
 	@PostMapping("/email/certification")
-	public ApiResponse<CertificationResponseDto> email(
+	public ApiResponse<CertificationResponseDto> checkEmailAndCode(
 		@RequestBody @Valid CertificationRequestDto certificationRequestDto) {
 		CertificationResponseDto response = authService.checkEmailAndCode(certificationRequestDto);
 		return ApiResponse.success(SuccessCode.EMAIL_CERTIFICATION_SUCCESS, response);
 	}
 
 	@PostMapping("/nickname")
-	public ApiResponse<NicknameResponseDto> checkNickname(@RequestBody @Valid NicknameRequestDto nicknameRequestDto) {
+	public ApiResponse<NicknameResponseDto> checkDuplicateNickname(
+		@RequestBody @Valid NicknameRequestDto nicknameRequestDto) {
 		NicknameResponseDto response = authService.checkDuplicateNickname(nicknameRequestDto);
 		return ApiResponse.success(SuccessCode.NICKNAME_CHECK_SUCCESS, response);
 	}
