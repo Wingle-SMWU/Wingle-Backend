@@ -18,7 +18,6 @@ import kr.co.wingle.member.dto.EmailResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
 import kr.co.wingle.member.dto.LoginResponseDto;
 import kr.co.wingle.member.dto.LogoutRequestDto;
-import kr.co.wingle.member.dto.LoginRequestDto;
 import kr.co.wingle.member.dto.MemberResponseDto;
 import kr.co.wingle.member.dto.NicknameRequestDto;
 import kr.co.wingle.member.dto.NicknameResponseDto;
