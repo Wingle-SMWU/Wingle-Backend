@@ -15,9 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.wingle.member.MemberRepository;
 import kr.co.wingle.member.dto.WaitingListResponseDto;
+import kr.co.wingle.member.dto.WaitingUserResponseDto;
 import kr.co.wingle.member.entity.Authority;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.entity.Permission;
+import kr.co.wingle.profile.Profile;
 import kr.co.wingle.profile.ProfileRepository;
 
 @SpringBootTest
@@ -59,5 +61,22 @@ class MemberServiceTest {
 		assertThat(response1).hasSize(15);
 		assertThat(response2).hasSize(1);
 		assertThat(response1.get(0).getCreatedTime()).isAfter(response1.get(1).getCreatedTime());
+	}
+
+	@Test
+	void 수락_대기_사용자_조회() throws Exception {
+		//given
+		Member member = makeTestMember();
+		String nation = "KR";
+		Profile profile = Profile.createProfile(member, "nickname", true, nation);
+		memberRepository.save(member);
+		profileRepository.save(profile);
+
+		//when
+		WaitingUserResponseDto response = memberService.getWaitingUserInfo(member.getId());
+
+		//then
+		assertThat(response.getName()).isEqualTo(member.getName());
+		assertThat(response.getNation()).isEqualTo(nation);
 	}
 }
