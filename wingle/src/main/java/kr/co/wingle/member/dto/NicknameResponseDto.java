@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class NicknameResponseDto {
-	boolean isAvailable;
+	private boolean isAvailable;
 
 	public static NicknameResponseDto of(boolean isAvailable) {
 		NicknameResponseDto nicknameResponseDto = new NicknameResponseDto();
