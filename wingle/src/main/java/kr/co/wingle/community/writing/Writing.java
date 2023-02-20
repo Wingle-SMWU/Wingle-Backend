@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -23,10 +24,12 @@ import lombok.NoArgsConstructor;
 public class Writing extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Getter
+	@Setter
 	private Member member;
 
 	@Column(nullable = false)
 	@Getter
+	@Setter
 	private String content;
 
 	public static Writing createWriting(Member member, String content) {
