@@ -260,6 +260,16 @@ class AuthServiceTest {
 	}
 
 	@Test
+	void 닉네임_검사_성공_고유한_닉네임() throws Exception {
+
+	}
+
+	@Test
+	void 닉네임_검사_실패_중복된_닉네임() throws Exception {
+
+	}
+
+	@Test
 	void 이메일로_인증번호_전송_성공() {
 	}
 

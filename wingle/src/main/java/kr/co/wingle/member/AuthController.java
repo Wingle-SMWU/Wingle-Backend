@@ -18,7 +18,10 @@ import kr.co.wingle.member.dto.EmailResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
 import kr.co.wingle.member.dto.LoginResponseDto;
 import kr.co.wingle.member.dto.LogoutRequestDto;
+import kr.co.wingle.member.dto.LoginRequestDto;
 import kr.co.wingle.member.dto.MemberResponseDto;
+import kr.co.wingle.member.dto.NicknameRequestDto;
+import kr.co.wingle.member.dto.NicknameResponseDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
 import kr.co.wingle.member.dto.TokenDto;
@@ -75,5 +78,11 @@ public class AuthController {
 		@RequestBody @Valid CertificationRequestDto certificationRequestDto) {
 		CertificationResponseDto response = authService.checkEmailAndCode(certificationRequestDto);
 		return ApiResponse.success(SuccessCode.EMAIL_CERTIFICATION_SUCCESS, response);
+	}
+
+	@PostMapping("/nickname")
+	public ApiResponse<NicknameResponseDto> checkNickname(@RequestBody @Valid NicknameRequestDto nicknameRequestDto) {
+		NicknameResponseDto response = authService.checkDuplicateNickname(nicknameRequestDto);
+		return ApiResponse.success(SuccessCode.NICKNAME_CHECK_SUCCESS, response);
 	}
 }

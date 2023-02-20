@@ -13,4 +13,5 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
 	String findNationByMember(@Param("member") Member member);
 
 	Optional<Profile> findByMember(Member member);
+    boolean existsByNickname(String nickname);
 }

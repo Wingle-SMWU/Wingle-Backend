@@ -31,6 +31,8 @@ import kr.co.wingle.member.dto.EmailResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
 import kr.co.wingle.member.dto.LoginResponseDto;
 import kr.co.wingle.member.dto.LogoutRequestDto;
+import kr.co.wingle.member.dto.NicknameRequestDto;
+import kr.co.wingle.member.dto.NicknameResponseDto;
 import kr.co.wingle.member.dto.PermissionResponseDto;
 import kr.co.wingle.member.dto.RejectionRequestDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
@@ -218,6 +220,14 @@ public class AuthService {
 		if (memberRepository.existsByEmail(email)) {
 			throw new DuplicateException(ErrorCode.DUPLICATE_EMAIL);
 		}
+	}
+
+	public NicknameResponseDto checkDuplicateNickname(NicknameRequestDto request) {
+		String nickname = request.getNickname();
+		if (profileRepository.existsByNickname(nickname)) {
+			throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
+		}
+		return NicknameResponseDto.of(true);
 	}
 
 	private String uploadIdCardImage(MultipartFile idCardImage) {

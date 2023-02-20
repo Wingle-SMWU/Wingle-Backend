@@ -26,7 +26,7 @@ public class Profile extends BaseEntity {
 	@JoinColumn(name = "member_id")
 	private Member member;
 
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private String nickname;
 
 	@Column(columnDefinition = "TEXT")
