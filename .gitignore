@@ -30,6 +30,7 @@ hs_err_pid*
 **/rule-config
 
 HELP.md
+.gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
