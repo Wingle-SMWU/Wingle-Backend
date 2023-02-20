@@ -10,11 +10,15 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SuccessCode {
+	// 일반
 	EXAMPLE_SUCCESS(OK, "예시 성공"),
+	GET_SUCCESS(OK, "조회 성공"),
+	// 커뮤니티
+	ARTICLE_CREATE_SUCCESS(OK, "게시물 생성 성공"),
+	// 인증
 	SIGNUP_SUCCESS(OK, "회원가입 성공"),
 	LOGIN_SUCCESS(OK, "로그인 성공"),
 	LOGOUT_SUCCESS(OK, "로그아웃 성공"),
-    GET_SUCCESS(OK, "조회 성공"),
 	ACCOUNT_READ_SUCCESS(OK, "계정 조회 성공"),
 	TOKEN_REISSUE_SUCCESS(OK, "토큰 재발급 성공"),
 	NICKNAME_CHECK_SUCCESS(OK, "닉네임 확인 성공"),
