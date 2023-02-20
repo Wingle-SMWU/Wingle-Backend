@@ -25,7 +25,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
+import kr.co.wingle.common.jwt.TokenInfo;
 import kr.co.wingle.member.dto.LoginRequestDto;
+import kr.co.wingle.member.dto.LoginResponseDto;
 import kr.co.wingle.member.dto.LogoutRequestDto;
 import kr.co.wingle.member.dto.MemberResponseDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
@@ -88,9 +90,10 @@ class AuthControllerTest {
 	@Test
 	void 로그인() throws Exception {
 		LoginRequestDto requestDto = LoginRequestDto.of(MemberTemplate.EMAIL, MemberTemplate.PASSWORD);
-		TokenDto tokenDto = TokenDto.of("accessToken", "refreshToken");
+		TokenDto tokenDto = TokenDto.of(TokenInfo.BEARER_TYPE, "accessToken", "refreshToken");
+		LoginResponseDto responseDto = LoginResponseDto.from(tokenDto, false);
 		given(authService.login(any(LoginRequestDto.class)))
-			.willReturn(tokenDto);
+			.willReturn(responseDto);
 
 		MockHttpServletRequestBuilder builder = post("/api/v1/auth/login")
 			.content(mapper.writeValueAsString(requestDto))
@@ -99,7 +102,7 @@ class AuthControllerTest {
 		mockMvc.perform(builder)
 			.andExpect(status().isOk())
 			.andExpect(content().string(
-				mapper.writeValueAsString(ApiResponse.success(SuccessCode.LOGIN_SUCCESS, tokenDto))
+				mapper.writeValueAsString(ApiResponse.success(SuccessCode.LOGIN_SUCCESS, responseDto))
 			))
 			.andDo(print());
 	}
@@ -126,7 +129,7 @@ class AuthControllerTest {
 	@Test
 	void 토큰_재발급() throws Exception {
 		TokenRequestDto requestDto = TokenRequestDto.of("refreshToken");
-		TokenDto tokenDto = TokenDto.of("accessToken", "refreshToken");
+		TokenDto tokenDto = TokenDto.of(TokenInfo.BEARER_TYPE, "accessToken", "refreshToken");
 		given(authService.reissue(any(TokenRequestDto.class)))
 			.willReturn(tokenDto);
 

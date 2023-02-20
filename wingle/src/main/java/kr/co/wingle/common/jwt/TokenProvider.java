@@ -61,7 +61,7 @@ public class TokenProvider {
 			.signWith(key, SignatureAlgorithm.HS512)
 			.compact();
 
-		return TokenDto.of(accessToken, refreshToken);
+		return TokenDto.of(TokenInfo.BEARER_TYPE, accessToken, refreshToken);
 	}
 
 	public Authentication getAuthentication(String accessToken) {

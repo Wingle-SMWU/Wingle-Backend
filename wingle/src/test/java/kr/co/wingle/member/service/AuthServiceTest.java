@@ -21,6 +21,7 @@ import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.member.MemberRepository;
 import kr.co.wingle.member.TermMemberRepository;
 import kr.co.wingle.member.dto.LoginRequestDto;
+import kr.co.wingle.member.dto.LoginResponseDto;
 import kr.co.wingle.member.dto.LogoutRequestDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
 import kr.co.wingle.member.dto.SignupResponseDto;
@@ -129,7 +130,7 @@ class AuthServiceTest {
 		LoginRequestDto requestDto = LoginRequestDto.of(member.getEmail(), PASSWORD);
 
 		//when
-		TokenDto response = authService.login(requestDto);
+		LoginResponseDto response = authService.login(requestDto);
 
 		//then
 		String key = RedisUtil.PREFIX_REFRESH_TOKEN + response.getRefreshToken();
@@ -152,7 +153,7 @@ class AuthServiceTest {
 		LoginRequestDto requestDto = LoginRequestDto.of(member.getEmail(), PASSWORD);
 
 		//when
-		TokenDto response = authService.login(requestDto);
+		LoginResponseDto response = authService.login(requestDto);
 
 		//then
 		String key = RedisUtil.PREFIX_REFRESH_TOKEN + response.getRefreshToken();
@@ -173,9 +174,9 @@ class AuthServiceTest {
 		Member member = makeTestMember();
 		memberRepository.save(member);
 		LoginRequestDto loginRequestDto = LoginRequestDto.of(EMAIL, PASSWORD);
-		TokenDto tokenDto = authService.login(loginRequestDto);
+		LoginResponseDto loginResponseDto = authService.login(loginRequestDto);
 
-		TokenRequestDto requestDto = TokenRequestDto.of(tokenDto.getRefreshToken());
+		TokenRequestDto requestDto = TokenRequestDto.of(loginResponseDto.getRefreshToken());
 
 		//when
 		TokenDto response = authService.reissue(requestDto);
@@ -189,7 +190,7 @@ class AuthServiceTest {
 
 		//teardown
 		redisUtil.deleteData(key);
-		key = RedisUtil.PREFIX_REFRESH_TOKEN + tokenDto.getRefreshToken();
+		key = RedisUtil.PREFIX_REFRESH_TOKEN + loginResponseDto.getRefreshToken();
 		redisUtil.deleteData(key);
 
 	}
@@ -200,7 +201,7 @@ class AuthServiceTest {
 		Member member = makeTestMember();
 		memberRepository.save(member);
 		LoginRequestDto loginRequestDto = LoginRequestDto.of(EMAIL, PASSWORD);
-		TokenDto tokenDto = authService.login(loginRequestDto);
+		LoginResponseDto loginResponseDto = authService.login(loginRequestDto);
 
 		//when
 		TokenRequestDto requestDto = TokenRequestDto.of("refreshToken");
@@ -210,7 +211,7 @@ class AuthServiceTest {
 			.hasMessage(ErrorCode.TOKEN_NOT_FOUND.getMessage());
 
 		//teardown
-		String key = RedisUtil.PREFIX_REFRESH_TOKEN + tokenDto.getRefreshToken();
+		String key = RedisUtil.PREFIX_REFRESH_TOKEN + loginResponseDto.getRefreshToken();
 		redisUtil.deleteData(key);
 	}
 
@@ -220,8 +221,9 @@ class AuthServiceTest {
 		Member member = makeTestMember();
 		memberRepository.save(member);
 		LoginRequestDto loginRequestDto = LoginRequestDto.of(EMAIL, PASSWORD);
-		TokenDto tokenDto = authService.login(loginRequestDto);
-		LogoutRequestDto requestDto = LogoutRequestDto.of(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
+		LoginResponseDto loginResponseDto = authService.login(loginRequestDto);
+		LogoutRequestDto requestDto = LogoutRequestDto.of(loginResponseDto.getAccessToken(),
+			loginResponseDto.getRefreshToken());
 
 		//when
 		authService.logout(requestDto);
@@ -242,8 +244,9 @@ class AuthServiceTest {
 		Member member = makeTestMember();
 		memberRepository.save(member);
 		LoginRequestDto loginRequestDto = LoginRequestDto.of(EMAIL, PASSWORD);
-		TokenDto tokenDto = authService.login(loginRequestDto);
-		LogoutRequestDto requestDto = LogoutRequestDto.of(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
+		LoginResponseDto loginResponseDto = authService.login(loginRequestDto);
+		LogoutRequestDto requestDto = LogoutRequestDto.of(loginResponseDto.getAccessToken(),
+			loginResponseDto.getRefreshToken());
 
 		//when
 		authService.logout(requestDto);

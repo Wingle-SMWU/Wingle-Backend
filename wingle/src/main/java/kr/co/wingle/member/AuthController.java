@@ -16,6 +16,7 @@ import kr.co.wingle.member.dto.CertificationResponseDto;
 import kr.co.wingle.member.dto.EmailRequestDto;
 import kr.co.wingle.member.dto.EmailResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
+import kr.co.wingle.member.dto.LoginResponseDto;
 import kr.co.wingle.member.dto.LogoutRequestDto;
 import kr.co.wingle.member.dto.MemberResponseDto;
 import kr.co.wingle.member.dto.SignupRequestDto;
@@ -39,8 +40,8 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ApiResponse<TokenDto> login(@RequestBody @Valid LoginRequestDto loginRequestDto) {
-		TokenDto response = authService.login(loginRequestDto);
+	public ApiResponse<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto loginRequestDto) {
+		LoginResponseDto response = authService.login(loginRequestDto);
 		return ApiResponse.success(SuccessCode.LOGIN_SUCCESS, response);
 	}
 
