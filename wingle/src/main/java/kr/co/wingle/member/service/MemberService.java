@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.wingle.common.constants.ErrorCode;
+import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.member.MemberRepository;
 import kr.co.wingle.member.dto.WaitingListResponseDto;
+import kr.co.wingle.member.dto.WaitingUserResponseDto;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.entity.Permission;
 import kr.co.wingle.profile.ProfileRepository;
@@ -20,7 +22,7 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final ProfileRepository profileRepository;
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<WaitingListResponseDto> getWaitingList(int page) {
 		PageRequest pageRequest = PageRequest.of(page, 15);
 
@@ -31,6 +33,13 @@ public class MemberService {
 			}).toList();
 	}
 
+	@Transactional(readOnly = true)
+	public WaitingUserResponseDto getWaitingUserInfo(Long userId) {
+		Member member = findMemberByUserId(userId);
+		String nation = profileRepository.findNationByMember(member);
+		return WaitingUserResponseDto.from(member, nation);
+	}
+
 	public boolean validate(long memberId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new IllegalArgumentException(ErrorCode.NO_ID.getMessage()));
@@ -39,5 +48,10 @@ public class MemberService {
 		}
 		// TODO: 관리자페이지에서 승인 받은 회원인지 검사
 		return true;
+	}
+
+	private Member findMemberByUserId(Long userId) {
+		return memberRepository.findById(userId)
+			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 	}
 }
