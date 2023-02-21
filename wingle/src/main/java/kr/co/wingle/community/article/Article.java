@@ -10,11 +10,14 @@ import org.springframework.util.Assert;
 import kr.co.wingle.community.forum.Forum;
 import kr.co.wingle.community.writing.Writing;
 import kr.co.wingle.member.entity.Member;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Article extends Writing {
 	@Column(nullable = false)
 	private long likeCount = 0;
