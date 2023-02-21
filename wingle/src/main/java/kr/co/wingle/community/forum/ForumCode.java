@@ -14,13 +14,11 @@ public enum ForumCode {
 	private final Long id;
 	private final String name;
 
-	public static ForumCode of(String forumName) {
-		if (forumName.equals(FREE.name))
-			return ForumCode.FREE;
-		if (forumName.equals(EXCHANGE.name))
-			return ForumCode.EXCHANGE;
-		if (forumName.equals(NOTICE.name))
-			return ForumCode.NOTICE;
+	public static ForumCode from(String forumName) {
+		for (ForumCode code : ForumCode.values()) {
+			if (code.getName().equals(forumName))
+				return code;
+		}
 		throw new IllegalArgumentException(ErrorCode.NO_FORUM.getMessage());
 	}
 }

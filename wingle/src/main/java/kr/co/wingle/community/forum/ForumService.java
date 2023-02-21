@@ -36,7 +36,7 @@ public class ForumService {
 		final String anonymousNoneKor = "외국 윙그리";
 		final String admin = "관리자";
 
-		ForumCode forumCode = ForumCode.of(forum.getName());
+		ForumCode forumCode = ForumCode.from(forum.getName());
 
 		String nickname = switch (forumCode) {
 			case FREE -> profile.getNation().equals(nationCodeKor) ? anonymousKor : anonymousNoneKor;
