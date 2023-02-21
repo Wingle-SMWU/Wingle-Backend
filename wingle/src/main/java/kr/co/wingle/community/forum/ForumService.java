@@ -7,6 +7,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.co.wingle.common.constants.ErrorCode;
+import kr.co.wingle.common.exception.NotFoundException;
+import kr.co.wingle.profile.Profile;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -20,6 +23,13 @@ public class ForumService {
 		List<Forum> forums = forumRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
 		return forums.stream().map(x -> forumMapper.entityToDto(x)).collect(Collectors.toList());
 	}
+
+	public Forum getForumById(Long forumId) {
+		return forumRepository.findById(forumId)
+			.orElseThrow(() -> new NotFoundException(
+				ErrorCode.NO_ID));
+	}
+
 	static public String getNicknameByForum(Forum forum, Profile profile) {
 		final String nationCodeKor = "kor";
 		final String anonymousKor = "한국 윙그리";

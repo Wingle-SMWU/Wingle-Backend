@@ -29,12 +29,8 @@ public class ArticleService extends WritingService {
 	@Transactional
 	public ArticleResponseDto create(ArticleRequestDto request) {
 		Member member = authService.findMember();
-		Profile profile = profileRepository.findById(member.getId())
-			.orElseThrow(() -> new NotFoundException(
-				ErrorCode.NO_ID));
-		Forum forum = forumRepository.findById(request.getForumId())
-			.orElseThrow(() -> new NotFoundException(
-				ErrorCode.NO_ID));
+		Profile profile = profileService.getProfileByMemberId(member.getId());
+		Forum forum = forumService.getForumById(request.getForumId());
 
 		Article article = Article.builder()
 			.forum(forum)
@@ -42,7 +38,13 @@ public class ArticleService extends WritingService {
 			.content(request.getContent())
 			.build();
 
-		return articleMapper.entityToDto(articleRepository.save(article), profile, new ArrayList<String>(), true);
+		// TODO: Redis 최신목록에 등록
+
+		// TODO: new ArrayList<String> 부분을 s3에서 받은 이미지 경로로 변경
+		return articleMapper.toPublicDto(articleRepository.save(article), profile.getNickname(),
+			new ArrayList<String>(),
+			true);
+	}
 
 	@Transactional(readOnly = true)
 	public ArticleResponseDto getOne(Long forumId, Long articleId) {
