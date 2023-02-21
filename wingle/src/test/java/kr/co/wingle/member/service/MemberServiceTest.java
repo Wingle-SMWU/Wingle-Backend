@@ -14,7 +14,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.wingle.member.MemberRepository;
-import kr.co.wingle.member.dto.WaitingListResponseDto;
+import kr.co.wingle.member.dto.AdminListResponseDto;
 import kr.co.wingle.member.entity.Authority;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.entity.Permission;
@@ -52,8 +52,54 @@ class MemberServiceTest {
 		}
 
 		//when
-		List<WaitingListResponseDto> response1 = memberService.getWaitingList(0);
-		List<WaitingListResponseDto> response2 = memberService.getWaitingList(1);
+		List<AdminListResponseDto> response1 = memberService.getWaitingList(0);
+		List<AdminListResponseDto> response2 = memberService.getWaitingList(1);
+
+		//then
+		assertThat(response1).hasSize(15);
+		assertThat(response2).hasSize(1);
+		assertThat(response1.get(0).getCreatedTime()).isAfter(response1.get(1).getCreatedTime());
+	}
+
+	@Test
+	void 수락_거절_목록_조회() throws Exception {
+		//given
+		for (int i = 0; i < 17; i++) {
+			Member member = Member.createMember("name", "url", "wingle" + i + "@example.com", "password",
+				Authority.ROLE_USER);
+			memberRepository.save(member);
+			if (i == 16) {
+				break;
+			}
+			member.setPermission(Permission.DENY.getStatus());
+		}
+
+		//when
+		List<AdminListResponseDto> response1 = memberService.getRejectionList(0);
+		List<AdminListResponseDto> response2 = memberService.getRejectionList(1);
+
+		//then
+		assertThat(response1).hasSize(15);
+		assertThat(response2).hasSize(1);
+		assertThat(response1.get(0).getCreatedTime()).isAfter(response1.get(1).getCreatedTime());
+	}
+
+	@Test
+	void 수락_완료_목록_조회() throws Exception {
+		//given
+		for (int i = 0; i < 17; i++) {
+			Member member = Member.createMember("name", "url", "wingle" + i + "@example.com", "password",
+				Authority.ROLE_USER);
+			memberRepository.save(member);
+			if (i == 16) {
+				break;
+			}
+			member.setPermission(Permission.APPROVE.getStatus());
+		}
+
+		//when
+		List<AdminListResponseDto> response1 = memberService.getAcceptanceList(0);
+		List<AdminListResponseDto> response2 = memberService.getAcceptanceList(1);
 
 		//then
 		assertThat(response1).hasSize(15);
