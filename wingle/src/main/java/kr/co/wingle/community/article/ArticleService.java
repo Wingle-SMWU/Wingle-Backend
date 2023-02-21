@@ -30,11 +30,11 @@ public class ArticleService extends WritingService {
 	public ArticleResponseDto create(ArticleRequestDto request) {
 		Member member = authService.findMember();
 		Profile profile = profileRepository.findById(member.getId())
-			.orElseThrow(() -> new IllegalArgumentException(
-				ErrorCode.NO_ID.getMessage()));
+			.orElseThrow(() -> new NotFoundException(
+				ErrorCode.NO_ID));
 		Forum forum = forumRepository.findById(request.getForumId())
-			.orElseThrow(() -> new IllegalArgumentException(
-				ErrorCode.NO_ID.getMessage()));
+			.orElseThrow(() -> new NotFoundException(
+				ErrorCode.NO_ID));
 
 		Article article = Article.builder()
 			.forum(forum)
