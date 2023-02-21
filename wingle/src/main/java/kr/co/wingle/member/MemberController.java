@@ -18,7 +18,7 @@ import kr.co.wingle.common.exception.ForbiddenException;
 import kr.co.wingle.member.dto.AcceptanceRequestDto;
 import kr.co.wingle.member.dto.PermissionResponseDto;
 import kr.co.wingle.member.dto.RejectionRequestDto;
-import kr.co.wingle.member.dto.WaitingListResponseDto;
+import kr.co.wingle.member.dto.AdminListResponseDto;
 import kr.co.wingle.member.entity.Authority;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
@@ -33,10 +33,24 @@ public class MemberController {
 	private final AuthService authService;
 
 	@GetMapping("/list/waiting/{page}")
-	public ApiResponse<List<WaitingListResponseDto>> waitingList(@PathVariable int page) {
+	public ApiResponse<List<AdminListResponseDto>> waitingList(@PathVariable int page) {
 		checkAdminAccount();
-		List<WaitingListResponseDto> response = memberService.getWaitingList(page);
+		List<AdminListResponseDto> response = memberService.getWaitingList(page);
 		return ApiResponse.success(SuccessCode.WAITING_LIST_READ_SUCCESS, response);
+	}
+
+	@GetMapping("/list/rejection/{page}")
+	public ApiResponse<List<AdminListResponseDto>> rejectionList(@PathVariable int page) {
+		checkAdminAccount();
+		List<AdminListResponseDto> response = memberService.getRejectionList(page);
+		return ApiResponse.success(SuccessCode.REJECTION_LIST_READ_SUCCESS, response);
+	}
+
+	@GetMapping("/list/acceptance/{page}")
+	public ApiResponse<List<AdminListResponseDto>> acceptanceList(@PathVariable int page) {
+		checkAdminAccount();
+		List<AdminListResponseDto> response = memberService.getAcceptanceList(page);
+		return ApiResponse.success(SuccessCode.ACCEPTANCE_LIST_READ_SUCCESS, response);
 	}
 
 	@PostMapping("/permission/acceptance")

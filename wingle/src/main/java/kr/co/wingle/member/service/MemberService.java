@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.member.MemberRepository;
-import kr.co.wingle.member.dto.WaitingListResponseDto;
+import kr.co.wingle.member.dto.AdminListResponseDto;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.entity.Permission;
 import kr.co.wingle.profile.ProfileRepository;
@@ -21,13 +21,35 @@ public class MemberService {
 	private final ProfileRepository profileRepository;
 
 	@Transactional
-	public List<WaitingListResponseDto> getWaitingList(int page) {
+	public List<AdminListResponseDto> getWaitingList(int page) {
 		PageRequest pageRequest = PageRequest.of(page, 15);
 
 		return memberRepository.findAllByPermissionOrderByCreatedTimeDesc(Permission.WAIT.getStatus(), pageRequest)
 			.stream().map(member -> {
 				String nation = profileRepository.findNationByMember(member);
-				return WaitingListResponseDto.of(member.getId(), member.getCreatedTime(), member.getName(), nation);
+				return AdminListResponseDto.from(member, nation);
+			}).toList();
+	}
+
+	@Transactional(readOnly = true)
+	public List<AdminListResponseDto> getRejectionList(int page) {
+		PageRequest pageRequest = PageRequest.of(page, 15);
+
+		return memberRepository.findAllByPermissionOrderByCreatedTimeDesc(Permission.DENY.getStatus(), pageRequest)
+			.stream().map(member -> {
+				String nation = profileRepository.findNationByMember(member);
+				return AdminListResponseDto.from(member, nation);
+			}).toList();
+	}
+
+	@Transactional(readOnly = true)
+	public List<AdminListResponseDto> getAcceptanceList(int page) {
+		PageRequest pageRequest = PageRequest.of(page, 15);
+
+		return memberRepository.findAllByPermissionOrderByCreatedTimeDesc(Permission.APPROVE.getStatus(), pageRequest)
+			.stream().map(member -> {
+				String nation = profileRepository.findNationByMember(member);
+				return AdminListResponseDto.from(member, nation);
 			}).toList();
 	}
 
