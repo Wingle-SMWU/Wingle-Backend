@@ -9,22 +9,22 @@ import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.ForbiddenException;
 import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.community.forum.Forum;
-import kr.co.wingle.community.forum.ForumRepository;
+import kr.co.wingle.community.forum.ForumService;
 import kr.co.wingle.community.writing.WritingService;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.profile.Profile;
-import kr.co.wingle.profile.ProfileRepository;
+import kr.co.wingle.profile.ProfileService;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
 public class ArticleService extends WritingService {
 	private final ArticleRepository articleRepository;
-	private final ForumRepository forumRepository;
+	private final ForumService forumService;
 	private final AuthService authService;
 	private final ArticleMapper articleMapper;
-	private final ProfileRepository profileRepository;
+	private final ProfileService profileService;
 
 	@Transactional
 	public ArticleResponseDto create(ArticleRequestDto request) {
@@ -43,6 +43,19 @@ public class ArticleService extends WritingService {
 			.build();
 
 		return articleMapper.entityToDto(articleRepository.save(article), profile, new ArrayList<String>(), true);
+
+	@Transactional(readOnly = true)
+	public ArticleResponseDto getOne(Long forumId, Long articleId) {
+		Member member = authService.findMember();
+		Article article = getArticleById(articleId);
+
+		isValidForum(article, forumId);
+
+		Profile profile = profileService.getProfileByMemberId(article.getMember().getId());
+		String nickname = forumService.getNicknameByForum(article.getForum(), profile);
+
+		// TODO: new ArrayList<String> 부분을 s3에서 받은 이미지 경로로 변경
+		return articleMapper.toAnonymousDto(article, nickname, new ArrayList<String>(), isOwner(article, member));
 	}
 
 	@Transactional
@@ -53,10 +66,11 @@ public class ArticleService extends WritingService {
 			.orElseThrow(() -> new NotFoundException(
 				ErrorCode.NO_ARTICLE_ID));
 
-		if (isValidMember(article, member) && isExist(article) && isValidForum(article, forumId)) {
-			article.softDelete();
+	private boolean isOwner(Article article, Member member) {
+		if (article.getMember().getId() != member.getId()) {
+			return false;
 		}
-		return article.getId();
+		return true;
 	}
 
 	private boolean isValidMember(Article article, Member member) {

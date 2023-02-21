@@ -20,4 +20,20 @@ public class ForumService {
 		List<Forum> forums = forumRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
 		return forums.stream().map(x -> forumMapper.entityToDto(x)).collect(Collectors.toList());
 	}
+	static public String getNicknameByForum(Forum forum, Profile profile) {
+		final String nationCodeKor = "kor";
+		final String anonymousKor = "한국 윙그리";
+		final String anonymousNoneKor = "외국 윙그리";
+		final String admin = "관리자";
+
+		ForumCode forumCode = ForumCode.of(forum.getName());
+
+		String nickname = switch (forumCode) {
+			case FREE -> profile.getNation().equals(nationCodeKor) ? anonymousKor : anonymousNoneKor;
+			case EXCHANGE -> profile.getNickname();
+			case NOTICE -> admin;
+			default -> throw new IllegalStateException(ErrorCode.NO_FORUM.getMessage());
+		};
+		return nickname;
+	}
 }

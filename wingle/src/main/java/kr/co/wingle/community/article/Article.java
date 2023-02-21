@@ -20,13 +20,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Article extends Writing {
 	@Column(nullable = false)
-	private long likeCount = 0;
+	private int likeCount = 0;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Forum forum;
 
 	@Column(nullable = false)
-	private long comment_count = 0;
+	private int comment_count = 0;
 
 	@Builder
 	Article(Forum forum, Member member, String content) {

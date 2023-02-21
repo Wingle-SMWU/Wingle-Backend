@@ -23,5 +23,7 @@ public class ArticleResponseDto {
 	private Long forumId;
 	private String content;
 	private List<String> images;
-	private boolean isMine;
+	private Boolean isMine;
+	private int likeCount;
+	private int commentCount;
 }

@@ -18,6 +18,7 @@ public enum ErrorCode {
 	BAD_PARAMETER(BAD_REQUEST, "요청 파라미터가 잘못되었습니다."),
 	BAD_PARAMETER_TYPE(BAD_REQUEST, "지원하지 않는 파라미터 형식입니다."),
 	// 커뮤니티
+	NO_FORUM(BAD_REQUEST, "존재하지 않는 게시판입니다"),
 	NO_ARTICLE_ID(BAD_REQUEST, "존재하지 않는 게시물 id 입니다"),
 	// 파일
 	BAD_FILE_NAME(BAD_REQUEST, "파일 이름이 올바르지 않습니다."),

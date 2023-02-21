@@ -3,6 +3,7 @@ package kr.co.wingle.community.article;
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,13 @@ public class ArticleController {
 	public ApiResponse<ArticleResponseDto> create(@ModelAttribute @Valid ArticleRequestDto articleRequestDto) {
 		ArticleResponseDto response = articleService.create(articleRequestDto);
 		return ApiResponse.success(SuccessCode.ARTICLE_CREATE_SUCCESS, response);
+	}
+
+	@GetMapping("/{forumId}/articles/{articleId}")
+	public ApiResponse<ArticleResponseDto> getOne(@PathVariable String forumId,
+		@PathVariable String articleId) {
+		return ApiResponse.success(SuccessCode.GET_SUCCESS,
+			articleService.getOne(StringUtil.StringToLong(forumId), StringUtil.StringToLong(articleId)));
 	}
 
 	@DeleteMapping("/{forumId}/articles/{articleId}")

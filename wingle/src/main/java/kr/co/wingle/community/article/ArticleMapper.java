@@ -16,4 +16,13 @@ public interface ArticleMapper {
 	@Mapping(target = "userNickname", expression = "java(profile.getNickname())")
 	@Mapping(target = "forumId", expression = "java(article.getForum().getId())")
 	ArticleResponseDto entityToDto(Article article, Profile profile, List<String> images, boolean isMine);
+
+	@Mapping(source = "article.id", target = "articleId")
+	@Mapping(source = "article.createdTime", target = "createdTime")
+	@Mapping(source = "article.updatedTime", target = "updatedTime")
+	@Mapping(source = "nickname", target = "userNickname")
+	@Mapping(target = "userId", expression = "java(0L)")
+	@Mapping(target = "forumId", expression = "java(article.getForum().getId())")
+	ArticleResponseDto toAnonymousDto(Article article, String nickname, List<String> images, boolean isMine);
+
 }
