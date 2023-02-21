@@ -62,11 +62,22 @@ public class ArticleService extends WritingService {
 
 	@Transactional
 	public Long delete(Long forumId, Long articleId) {
-
 		Member member = authService.findMember();
+		Article article = getArticleById(articleId);
+
+		if (isValidMember(article, member) && isExist(article) && isValidForum(article, forumId)) {
+			article.softDelete();
+		}
+		return article.getId();
+	}
+
+	public Article getArticleById(Long articleId) {
 		Article article = articleRepository.findById(articleId)
 			.orElseThrow(() -> new NotFoundException(
 				ErrorCode.NO_ARTICLE_ID));
+		isExist(article);
+		return article;
+	}
 
 	private boolean isOwner(Article article, Member member) {
 		if (article.getMember().getId() != member.getId()) {
@@ -98,4 +109,5 @@ public class ArticleService extends WritingService {
 		}
 		return true;
 	}
+
 }
