@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
-import kr.co.wingle.member.dto.AdminListResponseDto;
+import kr.co.wingle.member.dto.SignupListResponseDto;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.member.service.MemberService;
@@ -62,7 +62,7 @@ class MemberControllerTest {
 		Member adminMember = makeTestAdminMember();
 		given(authService.findMember())
 			.willReturn(adminMember);
-		List<AdminListResponseDto> response = new ArrayList<>();
+		List<SignupListResponseDto> response = new ArrayList<>();
 		given(memberService.getWaitingList(anyInt()))
 			.willReturn(response);
 
@@ -82,7 +82,7 @@ class MemberControllerTest {
 		Member adminMember = makeTestAdminMember();
 		given(authService.findMember())
 			.willReturn(adminMember);
-		List<AdminListResponseDto> response = new ArrayList<>();
+		List<SignupListResponseDto> response = new ArrayList<>();
 		given(memberService.getRejectionList(anyInt()))
 			.willReturn(response);
 
@@ -102,7 +102,7 @@ class MemberControllerTest {
 		Member adminMember = makeTestAdminMember();
 		given(authService.findMember())
 			.willReturn(adminMember);
-		List<AdminListResponseDto> response = new ArrayList<>();
+		List<SignupListResponseDto> response = new ArrayList<>();
 		given(memberService.getAcceptanceList(anyInt()))
 			.willReturn(response);
 

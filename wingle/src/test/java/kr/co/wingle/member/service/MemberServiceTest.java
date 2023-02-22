@@ -14,7 +14,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.wingle.member.MemberRepository;
-import kr.co.wingle.member.dto.AdminListResponseDto;
+import kr.co.wingle.member.dto.SignupListResponseDto;
 import kr.co.wingle.member.entity.Authority;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.entity.Permission;
@@ -52,8 +52,8 @@ class MemberServiceTest {
 		}
 
 		//when
-		List<AdminListResponseDto> response1 = memberService.getWaitingList(0);
-		List<AdminListResponseDto> response2 = memberService.getWaitingList(1);
+		List<SignupListResponseDto> response1 = memberService.getWaitingList(0);
+		List<SignupListResponseDto> response2 = memberService.getWaitingList(1);
 
 		//then
 		assertThat(response1).hasSize(15);
@@ -75,8 +75,8 @@ class MemberServiceTest {
 		}
 
 		//when
-		List<AdminListResponseDto> response1 = memberService.getRejectionList(0);
-		List<AdminListResponseDto> response2 = memberService.getRejectionList(1);
+		List<SignupListResponseDto> response1 = memberService.getRejectionList(0);
+		List<SignupListResponseDto> response2 = memberService.getRejectionList(1);
 
 		//then
 		assertThat(response1).hasSize(15);
@@ -98,8 +98,8 @@ class MemberServiceTest {
 		}
 
 		//when
-		List<AdminListResponseDto> response1 = memberService.getAcceptanceList(0);
-		List<AdminListResponseDto> response2 = memberService.getAcceptanceList(1);
+		List<SignupListResponseDto> response1 = memberService.getAcceptanceList(0);
+		List<SignupListResponseDto> response2 = memberService.getAcceptanceList(1);
 
 		//then
 		assertThat(response1).hasSize(15);

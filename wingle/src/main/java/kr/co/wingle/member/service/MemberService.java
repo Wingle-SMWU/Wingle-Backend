@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.member.MemberRepository;
-import kr.co.wingle.member.dto.AdminListResponseDto;
+import kr.co.wingle.member.dto.SignupListResponseDto;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.entity.Permission;
 import kr.co.wingle.profile.ProfileRepository;
@@ -21,35 +21,35 @@ public class MemberService {
 	private final ProfileRepository profileRepository;
 
 	@Transactional
-	public List<AdminListResponseDto> getWaitingList(int page) {
+	public List<SignupListResponseDto> getWaitingList(int page) {
 		PageRequest pageRequest = PageRequest.of(page, 15);
 
 		return memberRepository.findAllByPermissionOrderByCreatedTimeDesc(Permission.WAIT.getStatus(), pageRequest)
 			.stream().map(member -> {
 				String nation = profileRepository.findNationByMember(member);
-				return AdminListResponseDto.from(member, nation);
+				return SignupListResponseDto.from(member, nation);
 			}).toList();
 	}
 
 	@Transactional(readOnly = true)
-	public List<AdminListResponseDto> getRejectionList(int page) {
+	public List<SignupListResponseDto> getRejectionList(int page) {
 		PageRequest pageRequest = PageRequest.of(page, 15);
 
 		return memberRepository.findAllByPermissionOrderByCreatedTimeDesc(Permission.DENY.getStatus(), pageRequest)
 			.stream().map(member -> {
 				String nation = profileRepository.findNationByMember(member);
-				return AdminListResponseDto.from(member, nation);
+				return SignupListResponseDto.from(member, nation);
 			}).toList();
 	}
 
 	@Transactional(readOnly = true)
-	public List<AdminListResponseDto> getAcceptanceList(int page) {
+	public List<SignupListResponseDto> getAcceptanceList(int page) {
 		PageRequest pageRequest = PageRequest.of(page, 15);
 
 		return memberRepository.findAllByPermissionOrderByCreatedTimeDesc(Permission.APPROVE.getStatus(), pageRequest)
 			.stream().map(member -> {
 				String nation = profileRepository.findNationByMember(member);
-				return AdminListResponseDto.from(member, nation);
+				return SignupListResponseDto.from(member, nation);
 			}).toList();
 	}
 
