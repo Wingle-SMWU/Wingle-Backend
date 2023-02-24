@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
-import kr.co.wingle.member.dto.WaitingListResponseDto;
+import kr.co.wingle.member.dto.SignupListResponseDto;
 import kr.co.wingle.member.dto.WaitingUserResponseDto;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
@@ -63,7 +63,7 @@ class MemberControllerTest {
 		Member adminMember = makeTestAdminMember();
 		given(authService.findMember())
 			.willReturn(adminMember);
-		List<WaitingListResponseDto> response = new ArrayList<>();
+		List<SignupListResponseDto> response = new ArrayList<>();
 		given(memberService.getWaitingList(anyInt()))
 			.willReturn(response);
 
@@ -94,6 +94,46 @@ class MemberControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(content().string(
 				mapper.writeValueAsString(ApiResponse.success(SuccessCode.WAITING_USER_READ_SUCCESS, response))
+			))
+			.andDo(print());
+	}
+  
+  @Test
+	void 수락_거절_목록_조회() throws Exception {
+		Member adminMember = makeTestAdminMember();
+		given(authService.findMember())
+			.willReturn(adminMember);
+		List<SignupListResponseDto> response = new ArrayList<>();
+		given(memberService.getRejectionList(anyInt()))
+			.willReturn(response);
+
+		MockHttpServletRequestBuilder builder = get("/api/v1/admin/list/rejection/0")
+			.contentType(MediaType.APPLICATION_JSON);
+
+		mockMvc.perform(builder)
+			.andExpect(status().isOk())
+			.andExpect(content().string(
+				mapper.writeValueAsString(ApiResponse.success(SuccessCode.REJECTION_LIST_READ_SUCCESS, response))
+			))
+			.andDo(print());
+	}
+
+	@Test
+	void 수락_완료_목록_조회() throws Exception {
+		Member adminMember = makeTestAdminMember();
+		given(authService.findMember())
+			.willReturn(adminMember);
+		List<SignupListResponseDto> response = new ArrayList<>();
+		given(memberService.getAcceptanceList(anyInt()))
+			.willReturn(response);
+
+		MockHttpServletRequestBuilder builder = get("/api/v1/admin/list/acceptance/0")
+			.contentType(MediaType.APPLICATION_JSON);
+
+		mockMvc.perform(builder)
+			.andExpect(status().isOk())
+			.andExpect(content().string(
+				mapper.writeValueAsString(ApiResponse.success(SuccessCode.ACCEPTANCE_LIST_READ_SUCCESS, response))
 			))
 			.andDo(print());
 	}

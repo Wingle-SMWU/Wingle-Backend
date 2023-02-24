@@ -14,4 +14,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	Optional<Member> findByEmail(String email);
 
 	List<Member> findAllByPermissionOrderByCreatedTimeDesc(int permission, Pageable pageable);
+
+	long countByPermission(int permission);
 }
