@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.wingle.member.MemberRepository;
 import kr.co.wingle.member.dto.SignupListResponseDto;
-import kr.co.wingle.member.dto.WaitingListResponseDto;
 import kr.co.wingle.member.dto.WaitingUserResponseDto;
 import kr.co.wingle.member.entity.Authority;
 import kr.co.wingle.member.entity.Member;

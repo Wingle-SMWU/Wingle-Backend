@@ -29,7 +29,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
 import kr.co.wingle.member.dto.SignupListResponseDto;
-import kr.co.wingle.member.dto.WaitingListResponseDto;
 import kr.co.wingle.member.dto.WaitingUserResponseDto;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
