@@ -5,9 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -23,7 +21,6 @@ import kr.co.wingle.profile.Profile;
 import kr.co.wingle.profile.ProfileRepository;
 
 @SpringBootTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @WithMockUser(value = EMAIL, password = PASSWORD)
 @Transactional
 class MemberServiceTest {
@@ -36,14 +33,10 @@ class MemberServiceTest {
 	@Autowired
 	private ProfileRepository profileRepository;
 
-	@BeforeAll
-	void cleanUp() {
-		memberRepository.deleteAll();
-	}
-
 	@Test
 	void 수락_대기_목록_조회() throws Exception {
 		//given
+		long count = getExistCount(Permission.WAIT);
 		for (int i = 0; i < 17; i++) {
 			Member member = Member.createMember("name", "url", "wingle" + i + "@example.com",
 				"password", Authority.ROLE_USER);
@@ -59,13 +52,14 @@ class MemberServiceTest {
 
 		//then
 		assertThat(response1).hasSize(15);
-		assertThat(response2).hasSize(1);
+		assertThat(response2).hasSize((int)(1 + count));
 		assertThat(response1.get(0).getCreatedTime()).isAfter(response1.get(1).getCreatedTime());
 	}
 
 	@Test
 	void 수락_거절_목록_조회() throws Exception {
 		//given
+		long count = getExistCount(Permission.DENY);
 		for (int i = 0; i < 17; i++) {
 			Member member = Member.createMember("name", "url", "wingle" + i + "@example.com", "password",
 				Authority.ROLE_USER);
@@ -82,13 +76,14 @@ class MemberServiceTest {
 
 		//then
 		assertThat(response1).hasSize(15);
-		assertThat(response2).hasSize(1);
+		assertThat(response2).hasSize((int)(1 + count));
 		assertThat(response1.get(0).getCreatedTime()).isAfter(response1.get(1).getCreatedTime());
 	}
 
 	@Test
 	void 수락_완료_목록_조회() throws Exception {
 		//given
+		long count = getExistCount(Permission.APPROVE);
 		for (int i = 0; i < 17; i++) {
 			Member member = Member.createMember("name", "url", "wingle" + i + "@example.com", "password",
 				Authority.ROLE_USER);
@@ -105,7 +100,7 @@ class MemberServiceTest {
 
 		//then
 		assertThat(response1).hasSize(15);
-		assertThat(response2).hasSize(1);
+		assertThat(response2).hasSize((int)(1 + count));
 		assertThat(response1.get(0).getCreatedTime()).isAfter(response1.get(1).getCreatedTime());
 	}
 
@@ -124,5 +119,13 @@ class MemberServiceTest {
 		//then
 		assertThat(response.getName()).isEqualTo(member.getName());
 		assertThat(response.getNation()).isEqualTo(nation);
+	}
+
+	private long getExistCount(Permission wait) {
+		long count = memberRepository.countByPermission(wait.getStatus());
+		if (count > 14L) {
+			count = 14L;
+		}
+		return count;
 	}
 }
