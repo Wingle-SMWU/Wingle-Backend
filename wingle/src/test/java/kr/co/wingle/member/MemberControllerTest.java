@@ -29,6 +29,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
 import kr.co.wingle.member.dto.SignupListResponseDto;
+import kr.co.wingle.member.dto.WaitingListResponseDto;
+import kr.co.wingle.member.dto.WaitingUserResponseDto;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.member.service.MemberService;
@@ -78,6 +80,26 @@ class MemberControllerTest {
 	}
 
 	@Test
+	void 수락_대기_사용자_조회() throws Exception {
+		Member adminMember = makeTestAdminMember();
+		given(authService.findMember())
+			.willReturn(adminMember);
+		WaitingUserResponseDto response = WaitingUserResponseDto.from(makeTestMember(), "KR");
+		given(memberService.getWaitingUserInfo(anyLong()))
+			.willReturn(response);
+
+		MockHttpServletRequestBuilder builder = get("/api/v1/admin/waiting/{userId}", 1L)
+			.contentType(MediaType.APPLICATION_JSON);
+
+		mockMvc.perform(builder)
+			.andExpect(status().isOk())
+			.andExpect(content().string(
+				mapper.writeValueAsString(ApiResponse.success(SuccessCode.WAITING_USER_READ_SUCCESS, response))
+			))
+			.andDo(print());
+	}
+  
+  @Test
 	void 수락_거절_목록_조회() throws Exception {
 		Member adminMember = makeTestAdminMember();
 		given(authService.findMember())

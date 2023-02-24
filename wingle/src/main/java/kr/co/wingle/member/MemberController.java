@@ -19,6 +19,8 @@ import kr.co.wingle.member.dto.AcceptanceRequestDto;
 import kr.co.wingle.member.dto.PermissionResponseDto;
 import kr.co.wingle.member.dto.RejectionRequestDto;
 import kr.co.wingle.member.dto.SignupListResponseDto;
+import kr.co.wingle.member.dto.WaitingListResponseDto;
+import kr.co.wingle.member.dto.WaitingUserResponseDto;
 import kr.co.wingle.member.entity.Authority;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
@@ -38,6 +40,13 @@ public class MemberController {
 		List<SignupListResponseDto> response = memberService.getWaitingList(page);
 		return ApiResponse.success(SuccessCode.WAITING_LIST_READ_SUCCESS, response);
 	}
+  
+  @GetMapping("/waiting/{userId}")
+	public ApiResponse<WaitingUserResponseDto> waitingUser(@PathVariable Long userId) {
+		checkAdminAccount();
+		WaitingUserResponseDto response = memberService.getWaitingUserInfo(userId);
+		return ApiResponse.success(SuccessCode.WAITING_USER_READ_SUCCESS, response);
+	}
 
 	@GetMapping("/list/rejection/{page}")
 	public ApiResponse<List<SignupListResponseDto>> rejectionList(@PathVariable int page) {
@@ -51,7 +60,7 @@ public class MemberController {
 		checkAdminAccount();
 		List<SignupListResponseDto> response = memberService.getAcceptanceList(page);
 		return ApiResponse.success(SuccessCode.ACCEPTANCE_LIST_READ_SUCCESS, response);
-	}
+  }
 
 	@PostMapping("/permission/acceptance")
 	public ApiResponse<PermissionResponseDto> accept(@RequestBody @Valid AcceptanceRequestDto acceptanceRequestDto) {
