@@ -1,5 +1,6 @@
 package kr.co.wingle.profile;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -24,11 +25,13 @@ public class Language extends BaseEntity {
 	@JoinColumn(name = "member_id", nullable = false)
 	private Member member;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "nation_id", nullable = false)
-	private Nation nation;
+	@Column(nullable = false)
+	private String name;
 
-	public static Language createLanguage(Member member, Nation nation) {
-		return new Language(member, nation);
+	@Column(nullable = false)
+	private int order;
+
+	public static Language createLanguage(Member member, String name, int order) {
+		return new Language(member, name, order);
 	}
 }
