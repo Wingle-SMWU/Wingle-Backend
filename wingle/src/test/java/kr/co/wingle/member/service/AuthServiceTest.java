@@ -27,7 +27,7 @@ import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.TokenRequestDto;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.entity.TermMember;
-import kr.co.wingle.profile.Profile;
+import kr.co.wingle.profile.entity.Profile;
 import kr.co.wingle.profile.ProfileRepository;
 
 @SpringBootTest

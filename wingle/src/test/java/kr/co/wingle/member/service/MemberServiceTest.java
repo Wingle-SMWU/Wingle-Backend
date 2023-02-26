@@ -17,7 +17,7 @@ import kr.co.wingle.member.dto.WaitingUserResponseDto;
 import kr.co.wingle.member.entity.Authority;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.entity.Permission;
-import kr.co.wingle.profile.Profile;
+import kr.co.wingle.profile.entity.Profile;
 import kr.co.wingle.profile.ProfileRepository;
 
 @SpringBootTest

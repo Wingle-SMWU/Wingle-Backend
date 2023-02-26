@@ -1,5 +1,6 @@
-package kr.co.wingle.profile;
+package kr.co.wingle.profile.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -14,22 +15,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "member_interest")
+@Table(name = "language")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class MemberInterest extends BaseEntity {
+public class Language extends BaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id")
+	@JoinColumn(name = "member_id", nullable = false)
 	private Member member;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "interest_id")
-	private Interest interest;
+	@Column(nullable = false)
+	private String name;
 
-	public static MemberInterest createMemberInterest(Member member, Interest interest) {
-		return new MemberInterest(member, interest);
+	@Column(nullable = false)
+	private int order;
+
+	public static Language createLanguage(Member member, String name, int order) {
+		return new Language(member, name, order);
 	}
-
 }

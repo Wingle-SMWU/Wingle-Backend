@@ -1,6 +1,5 @@
-package kr.co.wingle.profile;
+package kr.co.wingle.profile.entity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -15,20 +14,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "sns")
+@Table(name = "member_interest")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Sns extends BaseEntity {
+public class MemberInterest extends BaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id", nullable = false)
+	@JoinColumn(name = "member_id")
 	private Member member;
 
-	@Column(nullable = false)
-	private String url;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "interest_id")
+	private Interest interest;
 
-	public static Sns createSns(Member member, String url) {
-		return new Sns(member, url);
+	public static MemberInterest createMemberInterest(Member member, Interest interest) {
+		return new MemberInterest(member, interest);
 	}
+
 }
