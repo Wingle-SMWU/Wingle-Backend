@@ -1,4 +1,4 @@
-package kr.co.wingle.profile;
+package kr.co.wingle.profile.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

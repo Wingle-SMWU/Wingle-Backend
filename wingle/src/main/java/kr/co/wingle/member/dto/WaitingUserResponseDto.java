@@ -3,7 +3,6 @@ package kr.co.wingle.member.dto;
 import java.time.LocalDateTime;
 
 import kr.co.wingle.member.entity.Member;
-import kr.co.wingle.profile.Profile;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
