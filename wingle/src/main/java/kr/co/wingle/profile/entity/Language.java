@@ -29,7 +29,7 @@ public class Language extends BaseEntity {
 	private String name;
 
 	@Column(nullable = false)
-	private int order;
+	private int orderNumber;
 
 	public static Language createLanguage(Member member, String name, int order) {
 		return new Language(member, name, order);
