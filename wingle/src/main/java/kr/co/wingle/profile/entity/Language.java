@@ -1,5 +1,7 @@
 package kr.co.wingle.profile.entity;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -34,4 +36,6 @@ public class Language extends BaseEntity {
 	public static Language createLanguage(Member member, String name, int order) {
 		return new Language(member, name, order);
 	}
+
+
 }
