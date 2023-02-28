@@ -13,7 +13,6 @@ import kr.co.wingle.community.forum.ForumService;
 import kr.co.wingle.community.writing.WritingService;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
-import kr.co.wingle.profile.Profile;
 import kr.co.wingle.profile.ProfileService;
 import lombok.RequiredArgsConstructor;
 
@@ -29,7 +28,6 @@ public class ArticleService extends WritingService {
 	@Transactional
 	public ArticleResponseDto create(ArticleRequestDto request) {
 		Member member = authService.findMember();
-		Profile profile = profileService.getProfileByMemberId(member.getId());
 		Forum forum = forumService.getForumById(request.getForumId());
 
 		Article article = Article.builder()
@@ -38,23 +36,21 @@ public class ArticleService extends WritingService {
 			.content(request.getContent())
 			.build();
 
+		articleRepository.save(article);
+
 		// TODO: Redis 최신목록에 등록
 
 		// TODO: new ArrayList<String> 부분을 s3에서 받은 이미지 경로로 변경
-		return articleMapper.toPublicDto(articleRepository.save(article), profile.getNickname(),
-			new ArrayList<String>(),
-			true);
+		return articleMapper.toDto(article, new ArrayList<String>());
 	}
 
 	@Transactional(readOnly = true)
 	public ArticleResponseDto getOne(Long forumId, Long articleId) {
-		Member member = authService.findMember();
 		Article article = getArticleById(articleId);
-
 		isValidForum(article, forumId);
-
-		Profile profile = profileService.getProfileByMemberId(article.getMember().getId());
-		String nickname = forumService.getNicknameByForum(article.getForum(), profile);
+		// TODO: new ArrayList<String> 부분을 s3에서 받은 이미지 경로로 변경
+		return articleMapper.toDto(article, new ArrayList<String>());
+	}
 
 		// TODO: new ArrayList<String> 부분을 s3에서 받은 이미지 경로로 변경
 		return articleMapper.toAnonymousDto(article, nickname, new ArrayList<String>(), isOwner(article, member));
@@ -77,13 +73,6 @@ public class ArticleService extends WritingService {
 				ErrorCode.NO_ARTICLE_ID));
 		isExist(article);
 		return article;
-	}
-
-	private boolean isOwner(Article article, Member member) {
-		if (article.getMember().getId() != member.getId()) {
-			return false;
-		}
-		return true;
 	}
 
 	private boolean isValidMember(Article article, Member member) {
