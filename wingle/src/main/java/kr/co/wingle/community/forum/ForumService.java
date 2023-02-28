@@ -46,4 +46,19 @@ public class ForumService {
 		};
 		return nickname;
 	}
+
+	// 게시판에 따라 변환된 memberId 반환
+	static public Long processMemberIdByForum(Forum forum, Long memberId) {
+		final Long hiddenId = 0L;
+
+		ForumCode forumCode = ForumCode.from(forum.getName());
+
+		Long processedId = switch (forumCode) {
+			case FREE -> hiddenId;
+			case EXCHANGE -> memberId;
+			case NOTICE -> hiddenId;
+			default -> throw new IllegalStateException(ErrorCode.NO_FORUM.getMessage());
+		};
+		return processedId;
+	}
 }

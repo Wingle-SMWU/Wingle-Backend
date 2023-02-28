@@ -1,5 +1,7 @@
 package kr.co.wingle.community.article;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.wingle.common.constants.SuccessCode;
@@ -34,6 +37,14 @@ public class ArticleController {
 		@PathVariable String articleId) {
 		return ApiResponse.success(SuccessCode.GET_SUCCESS,
 			articleService.getOne(StringUtil.StringToLong(forumId), StringUtil.StringToLong(articleId)));
+	}
+
+	@GetMapping("/{forumId}/articles/")
+	public ApiResponse<List<ArticleResponseDto>> getList(@PathVariable String forumId,
+		@RequestParam String page, @RequestParam String size) {
+		return ApiResponse.success(SuccessCode.GET_SUCCESS,
+			articleService.getList(StringUtil.StringToLong(forumId), StringUtil.StringToInt(page),
+				StringUtil.StringToInt(size)));
 	}
 
 	@DeleteMapping("/{forumId}/articles/{articleId}")

@@ -1,7 +1,11 @@
 package kr.co.wingle.community.article;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,6 +13,7 @@ import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.ForbiddenException;
 import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.community.forum.Forum;
+import kr.co.wingle.community.forum.ForumCode;
 import kr.co.wingle.community.forum.ForumService;
 import kr.co.wingle.community.writing.WritingService;
 import kr.co.wingle.member.entity.Member;
@@ -57,8 +62,16 @@ public class ArticleService extends WritingService {
 		return articleMapper.toDto(article, new ArrayList<String>());
 	}
 
+	@Transactional(readOnly = true)
+	public List<ArticleResponseDto> getList(Long forumId, int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		List<Article> pages = articleRepository.findByForumIdAndIsDeleted(forumId, false, pageable);
 		// TODO: new ArrayList<String> 부분을 s3에서 받은 이미지 경로로 변경
-		return articleMapper.toAnonymousDto(article, nickname, new ArrayList<String>(), isOwner(article, member));
+		List<ArticleResponseDto> result = pages.stream()
+			.map(x -> articleMapper.toDto(x, new ArrayList<String>()))
+			.collect(
+				Collectors.toList());
+		return result;
 	}
 
 	@Transactional

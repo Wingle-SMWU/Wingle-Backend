@@ -14,4 +14,12 @@ public class StringUtil {
 			throw new CustomException(ErrorCode.BAD_PARAMETER_TYPE);
 		}
 	}
+
+	public static int StringToInt(String string) {
+		try {
+			return Integer.parseInt(string);
+		} catch (Exception e) {
+			throw new CustomException(ErrorCode.BAD_PARAMETER_TYPE);
+		}
+	}
 }
