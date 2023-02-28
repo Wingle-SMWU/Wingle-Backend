@@ -18,7 +18,7 @@ import lombok.Setter;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn // 하위 테이블의 구분 컬럼 생성(default = DTYPE)
+@DiscriminatorColumn(name = "type") // 하위 테이블의 구분 컬럼 생성(default = DTYPE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Writing extends BaseEntity {
