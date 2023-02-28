@@ -16,6 +16,7 @@ public enum SuccessCode {
 	// 커뮤니티
 	ARTICLE_CREATE_SUCCESS(OK, "게시물 생성 성공"),
 	ARTICLE_DELETE_SUCCESS(OK, "게시물 삭제 성공"),
+	COMMENT_CREATE_SUCCESS(OK, "댓글 생성 성공"),
 	// 인증
 	SIGNUP_SUCCESS(OK, "회원가입 성공"),
 	LOGIN_SUCCESS(OK, "로그인 성공"),
@@ -28,7 +29,7 @@ public enum SuccessCode {
 	ACCEPTANCE_SUCCESS(OK, "회원가입 수락 전송 성공"),
 	REJECTION_SUCCESS(OK, "회원가입 거절 전송 성공"),
 	WAITING_LIST_READ_SUCCESS(OK, "수락 대기 목록 조회 성공"),
-  WAITING_USER_READ_SUCCESS(OK, "수락 대기 사용자 조회 성공"),
+	WAITING_USER_READ_SUCCESS(OK, "수락 대기 사용자 조회 성공"),
 	REJECTION_LIST_READ_SUCCESS(OK, "수락 거절 목록 조회 성공"),
 	ACCEPTANCE_LIST_READ_SUCCESS(OK, "수락 완료 목록 조회 성공");
 
