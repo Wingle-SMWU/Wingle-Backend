@@ -12,7 +12,7 @@ public class ProfileService {
 	private final ProfileRepository profileRepository;
 
 	public Profile getProfileByMemberId(Long memberId) {
-		return profileRepository.findById(memberId)
+		return profileRepository.findByMemberId(memberId)
 			.orElseThrow(() -> new NotFoundException(
 				ErrorCode.NO_ID));
 	}

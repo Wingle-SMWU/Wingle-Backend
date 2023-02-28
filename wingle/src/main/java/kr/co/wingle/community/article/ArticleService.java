@@ -63,9 +63,15 @@ public class ArticleService extends WritingService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<ArticleResponseDto> getList(Long forumId, int page, int size) {
+	public List<ArticleResponseDto> getList(Long forumId, int page, int size, boolean getMine) {
 		Pageable pageable = PageRequest.of(page, size);
-		List<Article> pages = articleRepository.findByForumIdAndIsDeleted(forumId, false, pageable);
+		List<Article> pages;
+		if (getMine) {
+			Member member = authService.findMember();
+			pages = articleRepository.findByForumIdAndMemberIdAndIsDeleted(forumId, member.getId(), false, pageable);
+		} else {
+			pages = articleRepository.findByForumIdAndIsDeleted(forumId, false, pageable);
+		}
 		// TODO: new ArrayList<String> 부분을 s3에서 받은 이미지 경로로 변경
 		List<ArticleResponseDto> result = pages.stream()
 			.map(x -> articleMapper.toDto(x, new ArrayList<String>()))

@@ -8,4 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
 	List<Article> findByForumIdAndIsDeleted(Long forumId, boolean isDeleted, Pageable pageable);
+
+	List<Article> findByForumIdAndMemberIdAndIsDeleted(Long forumId, Long memberId, boolean isDeleted,
+		Pageable pageable);
 }

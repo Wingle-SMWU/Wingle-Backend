@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
 import kr.co.wingle.common.util.StringUtil;
@@ -41,10 +42,17 @@ public class ArticleController {
 
 	@GetMapping("/{forumId}/articles/")
 	public ApiResponse<List<ArticleResponseDto>> getList(@PathVariable String forumId,
-		@RequestParam String page, @RequestParam String size) {
+		@RequestParam String page, @RequestParam String size, @RequestParam(required = false) String my) {
+		if (my != null && !my.toLowerCase().equals("true") && !my.toLowerCase().equals("false"))
+			return ApiResponse.error(ErrorCode.BAD_PARAMETER);
+
+		boolean getMine = false;
+		if (my != null && my.toLowerCase().equals("true"))
+			getMine = true;
+		
 		return ApiResponse.success(SuccessCode.GET_SUCCESS,
 			articleService.getList(StringUtil.StringToLong(forumId), StringUtil.StringToInt(page),
-				StringUtil.StringToInt(size)));
+				StringUtil.StringToInt(size), getMine));
 	}
 
 	@DeleteMapping("/{forumId}/articles/{articleId}")
