@@ -26,7 +26,7 @@ public class Article extends Writing {
 	private Forum forum;
 
 	@Column(nullable = false)
-	private int comment_count = 0;
+	private int commentCount = 0;
 
 	@Builder
 	Article(Forum forum, Member member, String content) {
