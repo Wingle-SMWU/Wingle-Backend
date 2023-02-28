@@ -30,6 +30,11 @@ public class ArticleService extends WritingService {
 		Member member = authService.findMember();
 		Forum forum = forumService.getForumById(request.getForumId());
 
+		// 공지 작성 방지
+		if (forum.getName().equals(ForumCode.NOTICE.getName())) {
+			throw new ForbiddenException(ErrorCode.FORBIDDEN_USER);
+		}
+
 		Article article = Article.builder()
 			.forum(forum)
 			.member(member)
