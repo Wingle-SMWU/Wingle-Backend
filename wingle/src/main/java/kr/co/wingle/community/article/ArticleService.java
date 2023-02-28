@@ -51,7 +51,7 @@ public class ArticleService extends WritingService {
 		// TODO: Redis 최신목록에 등록
 
 		// TODO: new ArrayList<String> 부분을 s3에서 받은 이미지 경로로 변경
-		return articleMapper.toDto(article, new ArrayList<String>());
+		return articleMapper.toResponseDto(article, new ArrayList<String>());
 	}
 
 	@Transactional(readOnly = true)
@@ -59,7 +59,7 @@ public class ArticleService extends WritingService {
 		Article article = getArticleById(articleId);
 		isValidForum(article, forumId);
 		// TODO: new ArrayList<String> 부분을 s3에서 받은 이미지 경로로 변경
-		return articleMapper.toDto(article, new ArrayList<String>());
+		return articleMapper.toResponseDto(article, new ArrayList<String>());
 	}
 
 	@Transactional(readOnly = true)
@@ -68,7 +68,7 @@ public class ArticleService extends WritingService {
 		List<Article> pages = articleRepository.findByForumIdAndIsDeleted(forumId, false, pageable);
 		// TODO: new ArrayList<String> 부분을 s3에서 받은 이미지 경로로 변경
 		List<ArticleResponseDto> result = pages.stream()
-			.map(x -> articleMapper.toDto(x, new ArrayList<String>()))
+			.map(x -> articleMapper.toResponseDto(x, new ArrayList<String>()))
 			.collect(
 				Collectors.toList());
 		return result;
@@ -109,7 +109,7 @@ public class ArticleService extends WritingService {
 		return true;
 	}
 
-	private boolean isValidForum(Article article, Long forumId) {
+	public boolean isValidForum(Article article, Long forumId) {
 		// 게시판 안 맞으면 에러
 		if (article.getForum().getId() != forumId) {
 			throw new NotFoundException(ErrorCode.BAD_PARAMETER);
