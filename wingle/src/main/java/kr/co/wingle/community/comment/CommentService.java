@@ -1,5 +1,10 @@
 package kr.co.wingle.community.comment;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +37,18 @@ public class CommentService extends WritingService {
 
 	}
 
+	@Transactional(readOnly = true)
+	public List<CommentResponseDto> getList(Long forumId, Long articleId, int page, int size) {
+		Article article = articleService.getArticleById(articleId);
+		articleService.isValidForum(article, forumId);
+
+		Pageable pageable = PageRequest.of(page, size);
+		List<Comment> pages = commentRepository.findByArticleIdAndIsDeleted(articleId, false, pageable);
+		List<CommentResponseDto> result = pages.stream()
+			.map(commentMapper::toResponseDto).collect(Collectors.toList());
+		return result;
+	}
+
 	@Transactional
 	public Long delete(Long forumId, Long articleId, Long commentId) {
 		Member member = authService.findMember();
@@ -61,4 +78,5 @@ public class CommentService extends WritingService {
 		}
 		return true;
 	}
+
 }
