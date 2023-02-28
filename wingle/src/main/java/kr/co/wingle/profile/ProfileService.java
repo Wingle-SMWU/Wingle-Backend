@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.NotFoundException;
+import kr.co.wingle.profile.entity.Profile;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -12,8 +13,8 @@ public class ProfileService {
 	private final ProfileRepository profileRepository;
 
 	public Profile getProfileByMemberId(Long memberId) {
-		return profileRepository.findById(memberId)
+		return profileRepository.findByMemberId(memberId)
 			.orElseThrow(() -> new NotFoundException(
-				ErrorCode.NO_ID));
+				ErrorCode.NO_PROFILE));
 	}
 }

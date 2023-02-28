@@ -34,6 +34,7 @@ public enum ErrorCode {
 	NO_EMAIL_CODE(BAD_REQUEST, "해당 이메일에 유효한 인증정보가 없습니다."),
 	// 프로필
 	DUPLICATE_NICKNAME(BAD_REQUEST, "이미 사용 중인 닉네임입니다."),
+	NO_PROFILE(BAD_REQUEST, "존재하지 않는 프로필입니다"),
 
 	/* 401 UNAUTHORIZED: 인증 실패 */
 	UNAUTHORIZED_USER(UNAUTHORIZED, "만료되었거나 잘못된 토큰입니다. 토큰을 확인해주세요."),
