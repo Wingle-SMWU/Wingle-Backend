@@ -56,6 +56,15 @@ public class S3Util {
 		}
 	}
 
+	public String profileImageUpload(MultipartFile file) {
+		try {
+			return upload(file, "profileImage");
+		} catch (IOException e) {
+			log.warn(e.getMessage());
+			throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL);
+		}
+	}
+
 	public String articleImageUpload(MultipartFile file) throws IOException {
 		return upload(file, "article");
 	}
