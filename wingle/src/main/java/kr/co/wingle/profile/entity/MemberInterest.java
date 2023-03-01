@@ -31,5 +31,4 @@ public class MemberInterest extends BaseEntity {
 	public static MemberInterest createMemberInterest(Member member, Interest interest) {
 		return new MemberInterest(member, interest);
 	}
-
 }
