@@ -58,8 +58,8 @@ public class ProfileController {
 	}
 
 	@GetMapping("")
-	public ApiResponse<ProfileGetResponseDto> getProfile(){
-		ProfileGetResponseDto response= profileService.getProfile();
+	public ApiResponse<ProfileGetResponseDto> getProfile() {
+		ProfileGetResponseDto response = profileService.getProfile();
 		return ApiResponse.success(SuccessCode.EXAMPLE_SUCCESS, response);
 	}
 }

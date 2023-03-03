@@ -154,7 +154,7 @@ public class ProfileService {
 		Boolean gender = profile.isGender();
 		String nation = profile.getNation();
 
-		ProfileGetResponseDto response= ProfileGetResponseDto.of(imageUrl,nickname,gender,nation);
+		ProfileGetResponseDto response = ProfileGetResponseDto.of(imageUrl, nickname, gender, nation);
 
 		return response;
 	}
