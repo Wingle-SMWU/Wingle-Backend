@@ -1,13 +1,10 @@
 package kr.co.wingle.message.entity;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kr.co.wingle.common.entity.BaseEntity;
-import kr.co.wingle.community.Article;
+import kr.co.wingle.message.OriginType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +14,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Room extends BaseEntity {
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "article_id", nullable = false)
-	private Article article;
+	private Long originId;
+	private OriginType originType;
 }
