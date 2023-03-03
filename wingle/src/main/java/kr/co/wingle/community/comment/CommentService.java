@@ -12,9 +12,9 @@ import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.community.article.Article;
 import kr.co.wingle.community.article.ArticleService;
-import kr.co.wingle.community.writing.WritingService;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
+import kr.co.wingle.writing.WritingService;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

@@ -15,9 +15,9 @@ import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.community.forum.Forum;
 import kr.co.wingle.community.forum.ForumCode;
 import kr.co.wingle.community.forum.ForumService;
-import kr.co.wingle.community.writing.WritingService;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
+import kr.co.wingle.writing.WritingService;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

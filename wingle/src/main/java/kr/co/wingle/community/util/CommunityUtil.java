@@ -8,11 +8,11 @@ import kr.co.wingle.community.article.Article;
 import kr.co.wingle.community.comment.Comment;
 import kr.co.wingle.community.forum.Forum;
 import kr.co.wingle.community.forum.ForumService;
-import kr.co.wingle.community.writing.Writing;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.profile.ProfileService;
 import kr.co.wingle.profile.entity.Profile;
+import kr.co.wingle.writing.Writing;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
