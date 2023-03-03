@@ -1,4 +1,4 @@
-package kr.co.wingle.message;
+package kr.co.wingle.message.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
