@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import kr.co.wingle.message.entity.Message;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
-	List<Message> findByRoomIdAndIsDeleted(Long roomId, boolean isDeleted, Pageable pageable);
+	List<Message> findByRoomIdAndIsDeletedOrderByCreatedTimeDesc(Long roomId, boolean isDeleted, Pageable pageable);
 
 }

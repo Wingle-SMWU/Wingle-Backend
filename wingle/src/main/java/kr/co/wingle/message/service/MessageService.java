@@ -3,7 +3,6 @@ package kr.co.wingle.message.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,6 @@ import kr.co.wingle.message.entity.Message;
 import kr.co.wingle.message.entity.Room;
 import kr.co.wingle.message.mapper.MessageMapper;
 import kr.co.wingle.message.repository.MessageRepository;
-import kr.co.wingle.message.repository.RoomMemberRepository;
 import kr.co.wingle.writing.WritingService;
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MessageService extends WritingService {
 	private final MessageRepository messageRepository;
-	private final RoomMemberRepository roomMemberRepository;
 	private final MessageMapper messageMapper;
 	private final AuthService authService;
 	private final RoomService roomService;
@@ -48,7 +45,7 @@ public class MessageService extends WritingService {
 		roomService.isValidRoomMember(member.getId(), roomId);
 
 		Pageable pageable = PageRequest.of(page, size);
-		List<Message> pages = messageRepository.findByRoomIdAndIsDeleted(roomId, false, pageable);
+		List<Message> pages = messageRepository.findByRoomIdAndIsDeletedOrderByCreatedTimeDesc(roomId, false, pageable);
 		List<MessageResponseDto> result = pages.stream()
 			.map(messageMapper::toResponseDto).collect(Collectors.toList());
 		return result;
