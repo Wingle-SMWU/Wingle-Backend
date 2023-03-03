@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.NotFoundException;
-import kr.co.wingle.profile.Profile;
+import kr.co.wingle.profile.entity.Profile;
 import lombok.RequiredArgsConstructor;
 
 @Service
