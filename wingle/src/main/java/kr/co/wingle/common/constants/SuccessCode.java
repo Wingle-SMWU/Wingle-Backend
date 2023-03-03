@@ -18,6 +18,8 @@ public enum SuccessCode {
 	ARTICLE_DELETE_SUCCESS(OK, "게시물 삭제 성공"),
 	COMMENT_CREATE_SUCCESS(OK, "댓글 생성 성공"),
 	COMMENT_DELETE_SUCCESS(OK, "댓글 삭제 성공"),
+	// 쪽지
+	MESSAGE_SEND_SUCCESS(OK, "쪽지 전송 성공"),
 	// 인증
 	SIGNUP_SUCCESS(OK, "회원가입 성공"),
 	LOGIN_SUCCESS(OK, "로그인 성공"),
@@ -40,4 +42,4 @@ public enum SuccessCode {
 
 	private final HttpStatus status;
 	private final String message;
-	}
+}
