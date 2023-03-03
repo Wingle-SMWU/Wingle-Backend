@@ -1,8 +1,12 @@
 package kr.co.wingle.message.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,13 +18,17 @@ import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.member.service.MemberService;
 import kr.co.wingle.message.OriginType;
+import kr.co.wingle.message.dto.MessageResponseDto;
 import kr.co.wingle.message.dto.RoomRequestDto;
 import kr.co.wingle.message.dto.RoomResponseDto;
 import kr.co.wingle.message.entity.Room;
 import kr.co.wingle.message.entity.RoomMember;
+import kr.co.wingle.message.mapper.MessageMapper;
+import kr.co.wingle.message.repository.MessageRepository;
 import kr.co.wingle.message.repository.RoomMemberRepository;
 import kr.co.wingle.message.repository.RoomRepository;
 import kr.co.wingle.profile.ProfileService;
+import kr.co.wingle.profile.entity.Profile;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -29,11 +37,13 @@ public class RoomService {
 
 	private final RoomRepository roomRepository;
 	private final RoomMemberRepository roomMemberRepository;
+	private final MessageRepository messageRepository;
 	private final ArticleService articleService;
 	private final CommentService commentService;
 	private final ProfileService profileService;
 	private final AuthService authService;
 	private final MemberService memberService;
+	private final MessageMapper messageMapper;
 
 	@Transactional(readOnly = true)
 	public Room getRoomById(Long roomId) {
@@ -125,5 +135,37 @@ public class RoomService {
 			.orElseThrow(() -> new NotFoundException(
 				ErrorCode.FORBIDDEN_USER));
 		return true;
+	}
+
+	public List<RoomResponseDto> getMyList(int page, int size) {
+		Member member = authService.findMember();
+		Pageable pageable = PageRequest.of(page, size);
+		List<RoomMember> pages = roomMemberRepository.findByMemberIdAndIsDeleted(member.getId(), false, pageable);
+
+		List<Room> rooms = pages.stream().map(x -> x.getRoom()).collect(Collectors.toList());
+		List<RoomResponseDto> result = new ArrayList<>();
+		for (Room room : rooms) {
+			Member otherMember = roomMemberRepository.findAllByRoomIdAndIsDeleted(room.getId(), false)
+				.stream().filter(x -> x.getMember().getId() != member.getId()).collect(Collectors.toList())
+				.get(0).getMember();
+			Profile otherProfile = profileService.getProfileByMemberId(otherMember.getId());
+			MessageResponseDto recent = null;
+			// messageService.getListByRoom 이용하고 싶은데 순환구조 생김
+			// List<MessageResponseDto> messages = messageService.getListByRoom(room.getId(), 0, 1);
+			List<MessageResponseDto> messages = messageRepository.findByRoomIdAndIsDeletedOrderByCreatedTimeDesc(
+					room.getId(), false,
+					PageRequest.of(0, 1))
+				.stream()
+				.map(messageMapper::toResponseDto).collect(Collectors.toList());
+
+			if (messages.size() > 0)
+				recent = messages.get(0);
+			result.add(RoomResponseDto.roomPreview(room.getId(), otherProfile, recent));
+		}
+
+		// 최신메시지순
+		Collections.sort(result);
+
+		return result;
 	}
 }
