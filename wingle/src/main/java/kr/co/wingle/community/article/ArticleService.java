@@ -18,7 +18,6 @@ import kr.co.wingle.community.forum.ForumService;
 import kr.co.wingle.community.writing.WritingService;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
-import kr.co.wingle.profile.ProfileService;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -28,7 +27,6 @@ public class ArticleService extends WritingService {
 	private final ForumService forumService;
 	private final AuthService authService;
 	private final ArticleMapper articleMapper;
-	private final ProfileService profileService;
 
 	@Transactional
 	public ArticleResponseDto create(ArticleRequestDto request) {
@@ -51,7 +49,7 @@ public class ArticleService extends WritingService {
 		// TODO: Redis 최신목록에 등록
 
 		// TODO: new ArrayList<String> 부분을 s3에서 받은 이미지 경로로 변경
-		return articleMapper.toDto(article, new ArrayList<String>());
+		return articleMapper.toResponseDto(article, new ArrayList<String>());
 	}
 
 	@Transactional(readOnly = true)
@@ -59,7 +57,7 @@ public class ArticleService extends WritingService {
 		Article article = getArticleById(articleId);
 		isValidForum(article, forumId);
 		// TODO: new ArrayList<String> 부분을 s3에서 받은 이미지 경로로 변경
-		return articleMapper.toDto(article, new ArrayList<String>());
+		return articleMapper.toResponseDto(article, new ArrayList<String>());
 	}
 
 	@Transactional(readOnly = true)
@@ -74,7 +72,7 @@ public class ArticleService extends WritingService {
 		}
 		// TODO: new ArrayList<String> 부분을 s3에서 받은 이미지 경로로 변경
 		List<ArticleResponseDto> result = pages.stream()
-			.map(x -> articleMapper.toDto(x, new ArrayList<String>()))
+			.map(x -> articleMapper.toResponseDto(x, new ArrayList<String>()))
 			.collect(
 				Collectors.toList());
 		return result;
@@ -91,6 +89,7 @@ public class ArticleService extends WritingService {
 		return article.getId();
 	}
 
+	@Transactional(readOnly = true)
 	public Article getArticleById(Long articleId) {
 		Article article = articleRepository.findById(articleId)
 			.orElseThrow(() -> new NotFoundException(
@@ -99,23 +98,8 @@ public class ArticleService extends WritingService {
 		return article;
 	}
 
-	private boolean isValidMember(Article article, Member member) {
-		// 작성자 다르면 에러
-		if (article.getMember().getId() != member.getId()) {
-			throw new ForbiddenException(ErrorCode.FORBIDDEN_USER);
-		}
-		return true;
-	}
-
-	private boolean isExist(Article article) {
-		// 이미 삭제된 게시물이면 에러
-		if (article.isDeleted()) {
-			throw new NotFoundException(ErrorCode.ALREADY_DELETED);
-		}
-		return true;
-	}
-
-	private boolean isValidForum(Article article, Long forumId) {
+	@Transactional(readOnly = true)
+	public boolean isValidForum(Article article, Long forumId) {
 		// 게시판 안 맞으면 에러
 		if (article.getForum().getId() != forumId) {
 			throw new NotFoundException(ErrorCode.BAD_PARAMETER);

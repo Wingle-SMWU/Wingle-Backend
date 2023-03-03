@@ -16,6 +16,8 @@ public enum SuccessCode {
 	// 커뮤니티
 	ARTICLE_CREATE_SUCCESS(OK, "게시물 생성 성공"),
 	ARTICLE_DELETE_SUCCESS(OK, "게시물 삭제 성공"),
+	COMMENT_CREATE_SUCCESS(OK, "댓글 생성 성공"),
+	COMMENT_DELETE_SUCCESS(OK, "댓글 삭제 성공"),
 	// 인증
 	SIGNUP_SUCCESS(OK, "회원가입 성공"),
 	LOGIN_SUCCESS(OK, "로그인 성공"),

@@ -25,12 +25,12 @@ public class Writing extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Getter
 	@Setter
-	private Member member;
+	protected Member member;
 
 	@Column(nullable = false)
 	@Getter
 	@Setter
-	private String content;
+	protected String content;
 
 	public static Writing createWriting(Member member, String content) {
 		return new Writing(member, content);

@@ -138,7 +138,7 @@ public class ProfileService {
 	public Profile getProfileByMemberId(Long memberId) {
 		return profileRepository.findByMemberId(memberId)
 			.orElseThrow(() -> new NotFoundException(
-				ErrorCode.NO_ID));
+				ErrorCode.NO_PROFILE));
     }
     
 	private String uploadProfileImage(MultipartFile idCardImage) {
