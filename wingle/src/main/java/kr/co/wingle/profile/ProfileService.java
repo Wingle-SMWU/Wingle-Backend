@@ -164,7 +164,7 @@ public class ProfileService {
 		Member member = authService.findMember();
 		Profile profile = getProfile(member);
 
-		Boolean registration= profile.isRegistration();
+		Boolean registration = profile.isRegistration();
 		ProfileRegistrationResponseDto reponse = ProfileRegistrationResponseDto.of(registration);
 		return reponse;
 	}
