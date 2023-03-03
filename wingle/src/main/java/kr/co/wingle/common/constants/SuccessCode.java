@@ -20,6 +20,7 @@ public enum SuccessCode {
 	COMMENT_DELETE_SUCCESS(OK, "댓글 삭제 성공"),
 	// 쪽지
 	MESSAGE_SEND_SUCCESS(OK, "쪽지 전송 성공"),
+	ROOM_FIND_SUCCESS(OK, "쪽지방 찾기 성공"),
 	// 인증
 	SIGNUP_SUCCESS(OK, "회원가입 성공"),
 	LOGIN_SUCCESS(OK, "로그인 성공"),

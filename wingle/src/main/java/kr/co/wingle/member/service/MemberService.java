@@ -72,7 +72,7 @@ public class MemberService {
 		return true;
 	}
 
-	private Member findMemberByUserId(Long userId) {
+	public Member findMemberByUserId(Long userId) {
 		return memberRepository.findById(userId)
 			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 	}
