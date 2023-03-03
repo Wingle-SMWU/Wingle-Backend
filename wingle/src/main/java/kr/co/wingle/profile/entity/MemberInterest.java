@@ -1,4 +1,4 @@
-package kr.co.wingle.profile;
+package kr.co.wingle.profile.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -31,5 +31,4 @@ public class MemberInterest extends BaseEntity {
 	public static MemberInterest createMemberInterest(Member member, Interest interest) {
 		return new MemberInterest(member, interest);
 	}
-
 }

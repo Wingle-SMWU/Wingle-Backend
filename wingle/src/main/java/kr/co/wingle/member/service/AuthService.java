@@ -48,7 +48,7 @@ import kr.co.wingle.member.entity.TermMember;
 import kr.co.wingle.member.mailVo.AcceptanceMail;
 import kr.co.wingle.member.mailVo.CodeMail;
 import kr.co.wingle.member.mailVo.RejectionMail;
-import kr.co.wingle.profile.Profile;
+import kr.co.wingle.profile.entity.Profile;
 import kr.co.wingle.profile.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 

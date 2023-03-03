@@ -1,4 +1,4 @@
-package kr.co.wingle.profile;
+package kr.co.wingle.profile.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,6 +27,7 @@ public class Profile extends BaseEntity {
 	private Member member;
 
 	@Column(nullable = false, unique = true)
+	@Setter
 	private String nickname;
 
 	@Column(columnDefinition = "TEXT")
@@ -43,6 +44,10 @@ public class Profile extends BaseEntity {
 
 	@Column(nullable = false)
 	private String nation;
+
+	@Column
+	@Setter
+	private String imageUrl;
 
 	public static Profile createProfile(Member member, String nickname, boolean gender, String nation) {
 		Profile profile = new Profile();

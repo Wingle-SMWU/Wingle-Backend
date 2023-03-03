@@ -54,4 +54,12 @@ public class MemberTemplate {
 		FileInputStream fileInputStream = new FileInputStream(filePath);
 		return new MockMultipartFile("idCardImage", fileName + "." + contentType, contentType, fileInputStream);
 	}
+
+	public static MockMultipartFile getProfileImage() throws Exception {
+		String fileName = "testImage";
+		String contentType = "png";
+		String filePath = "src/test/resources/images/" + fileName + "." + contentType;
+		FileInputStream fileInputStream = new FileInputStream(filePath);
+		return new MockMultipartFile("profileImage", fileName + "." + contentType, contentType, fileInputStream);
+	}
 }

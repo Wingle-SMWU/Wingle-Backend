@@ -5,9 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -29,11 +27,10 @@ import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.TokenRequestDto;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.entity.TermMember;
-import kr.co.wingle.profile.Profile;
+import kr.co.wingle.profile.entity.Profile;
 import kr.co.wingle.profile.ProfileRepository;
 
 @SpringBootTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @WithMockUser(value = EMAIL, password = PASSWORD)
 @Transactional
 class AuthServiceTest {
@@ -54,11 +51,6 @@ class AuthServiceTest {
 
 	@Autowired
 	private S3Util s3Util;
-
-	@BeforeAll
-	void cleanUp() {
-		memberRepository.deleteAll();
-	}
 
 	@Test
 	void 회원가입() throws Exception {
