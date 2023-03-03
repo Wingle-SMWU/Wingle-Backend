@@ -10,11 +10,14 @@ import org.springframework.util.Assert;
 
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.writing.Writing;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "message")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Message extends Writing {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "room_id", nullable = false)

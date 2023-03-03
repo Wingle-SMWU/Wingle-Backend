@@ -1,10 +1,14 @@
 package kr.co.wingle.message.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.co.wingle.common.constants.ErrorCode;
-import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.message.dto.MessageRequestDto;
@@ -31,13 +35,23 @@ public class MessageService extends WritingService {
 		Member member = authService.findMember();
 		Room room = roomService.getRoomById(messageRequestDto.getRoomId());
 		// 해당 쪽지방에 있는지 검사
-		roomMemberRepository.findAllByRoomIdAndMemberIdAndIsDeleted(room.getId(), member.getId(),
-				false)
-			.orElseThrow(() -> new NotFoundException(
-				ErrorCode.FORBIDDEN_USER));
+		roomService.isValidRoomMember(member.getId(), room.getId());
 
 		Message message = Message.of(member, messageRequestDto.getContent(), room);
 		messageRepository.save(message);
 		return messageMapper.toResponseDto(message);
 	}
+
+	@Transactional(readOnly = true)
+	public List<MessageResponseDto> getListByRoom(Long roomId, int page, int size) {
+		Member member = authService.findMember();
+		roomService.isValidRoomMember(member.getId(), roomId);
+
+		Pageable pageable = PageRequest.of(page, size);
+		List<Message> pages = messageRepository.findByRoomIdAndIsDeleted(roomId, false, pageable);
+		List<MessageResponseDto> result = pages.stream()
+			.map(messageMapper::toResponseDto).collect(Collectors.toList());
+		return result;
+	}
+
 }

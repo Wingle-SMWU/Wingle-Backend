@@ -12,5 +12,5 @@ public interface RoomMemberRepository extends JpaRepository<RoomMember, Long> {
 
 	List<RoomMember> findAllByRoomIdAndIsDeleted(Long roomId, boolean isDeleted);
 
-	Optional<RoomMember> findAllByRoomIdAndMemberIdAndIsDeleted(Long roomId, Long memberId, boolean isDeleted);
+	Optional<RoomMember> findByRoomIdAndMemberIdAndIsDeleted(Long roomId, Long memberId, boolean isDeleted);
 }

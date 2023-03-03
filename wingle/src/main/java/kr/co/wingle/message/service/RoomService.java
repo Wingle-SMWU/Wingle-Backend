@@ -116,4 +116,14 @@ public class RoomService {
 		};
 		return !isDeleted;
 	}
+
+	@Transactional(readOnly = true)
+	public boolean isValidRoomMember(Long MemberId, Long roomId) {
+		// 해당 쪽지방에 있는지 검사
+		roomMemberRepository.findByRoomIdAndMemberIdAndIsDeleted(roomId, MemberId,
+				false)
+			.orElseThrow(() -> new NotFoundException(
+				ErrorCode.FORBIDDEN_USER));
+		return true;
+	}
 }

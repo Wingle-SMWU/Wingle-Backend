@@ -14,13 +14,16 @@ public class MessageResponseDto {
 	private String nickname;
 	private String content;
 	private LocalDateTime createdTime;
+	private boolean isSender;
 
-	public static MessageResponseDto of(Long messageId, String nickname, String content, LocalDateTime createdTime) {
+	public static MessageResponseDto of(Long messageId, String nickname, String content, LocalDateTime createdTime,
+		boolean isSender) {
 		return MessageResponseDto.builder()
 			.messageId(messageId)
 			.nickname(nickname)
 			.content(content)
 			.createdTime(createdTime)
+			.isSender(isSender)
 			.build();
 	}
 }
