@@ -26,6 +26,8 @@ public enum SuccessCode {
 	REJECTION_LIST_READ_SUCCESS(OK, "수락 거절 목록 조회 성공"),
 	ACCEPTANCE_LIST_READ_SUCCESS(OK, "수락 완료 목록 조회 성공"),
 	PROFILE_SAVE_SUCCESS(OK, "프로필 저장 성공"),
+	PROFILE_READ_SUCCESS(OK,"프로필 조회 성공"),
+	PROFILE_REGISTER_READ_SUCCESS(OK,"프로필 등록 여부 조회 성공"),
 	LANGUAGES_SAVE_SUCCESS(OK, "사용 가능 언어 저장 성공"),
 	INTRODUCTION_SAVE_SUCCESS(OK, "자기소개 저장 성공"),
 	INTERESTS_SAVE_SUCCESS(OK, "관심사 저장 성공");

@@ -18,6 +18,7 @@ import kr.co.wingle.profile.dto.IntroductionRequestDto;
 import kr.co.wingle.profile.dto.LanguagesRequestDto;
 import kr.co.wingle.profile.dto.LanguagesResponseDto;
 import kr.co.wingle.profile.dto.ProfileGetResponseDto;
+import kr.co.wingle.profile.dto.ProfileRegistrationResponseDto;
 import kr.co.wingle.profile.dto.ProfileRequestDto;
 import kr.co.wingle.profile.dto.IntroductionResponseDto;
 import kr.co.wingle.profile.dto.ProfileResponseDto;
@@ -60,6 +61,12 @@ public class ProfileController {
 	@GetMapping("")
 	public ApiResponse<ProfileGetResponseDto> getProfile() {
 		ProfileGetResponseDto response = profileService.getProfile();
-		return ApiResponse.success(SuccessCode.EXAMPLE_SUCCESS, response);
+		return ApiResponse.success(SuccessCode.PROFILE_READ_SUCCESS, response);
+	}
+
+	@GetMapping("/registration")
+	public ApiResponse<ProfileRegistrationResponseDto> isRegister(){
+		ProfileRegistrationResponseDto response = profileService.isRegister();
+		return ApiResponse.success(SuccessCode.PROFILE_REGISTER_READ_SUCCESS,response);
 	}
 }
