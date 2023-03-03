@@ -13,6 +13,7 @@ import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.profile.ProfileService;
 import kr.co.wingle.profile.entity.Profile;
 import kr.co.wingle.writing.Writing;
+import kr.co.wingle.writing.WritingUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,6 +24,7 @@ public class CommunityUtil {
 	private final ProfileService profileService;
 	private final ForumService forumService;
 	private final AuthService authService;
+	private final WritingUtil writingUtil;
 
 	// 게시판, 작성자에 따라 개인정보 가공
 	public ProcessedPersonalInformation processPersonalInformation(Writing writing) {
@@ -42,7 +44,7 @@ public class CommunityUtil {
 		// 게시판별 멤버id
 		Long processedMemberId = forumService.processMemberIdByForum(forum,
 			writing.getMember().getId());
-		boolean isMine = writing.getMember().getId() == loggedInMember.getId() ? true : false;
+		boolean isMine = writingUtil.isMine(writing);
 		return ProcessedPersonalInformation.of(nickname, processedMemberId, isMine);
 	}
 }
