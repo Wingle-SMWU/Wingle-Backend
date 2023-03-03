@@ -26,7 +26,7 @@ public class RoomResponseDto implements Comparable<RoomResponseDto> {
 		return RoomResponseDto.builder()
 			.roomId(roomId)
 			.image(profile.getImageUrl())
-			.nation(profile.getNickname())
+			.nation(profile.getNation())
 			.nickname(profile.getNickname())
 			.recentChat(message.getContent())
 			.createdTime(message.getCreatedTime())
