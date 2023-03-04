@@ -27,6 +27,7 @@ import kr.co.wingle.profile.entity.Interest;
 import kr.co.wingle.profile.entity.Language;
 import kr.co.wingle.profile.entity.MemberInterest;
 import kr.co.wingle.profile.entity.Profile;
+import kr.co.wingle.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -136,6 +137,12 @@ public class ProfileService {
 			.orElseThrow(() -> new NotFoundException(ErrorCode.PROFILE_NOT_FOUND));
 	}
 
+	public Profile getProfileByMemberId(Long memberId) {
+		return profileRepository.findByMemberId(memberId)
+			.orElseThrow(() -> new NotFoundException(
+				ErrorCode.NO_PROFILE));
+    }
+    
 	private String uploadProfileImage(MultipartFile idCardImage) {
 		return s3Util.profileImageUpload(idCardImage);
 	}
