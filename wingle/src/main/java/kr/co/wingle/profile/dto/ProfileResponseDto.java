@@ -16,4 +16,6 @@ public class ProfileResponseDto {
 		profileResponseDto.nickname = nickname;
 		return profileResponseDto;
 	}
+
+
 }

@@ -18,6 +18,8 @@ import kr.co.wingle.profile.dto.InterestsResponseDto;
 import kr.co.wingle.profile.dto.IntroductionRequestDto;
 import kr.co.wingle.profile.dto.LanguagesRequestDto;
 import kr.co.wingle.profile.dto.LanguagesResponseDto;
+import kr.co.wingle.profile.dto.ProfileGetResponseDto;
+import kr.co.wingle.profile.dto.ProfileRegistrationResponseDto;
 import kr.co.wingle.profile.dto.ProfileRequestDto;
 import kr.co.wingle.profile.dto.IntroductionResponseDto;
 import kr.co.wingle.profile.dto.ProfileResponseDto;
@@ -148,5 +150,29 @@ public class ProfileService {
 	private void setRegistration(Member member) {
 		// Profile profile = getProfile(member);
 		// profile.setRegistration(true);
+	}
+
+	@Transactional
+	public ProfileGetResponseDto getProfile() {
+		Member member = authService.findMember();
+		Profile profile = getProfile(member);
+
+		String imageUrl = profile.getImageUrl();
+		String nickname = profile.getNickname();
+		Boolean gender = profile.isGender();
+		String nation = profile.getNation();
+
+		ProfileGetResponseDto response = ProfileGetResponseDto.of(imageUrl, nickname, gender, nation);
+
+		return response;
+	}
+
+	public ProfileRegistrationResponseDto isRegister() {
+		Member member = authService.findMember();
+		Profile profile = getProfile(member);
+
+		Boolean registration = profile.isRegistration();
+		ProfileRegistrationResponseDto reponse = ProfileRegistrationResponseDto.of(registration);
+		return reponse;
 	}
 }

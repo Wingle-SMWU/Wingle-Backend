@@ -2,6 +2,7 @@ package kr.co.wingle.profile;
 
 import javax.validation.Valid;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,11 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
+import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.profile.dto.InterestsRequestDto;
 import kr.co.wingle.profile.dto.InterestsResponseDto;
 import kr.co.wingle.profile.dto.IntroductionRequestDto;
 import kr.co.wingle.profile.dto.LanguagesRequestDto;
 import kr.co.wingle.profile.dto.LanguagesResponseDto;
+import kr.co.wingle.profile.dto.ProfileGetResponseDto;
+import kr.co.wingle.profile.dto.ProfileRegistrationResponseDto;
 import kr.co.wingle.profile.dto.ProfileRequestDto;
 import kr.co.wingle.profile.dto.IntroductionResponseDto;
 import kr.co.wingle.profile.dto.ProfileResponseDto;
@@ -25,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProfileController {
 	private final ProfileService profileService;
+	private final AuthService authService;
 
 	@PostMapping("")
 	public ApiResponse<ProfileResponseDto> saveProfile(@ModelAttribute @Valid ProfileRequestDto profileRequestDto) {
@@ -53,9 +58,15 @@ public class ProfileController {
 		return ApiResponse.success(SuccessCode.INTERESTS_SAVE_SUCCESS, response);
 	}
 
-	// @GetMapping("/profile")
-	// public ApiResponse<ProfileResponseDto> getProfile(){
-	// 	ProfileResponseDto response=
-	// 	return ApiResponse.success(SuccessCode.EXAMPLE_SUCCESS, response);
-	// }
+	@GetMapping("")
+	public ApiResponse<ProfileGetResponseDto> getProfile() {
+		ProfileGetResponseDto response = profileService.getProfile();
+		return ApiResponse.success(SuccessCode.PROFILE_READ_SUCCESS, response);
+	}
+
+	@GetMapping("/registration")
+	public ApiResponse<ProfileRegistrationResponseDto> isRegister(){
+		ProfileRegistrationResponseDto response = profileService.isRegister();
+		return ApiResponse.success(SuccessCode.PROFILE_REGISTER_READ_SUCCESS,response);
+	}
 }
