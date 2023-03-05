@@ -22,6 +22,8 @@ import kr.co.wingle.profile.dto.ProfileRegistrationResponseDto;
 import kr.co.wingle.profile.dto.ProfileRequestDto;
 import kr.co.wingle.profile.dto.IntroductionResponseDto;
 import kr.co.wingle.profile.dto.ProfileResponseDto;
+import kr.co.wingle.profile.dto.ProfileViewRequestDto;
+import kr.co.wingle.profile.dto.ProfileViewResponseDto;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -65,8 +67,15 @@ public class ProfileController {
 	}
 
 	@GetMapping("/registration")
-	public ApiResponse<ProfileRegistrationResponseDto> isRegister(){
+	public ApiResponse<ProfileRegistrationResponseDto> isRegister() {
 		ProfileRegistrationResponseDto response = profileService.isRegister();
-		return ApiResponse.success(SuccessCode.PROFILE_REGISTER_READ_SUCCESS,response);
+		return ApiResponse.success(SuccessCode.PROFILE_REGISTER_READ_SUCCESS, response);
+	}
+
+	@PostMapping("/detail")
+	public ApiResponse<ProfileViewResponseDto> viewProfile(
+		@Valid ProfileViewRequestDto profileViewRequestDto) {
+		ProfileViewResponseDto response = profileService.viewProfile(profileViewRequestDto);
+		return ApiResponse.success(SuccessCode.PROFILE_READ_SUCCESS, response);
 	}
 }
