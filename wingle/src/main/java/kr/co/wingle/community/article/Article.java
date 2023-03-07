@@ -8,8 +8,8 @@ import javax.persistence.ManyToOne;
 import org.springframework.util.Assert;
 
 import kr.co.wingle.community.forum.Forum;
-import kr.co.wingle.community.writing.Writing;
 import kr.co.wingle.member.entity.Member;
+import kr.co.wingle.writing.Writing;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
