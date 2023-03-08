@@ -88,7 +88,7 @@ public class AuthService {
 		Profile profile = Profile.createProfile(member, request.getNickname(), request.isGender(), request.getNation());
 		profileRepository.save(profile);
 
-		return SignupResponseDto.of(member.getId(), member.getName(), "nickname");
+		return SignupResponseDto.of(member.getId(), member.getName(), profile.getNickname());
 	}
 
 	@Transactional
