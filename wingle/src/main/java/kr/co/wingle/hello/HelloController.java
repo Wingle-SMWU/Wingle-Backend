@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.co.wingle.common.aop.NoLogging;
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
 import kr.co.wingle.hello.dto.CreateRequestDto;
@@ -19,6 +20,7 @@ public class HelloController {
 	private final HelloService helloService;
 
 	@GetMapping("/")
+	@NoLogging
 	String home() {
 		return "Hello World!";
 	}
