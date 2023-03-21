@@ -10,6 +10,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
-			.allowedOrigins("*");
+			.allowedOrigins("http://localhost:3000", "https://wingle.kr")
+			.maxAge(3000) // pre-flight 리퀘스트를 캐싱
+			.allowCredentials(true); // 쿠키 요청을 허용
 	}
 }
