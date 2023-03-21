@@ -17,7 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 public class LogAspect {
 	private static final String LOG_MESSAGE_FORMAT = "{} {} : {}.{}() took {}ms. (group by '{}', traceID: {})";
 
-	@Pointcut("execution(* kr.co.wingle..*Controller.*(..)) || execution(* kr.co.wingle..*Service.*(..)) || execution(* kr.co.wingle..*Repository.*(..))")
+	@Pointcut(
+		"(execution(* kr.co.wingle..*Controller.*(..)) || execution(* kr.co.wingle..*Service.*(..)) || execution(* kr.co.wingle..*Repository.*(..)))"
+			+ "&& !@annotation(kr.co.wingle.common.aop.NoLogging)")
 	private void onRequest() {
 	}
 
