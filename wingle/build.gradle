@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.7'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-    id 'org.asciidoctor.convert' version '1.5.8'
+    id "org.asciidoctor.jvm.convert" version "3.3.2"
     id 'jacoco'
 }
 
@@ -49,6 +49,10 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.5.3.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
     testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+
+    // spring rest docs
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:{project-version}'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:{project-version}'
 }
 
 tasks.named('test') {
@@ -67,6 +71,7 @@ jacoco {
 
 test {
     finalizedBy 'jacocoTestReport'
+    outputs.dir snippetsDir
 }
 
 jacocoTestReport {
@@ -125,4 +130,26 @@ jacocoTestCoverageVerification {
 
 jar {
     enabled = false
+}
+
+configurations {
+    asciidoctorExt
+}
+
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
+asciidoctor {
+    inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
+    dependsOn test
+}
+
+bootJar {
+    // package the generated documentation
+    dependsOn asciidoctor
+    from("${asciidoctor.outputDir}/html5") {
+        into 'static/docs'
+    }
 }
