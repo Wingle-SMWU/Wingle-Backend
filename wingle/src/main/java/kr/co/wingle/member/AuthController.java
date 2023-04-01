@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
+import kr.co.wingle.common.util.SecurityUtil;
 import kr.co.wingle.member.dto.CertificationRequestDto;
 import kr.co.wingle.member.dto.CertificationResponseDto;
 import kr.co.wingle.member.dto.EmailRequestDto;
@@ -28,7 +29,9 @@ import kr.co.wingle.member.dto.TokenRequestDto;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("api/v1/auth")
 @RequiredArgsConstructor
@@ -44,6 +47,7 @@ public class AuthController {
 	@PostMapping("/login")
 	public ApiResponse<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto loginRequestDto) {
 		LoginResponseDto response = authService.login(loginRequestDto);
+		log.info("[{}] login success", loginRequestDto.getEmail());
 		return ApiResponse.success(SuccessCode.LOGIN_SUCCESS, response);
 	}
 
