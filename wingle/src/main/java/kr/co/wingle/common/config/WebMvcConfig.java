@@ -12,7 +12,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		registry.addMapping("/**")
 			.allowedOrigins("http://localhost:3000", "http://localhost:3001", "http://localhost:3002",
 				"https://wingle.kr")
-			.maxAge(3000) // pre-flight 리퀘스트를 캐싱
-			.allowCredentials(true); // 쿠키 요청을 허용
+			.maxAge(3000); // pre-flight 리퀘스트를 캐싱
 	}
 }
