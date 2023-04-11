@@ -21,10 +21,11 @@ import lombok.RequiredArgsConstructor;
 public class MemberService {
 	private final MemberRepository memberRepository;
 	private final ProfileRepository profileRepository;
+	private final int pageSize = 10;
 
 	@Transactional(readOnly = true)
 	public List<SignupListResponseDto> getWaitingList(int page) {
-		PageRequest pageRequest = PageRequest.of(page, 15);
+		PageRequest pageRequest = PageRequest.of(page, pageSize);
 
 		return memberRepository.findAllByPermissionOrderByCreatedTimeDesc(Permission.WAIT.getStatus(), pageRequest)
 			.stream().map(member -> {
@@ -35,7 +36,7 @@ public class MemberService {
 
 	@Transactional(readOnly = true)
 	public List<SignupListResponseDto> getRejectionList(int page) {
-		PageRequest pageRequest = PageRequest.of(page, 15);
+		PageRequest pageRequest = PageRequest.of(page, pageSize);
 
 		return memberRepository.findAllByPermissionOrderByCreatedTimeDesc(Permission.DENY.getStatus(), pageRequest)
 			.stream().map(member -> {
@@ -46,7 +47,7 @@ public class MemberService {
 
 	@Transactional(readOnly = true)
 	public List<SignupListResponseDto> getAcceptanceList(int page) {
-		PageRequest pageRequest = PageRequest.of(page, 15);
+		PageRequest pageRequest = PageRequest.of(page, pageSize);
 
 		return memberRepository.findAllByPermissionOrderByCreatedTimeDesc(Permission.APPROVE.getStatus(), pageRequest)
 			.stream().map(member -> {
