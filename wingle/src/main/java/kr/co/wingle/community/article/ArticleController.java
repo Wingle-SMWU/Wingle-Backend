@@ -40,7 +40,7 @@ public class ArticleController {
 			articleService.getOne(StringUtil.StringToLong(forumId), StringUtil.StringToLong(articleId)));
 	}
 
-	@GetMapping("/{forumId}/articles/")
+	@GetMapping("/{forumId}/articles")
 	public ApiResponse<List<ArticleResponseDto>> getList(@PathVariable String forumId,
 		@RequestParam String page, @RequestParam String size, @RequestParam(required = false) String my) {
 		if (my != null && !my.toLowerCase().equals("true") && !my.toLowerCase().equals("false"))
@@ -49,7 +49,7 @@ public class ArticleController {
 		boolean getMine = false;
 		if (my != null && my.toLowerCase().equals("true"))
 			getMine = true;
-		
+
 		return ApiResponse.success(SuccessCode.GET_SUCCESS,
 			articleService.getList(StringUtil.StringToLong(forumId), StringUtil.StringToInt(page),
 				StringUtil.StringToInt(size), getMine));
