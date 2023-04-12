@@ -6,9 +6,9 @@ import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +27,7 @@ public class CommentController {
 	private final CommentService commentService;
 
 	@PostMapping("/articles/comments")
-	public ApiResponse<CommentResponseDto> create(@ModelAttribute @Valid CommentRequestDto request) {
+	public ApiResponse<CommentResponseDto> create(@RequestBody @Valid CommentRequestDto request) {
 		CommentResponseDto response = commentService.create(request);
 		return ApiResponse.success(SuccessCode.COMMENT_CREATE_SUCCESS, response);
 	}
