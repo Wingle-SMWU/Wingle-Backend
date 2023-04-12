@@ -37,6 +37,7 @@ public enum SuccessCode {
 	WAITING_USER_READ_SUCCESS(OK, "수락 대기 사용자 조회 성공"),
 	REJECTION_LIST_READ_SUCCESS(OK, "수락 거절 목록 조회 성공"),
 	ACCEPTANCE_LIST_READ_SUCCESS(OK, "수락 완료 목록 조회 성공"),
+	REJECTION_REASON_SAVE_SUCCESS(OK, "거절 사유 저장 성공"),
 	// 프로필
 	PROFILE_SAVE_SUCCESS(OK, "프로필 저장 성공"),
 	PROFILE_READ_SUCCESS(OK, "프로필 조회 성공"),
