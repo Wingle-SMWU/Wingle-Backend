@@ -2,6 +2,9 @@ package kr.co.wingle.member.dto;
 
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+
+@Getter
 public class MemoRequestDto {
 	@NotNull(message = "사용자 id가 없습니다.")
 	private Long userId;

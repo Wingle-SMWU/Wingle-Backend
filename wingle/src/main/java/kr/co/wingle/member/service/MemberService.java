@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.member.MemberRepository;
+import kr.co.wingle.member.dto.MemoRequestDto;
+import kr.co.wingle.member.dto.MemoResponseDto;
 import kr.co.wingle.member.dto.SignupListResponseDto;
 import kr.co.wingle.member.dto.WaitingUserResponseDto;
 import kr.co.wingle.member.entity.Member;
@@ -76,5 +78,11 @@ public class MemberService {
 	public Member findMemberByUserId(Long userId) {
 		return memberRepository.findById(userId)
 			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+	}
+
+	public MemoResponseDto saveMemo(MemoRequestDto memoRequestDto) {
+		Member member = findMemberByUserId(memoRequestDto.getUserId());
+		member.setMemo(memoRequestDto.getMemo());
+		return MemoResponseDto.from(memoRequestDto.getMemo());
 	}
 }
