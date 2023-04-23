@@ -65,6 +65,13 @@ public class MemberService {
 		return WaitingUserResponseDto.from(member, nation);
 	}
 
+	@Transactional
+	public MemoResponseDto saveMemo(MemoRequestDto memoRequestDto) {
+		Member member = findMemberByUserId(memoRequestDto.getUserId());
+		member.setMemo(memoRequestDto.getMemo());
+		return MemoResponseDto.from(memoRequestDto.getMemo());
+	}
+
 	public boolean validate(long memberId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new IllegalArgumentException(ErrorCode.NO_ID.getMessage()));
@@ -78,11 +85,5 @@ public class MemberService {
 	public Member findMemberByUserId(Long userId) {
 		return memberRepository.findById(userId)
 			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
-	}
-
-	public MemoResponseDto saveMemo(MemoRequestDto memoRequestDto) {
-		Member member = findMemberByUserId(memoRequestDto.getUserId());
-		member.setMemo(memoRequestDto.getMemo());
-		return MemoResponseDto.from(memoRequestDto.getMemo());
 	}
 }
