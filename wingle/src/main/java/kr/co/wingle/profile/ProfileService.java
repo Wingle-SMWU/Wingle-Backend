@@ -16,18 +16,17 @@ import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.profile.dto.InterestsRequestDto;
 import kr.co.wingle.profile.dto.InterestsResponseDto;
 import kr.co.wingle.profile.dto.IntroductionRequestDto;
+import kr.co.wingle.profile.dto.IntroductionResponseDto;
 import kr.co.wingle.profile.dto.LanguagesRequestDto;
 import kr.co.wingle.profile.dto.LanguagesResponseDto;
 import kr.co.wingle.profile.dto.ProfileGetResponseDto;
 import kr.co.wingle.profile.dto.ProfileRegistrationResponseDto;
 import kr.co.wingle.profile.dto.ProfileRequestDto;
-import kr.co.wingle.profile.dto.IntroductionResponseDto;
 import kr.co.wingle.profile.dto.ProfileResponseDto;
 import kr.co.wingle.profile.entity.Interest;
 import kr.co.wingle.profile.entity.Language;
 import kr.co.wingle.profile.entity.MemberInterest;
 import kr.co.wingle.profile.entity.Profile;
-import kr.co.wingle.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -141,8 +140,8 @@ public class ProfileService {
 		return profileRepository.findByMemberId(memberId)
 			.orElseThrow(() -> new NotFoundException(
 				ErrorCode.NO_PROFILE));
-    }
-    
+	}
+
 	private String uploadProfileImage(MultipartFile idCardImage) {
 		return s3Util.profileImageUpload(idCardImage);
 	}
@@ -172,7 +171,7 @@ public class ProfileService {
 		Profile profile = getProfile(member);
 
 		Boolean registration = profile.isRegistration();
-		ProfileRegistrationResponseDto reponse = ProfileRegistrationResponseDto.of(registration);
-		return reponse;
+		ProfileRegistrationResponseDto response = ProfileRegistrationResponseDto.of(registration);
+		return response;
 	}
 }
