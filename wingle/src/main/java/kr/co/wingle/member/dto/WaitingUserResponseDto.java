@@ -14,6 +14,7 @@ public class WaitingUserResponseDto {
 	private String name;
 	private LocalDateTime createdTime;
 	private String idCardImage;
+	private String reason;
 	private String nation;
 
 	public static WaitingUserResponseDto from(Member member, String nation) {
@@ -22,6 +23,7 @@ public class WaitingUserResponseDto {
 		waitingUserResponseDto.name = member.getName();
 		waitingUserResponseDto.createdTime = member.getCreatedTime();
 		waitingUserResponseDto.idCardImage = member.getIdCardImageUrl();
+		waitingUserResponseDto.reason = member.getRejectionReason();
 		waitingUserResponseDto.nation = nation;
 		return waitingUserResponseDto;
 	}

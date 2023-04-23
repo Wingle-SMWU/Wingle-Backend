@@ -48,8 +48,8 @@ import kr.co.wingle.member.entity.TermMember;
 import kr.co.wingle.member.mailVo.AcceptanceMail;
 import kr.co.wingle.member.mailVo.CodeMail;
 import kr.co.wingle.member.mailVo.RejectionMail;
-import kr.co.wingle.profile.entity.Profile;
 import kr.co.wingle.profile.ProfileRepository;
+import kr.co.wingle.profile.entity.Profile;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -65,6 +65,7 @@ public class AuthService {
 	private final S3Util s3Util;
 	private final RedisUtil redisUtil;
 	private final MailService mailService;
+	private final MemberService memberService;
 
 	@Transactional
 	public SignupResponseDto signup(SignupRequestDto request) {
@@ -179,7 +180,7 @@ public class AuthService {
 			throw new CustomException(ErrorCode.ALREADY_ACCEPTANCE);
 
 		member.setPermission(Permission.DENY.getStatus());
-		// TODO: 거절 사유 저장
+		memberService.saveRejectionReason(rejectionRequestDto);
 		mailService.sendEmail(member.getEmail(), new RejectionMail(rejectionRequestDto.getReason()));
 		return PermissionResponseDto.of(userId, false);
 	}
