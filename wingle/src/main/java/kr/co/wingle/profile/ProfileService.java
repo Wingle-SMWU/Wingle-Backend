@@ -16,14 +16,13 @@ import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.profile.dto.InterestsRequestDto;
 import kr.co.wingle.profile.dto.InterestsResponseDto;
 import kr.co.wingle.profile.dto.IntroductionRequestDto;
+import kr.co.wingle.profile.dto.IntroductionResponseDto;
 import kr.co.wingle.profile.dto.LanguagesRequestDto;
 import kr.co.wingle.profile.dto.LanguagesResponseDto;
 import kr.co.wingle.profile.dto.ProfileGetResponseDto;
 import kr.co.wingle.profile.dto.ProfileRegistrationResponseDto;
 import kr.co.wingle.profile.dto.ProfileRequestDto;
-import kr.co.wingle.profile.dto.IntroductionResponseDto;
 import kr.co.wingle.profile.dto.ProfileResponseDto;
-import kr.co.wingle.profile.dto.ProfileViewRequestDto;
 import kr.co.wingle.profile.dto.ProfileViewResponseDto;
 import kr.co.wingle.profile.entity.Interest;
 import kr.co.wingle.profile.entity.Language;
@@ -177,12 +176,9 @@ public class ProfileService {
 		return reponse;
 	}
 
-	public ProfileViewResponseDto viewProfile(ProfileViewRequestDto request) {
+	public ProfileViewResponseDto getProfileDetail() {
 		Member member = authService.findMember();
 		Profile profile = getProfile(member);
-		if (!request.getMyProfile()) {
-			request.setUserId(profile.getId());
-		}
 		String image = member.getIdCardImageUrl();
 		String nation = profile.getNation();
 		String nickname = profile.getNickname();
