@@ -20,6 +20,7 @@ import kr.co.wingle.member.dto.MemoRequestDto;
 import kr.co.wingle.member.dto.MemoResponseDto;
 import kr.co.wingle.member.dto.PermissionResponseDto;
 import kr.co.wingle.member.dto.RejectionRequestDto;
+import kr.co.wingle.member.dto.RejectionResponseDto;
 import kr.co.wingle.member.dto.SignupListResponseDto;
 import kr.co.wingle.member.dto.WaitingUserResponseDto;
 import kr.co.wingle.member.entity.Authority;
@@ -75,6 +76,14 @@ public class MemberController {
 		checkAdminAccount();
 		PermissionResponseDto response = authService.sendRejectionMail(rejectionRequestDto);
 		return ApiResponse.success(SuccessCode.REJECTION_SUCCESS, response);
+	}
+
+	@PostMapping("/user/rejection")
+	public ApiResponse<RejectionResponseDto> saveRejectionReason(
+		@RequestBody @Valid RejectionRequestDto rejectionRequestDto) {
+		checkAdminAccount();
+		RejectionResponseDto response = memberService.saveRejectionReason(rejectionRequestDto);
+		return ApiResponse.success(SuccessCode.REJECTION_REASON_SAVE_SUCCESS, response);
 	}
 
 	@PostMapping("/user/memo")

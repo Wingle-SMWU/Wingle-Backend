@@ -11,6 +11,8 @@ import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.member.MemberRepository;
 import kr.co.wingle.member.dto.MemoRequestDto;
 import kr.co.wingle.member.dto.MemoResponseDto;
+import kr.co.wingle.member.dto.RejectionRequestDto;
+import kr.co.wingle.member.dto.RejectionResponseDto;
 import kr.co.wingle.member.dto.SignupListResponseDto;
 import kr.co.wingle.member.dto.WaitingUserResponseDto;
 import kr.co.wingle.member.entity.Member;
@@ -70,6 +72,13 @@ public class MemberService {
 		Member member = findMemberByUserId(memoRequestDto.getUserId());
 		member.setMemo(memoRequestDto.getMemo());
 		return MemoResponseDto.from(memoRequestDto.getMemo());
+	}
+
+	@Transactional
+	public RejectionResponseDto saveRejectionReason(RejectionRequestDto request) {
+		Member member = findMemberByUserId(request.getUserId());
+		member.setRejectionReason(request.getReason());
+		return RejectionResponseDto.from(request.getReason());
 	}
 
 	public boolean validate(long memberId) {

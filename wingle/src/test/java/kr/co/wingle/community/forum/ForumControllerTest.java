@@ -1,49 +1,37 @@
 package kr.co.wingle.community.forum;
 
+import static kr.co.wingle.util.RestDocsConfig.*;
 import static org.mockito.BDDMockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.FieldDescriptor;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.filter.CharacterEncodingFilter;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
+import kr.co.wingle.util.RestDocsTestSupport;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@AutoConfigureMockMvc
-public class ForumControllerTest {
-	private MockMvc mockMvc;
-
+public class ForumControllerTest extends RestDocsTestSupport {
 	@MockBean
 	private ForumService forumService;
 
-	ObjectMapper mapper = new ObjectMapper();
-
-	@BeforeEach
-	public void setup(WebApplicationContext webApplicationContext) {
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-			.addFilters(new CharacterEncodingFilter("UTF-8", true))
-			.alwaysDo(print())
-			.build();
+	protected FieldDescriptor[] forumData() {
+		return new FieldDescriptor[] {
+			fieldWithPath("id").type(JsonFieldType.NUMBER)
+				.description("게시판 id")
+				.attributes(field("constraints", "양수 정수")),
+			fieldWithPath("name").type(JsonFieldType.STRING)
+				.description("게시판 이름")
+		};
 	}
 
 	@Test
@@ -55,7 +43,7 @@ public class ForumControllerTest {
 		given(forumService.findAll())
 			.willReturn(responseDto);
 
-		MockHttpServletRequestBuilder builder = get("/api/v1/community/forums")
+		MockHttpServletRequestBuilder builder = RestDocumentationRequestBuilders.get("/api/v1/community/forums")
 			.contentType(MediaType.APPLICATION_JSON);
 
 		mockMvc.perform(builder)
@@ -63,7 +51,6 @@ public class ForumControllerTest {
 			.andExpect(content().string(
 				mapper.writeValueAsString(ApiResponse.success(SuccessCode.GET_SUCCESS, responseDto))
 			))
-			.andDo(print());
+			.andDo(getResponseFields(forumData()));
 	}
-
 }

@@ -45,6 +45,10 @@ public class Member extends BaseEntity {
 
 	@Column
 	@Setter
+	private String rejectionReason;
+
+	@Column
+	@Setter
 	private String memo;
 
 	public static Member createMember(String name, String idCardImageUrl, String email, String password,
