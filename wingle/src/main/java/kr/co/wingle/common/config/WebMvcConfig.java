@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -28,6 +29,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 		registry.addMapping("/**")
 			.allowedOrigins(allowedOrigins.toArray(new String[allowedOrigins.size()]))
+			.allowedMethods(
+				HttpMethod.GET.name(),
+				HttpMethod.HEAD.name(),
+				HttpMethod.POST.name(),
+				HttpMethod.PUT.name(),
+				HttpMethod.PATCH.name(),
+				HttpMethod.DELETE.name())
 			.maxAge(3000); // pre-flight 리퀘스트를 캐싱
 	}
 }
