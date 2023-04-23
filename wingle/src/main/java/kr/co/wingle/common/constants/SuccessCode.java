@@ -33,6 +33,7 @@ public enum SuccessCode {
 	// 어드민
 	ACCEPTANCE_SUCCESS(OK, "회원가입 수락 전송 성공"),
 	REJECTION_SUCCESS(OK, "회원가입 거절 전송 성공"),
+	MEMO_SAVE_SUCCESS(OK, "사용자 메모 저장 성공"),
 	WAITING_LIST_READ_SUCCESS(OK, "수락 대기 목록 조회 성공"),
 	WAITING_USER_READ_SUCCESS(OK, "수락 대기 사용자 조회 성공"),
 	REJECTION_LIST_READ_SUCCESS(OK, "수락 거절 목록 조회 성공"),

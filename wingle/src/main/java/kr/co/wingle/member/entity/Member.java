@@ -47,6 +47,10 @@ public class Member extends BaseEntity {
 	@Setter
 	private String rejectionReason;
 
+	@Column
+	@Setter
+	private String memo;
+
 	public static Member createMember(String name, String idCardImageUrl, String email, String password,
 		Authority authority) {
 		Member member = new Member();

@@ -16,6 +16,8 @@ import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
 import kr.co.wingle.common.exception.ForbiddenException;
 import kr.co.wingle.member.dto.AcceptanceRequestDto;
+import kr.co.wingle.member.dto.MemoRequestDto;
+import kr.co.wingle.member.dto.MemoResponseDto;
 import kr.co.wingle.member.dto.PermissionResponseDto;
 import kr.co.wingle.member.dto.RejectionRequestDto;
 import kr.co.wingle.member.dto.RejectionResponseDto;
@@ -82,6 +84,13 @@ public class MemberController {
 		checkAdminAccount();
 		RejectionResponseDto response = memberService.saveRejectionReason(rejectionRequestDto);
 		return ApiResponse.success(SuccessCode.REJECTION_REASON_SAVE_SUCCESS, response);
+	}
+
+	@PostMapping("/user/memo")
+	public ApiResponse<MemoResponseDto> saveMemo(@RequestBody @Valid MemoRequestDto memoRequestDto) {
+		checkAdminAccount();
+		MemoResponseDto response = memberService.saveMemo(memoRequestDto);
+		return ApiResponse.success(SuccessCode.MEMO_SAVE_SUCCESS, response);
 	}
 
 	private void checkAdminAccount() {

@@ -172,8 +172,8 @@ public class ProfileService {
 		Profile profile = getProfile(member);
 
 		Boolean registration = profile.isRegistration();
-		ProfileRegistrationResponseDto reponse = ProfileRegistrationResponseDto.of(registration);
-		return reponse;
+		ProfileRegistrationResponseDto response = ProfileRegistrationResponseDto.of(registration);
+		return response;
 	}
 
 	public ProfileViewResponseDto getProfileDetail() {
