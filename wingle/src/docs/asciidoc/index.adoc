@@ -1,9 +1,0 @@
-= REST Docs
-:asciidoc: src/docs/asciidoc
-:toc: left
-:toclevels: 2
-:source-highlighter: highlightjs
-
-include::{asciidoc}/community/forum/forumApi.adoc[]
-
-
