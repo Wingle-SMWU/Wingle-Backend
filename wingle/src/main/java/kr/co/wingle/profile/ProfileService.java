@@ -188,7 +188,11 @@ public class ProfileService {
 			.map(language ->
 				LanguagesResponseDto.LanguageDto.of(language.getOrderNumber(), language.getName())
 			).toList();
-		List<MemberInterest> interests = memberInterestRepository.findAllByMember(member);
+		List<MemberInterest> memberInterests = memberInterestRepository.findAllByMember(member);
+		List<String> interests = memberInterests.stream()
+			.map(memberInterest -> memberInterest.getInterest().getName())
+			.toList();
+
 		String introduce = profile.getIntroduction();
 		String sns = snsRepository.findAllByMember(member);
 

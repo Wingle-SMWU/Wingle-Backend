@@ -2,11 +2,6 @@ package kr.co.wingle.profile.dto;
 
 import java.util.List;
 
-import kr.co.wingle.member.entity.Member;
-import kr.co.wingle.profile.LanguageRepository;
-import kr.co.wingle.profile.entity.Language;
-import kr.co.wingle.profile.entity.MemberInterest;
-import kr.co.wingle.profile.entity.Profile;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,12 +15,12 @@ public class ProfileViewResponseDto {
 	private String nickname;
 	private Boolean gender;
 	private List<LanguagesResponseDto.LanguageDto> languages;
-	private List<MemberInterest> interests;
+	private List<String> interests;
 	private String introduce;
 	private String sns;
 
 	public static ProfileViewResponseDto of(String image, String nation, String nickname, Boolean gender,
-		List<LanguagesResponseDto.LanguageDto> languages, List<MemberInterest> interests, String introduce,
+		List<LanguagesResponseDto.LanguageDto> languages, List<String> interests, String introduce,
 		String sns) {
 		ProfileViewResponseDto profileViewResponseDto = new ProfileViewResponseDto();
 		profileViewResponseDto.image = image;
