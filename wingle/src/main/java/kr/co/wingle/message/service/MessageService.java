@@ -1,5 +1,6 @@
 package kr.co.wingle.message.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,11 @@ public class MessageService extends WritingService {
 
 		Pageable pageable = PageRequest.of(page, size);
 		List<Message> pages = messageRepository.findByRoomIdAndIsDeletedOrderByCreatedTimeDesc(roomId, false, pageable);
+
+		if (pages.isEmpty()) {
+			return new ArrayList<MessageResponseDto>();
+		}
+
 		List<MessageResponseDto> result = pages.stream()
 			.map(messageMapper::toResponseDto).collect(Collectors.toList());
 		return result;
