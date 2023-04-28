@@ -1,6 +1,7 @@
 package kr.co.wingle.message.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,7 @@ public class MessageService extends WritingService {
 
 		List<MessageResponseDto> result = pages.stream()
 			.map(messageMapper::toResponseDto).collect(Collectors.toList());
+		Collections.sort(result, Collections.reverseOrder());
 		return result;
 	}
 

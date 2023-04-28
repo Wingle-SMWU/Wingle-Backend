@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class MessageResponseDto {
+public class MessageResponseDto implements Comparable<MessageResponseDto> {
 	private Long messageId;
 	private String nickname;
 	private String content;
@@ -25,5 +25,15 @@ public class MessageResponseDto {
 			.createdTime(createdTime)
 			.isSender(isSender)
 			.build();
+	}
+
+	@Override
+	public int compareTo(MessageResponseDto response) {
+		if (response.getCreatedTime().isAfter(this.getCreatedTime())) {
+			return 1;
+		} else if (response.getCreatedTime().isBefore(this.getCreatedTime())) {
+			return -1;
+		}
+		return 0;
 	}
 }
