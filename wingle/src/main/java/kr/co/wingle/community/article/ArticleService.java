@@ -101,7 +101,7 @@ public class ArticleService extends WritingService {
 	@Transactional(readOnly = true)
 	public boolean isValidForum(Article article, Long forumId) {
 		// 게시판 안 맞으면 에러
-		if (article.getForum().getId() != forumId) {
+		if (!forumId.equals(article.getForum().getId())) {
 			throw new NotFoundException(ErrorCode.BAD_PARAMETER);
 		}
 		return true;

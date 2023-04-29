@@ -73,7 +73,7 @@ public class CommentService extends WritingService {
 	@Transactional(readOnly = true)
 	public boolean isValidArticle(Comment comment, Long articleId) {
 		// 게시글 안 맞으면 에러
-		if (comment.getArticle().getId() != articleId) {
+		if (!articleId.equals(comment.getArticle().getId())) {
 			throw new NotFoundException(ErrorCode.BAD_PARAMETER);
 		}
 		return true;
