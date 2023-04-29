@@ -22,9 +22,11 @@ import kr.co.wingle.member.dto.PermissionResponseDto;
 import kr.co.wingle.member.dto.RejectionRequestDto;
 import kr.co.wingle.member.dto.RejectionResponseDto;
 import kr.co.wingle.member.dto.SignupListResponseDto;
+import kr.co.wingle.member.dto.SignupListResponseWithPagesDto;
 import kr.co.wingle.member.dto.WaitingUserResponseDto;
 import kr.co.wingle.member.entity.Authority;
 import kr.co.wingle.member.entity.Member;
+import kr.co.wingle.member.entity.Permission;
 import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -37,9 +39,13 @@ public class MemberController {
 	private final AuthService authService;
 
 	@GetMapping("/list/waiting/{page}")
-	public ApiResponse<List<SignupListResponseDto>> waitingList(@PathVariable int page) {
+	public ApiResponse<SignupListResponseWithPagesDto> waitingList(@PathVariable int page) {
 		checkAdminAccount();
-		List<SignupListResponseDto> response = memberService.getWaitingList(page);
+		List<SignupListResponseDto> list = memberService.getWaitingList(page);
+		long total = memberService.getTotalPages(Permission.WAIT.getStatus(), page);
+
+		SignupListResponseWithPagesDto response = SignupListResponseWithPagesDto.from(list, total);
+
 		return ApiResponse.success(SuccessCode.WAITING_LIST_READ_SUCCESS, response);
 	}
 
@@ -51,16 +57,22 @@ public class MemberController {
 	}
 
 	@GetMapping("/list/rejection/{page}")
-	public ApiResponse<List<SignupListResponseDto>> rejectionList(@PathVariable int page) {
+	public ApiResponse<SignupListResponseWithPagesDto> rejectionList(@PathVariable int page) {
 		checkAdminAccount();
-		List<SignupListResponseDto> response = memberService.getRejectionList(page);
+		List<SignupListResponseDto> list = memberService.getRejectionList(page);
+		long totalPages = memberService.getTotalPages(Permission.DENY.getStatus(), page);
+
+		SignupListResponseWithPagesDto response = SignupListResponseWithPagesDto.from(list, totalPages);
 		return ApiResponse.success(SuccessCode.REJECTION_LIST_READ_SUCCESS, response);
 	}
 
 	@GetMapping("/list/acceptance/{page}")
-	public ApiResponse<List<SignupListResponseDto>> acceptanceList(@PathVariable int page) {
+	public ApiResponse<SignupListResponseWithPagesDto> acceptanceList(@PathVariable int page) {
 		checkAdminAccount();
-		List<SignupListResponseDto> response = memberService.getAcceptanceList(page);
+		List<SignupListResponseDto> list = memberService.getAcceptanceList(page);
+		long totalPages = memberService.getTotalPages(Permission.APPROVE.getStatus(), page);
+
+		SignupListResponseWithPagesDto response = SignupListResponseWithPagesDto.from(list, totalPages);
 		return ApiResponse.success(SuccessCode.ACCEPTANCE_LIST_READ_SUCCESS, response);
 	}
 
