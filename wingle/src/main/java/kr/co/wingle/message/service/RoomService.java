@@ -106,7 +106,7 @@ public class RoomService {
 		roomRepository.save(room);
 
 		if (originType == OriginType.PROFILE) {
-			Member targetMember = memberService.findMemberByUserId(roomRequestDto.getOriginId());
+			Member targetMember = memberService.findMemberByMemberId(roomRequestDto.getOriginId());
 			roomMemberRepository.save(RoomMember.of(room, loggedInMember));
 			if (loggedInMember.getId() != roomRequestDto.getOriginId()) {
 				roomMemberRepository.save(RoomMember.of(room, targetMember));

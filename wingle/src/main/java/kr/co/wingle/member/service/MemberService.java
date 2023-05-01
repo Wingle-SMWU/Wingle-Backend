@@ -63,21 +63,21 @@ public class MemberService {
 
 	@Transactional(readOnly = true)
 	public WaitingUserResponseDto getWaitingUserInfo(Long userId) {
-		Member member = findMemberByUserId(userId);
+		Member member = findMemberByMemberId(userId);
 		String nation = profileRepository.findNationByMember(member);
 		return WaitingUserResponseDto.from(member, nation);
 	}
 
 	@Transactional
 	public MemoResponseDto saveMemo(MemoRequestDto memoRequestDto) {
-		Member member = findMemberByUserId(memoRequestDto.getUserId());
+		Member member = findMemberByMemberId(memoRequestDto.getUserId());
 		member.setMemo(memoRequestDto.getMemo());
 		return MemoResponseDto.from(memoRequestDto.getMemo());
 	}
 
 	@Transactional
 	public RejectionResponseDto saveRejectionReason(RejectionRequestDto request) {
-		Member member = findMemberByUserId(request.getUserId());
+		Member member = findMemberByMemberId(request.getUserId());
 		member.setRejectionReason(request.getReason());
 		return RejectionResponseDto.from(request.getReason());
 	}
@@ -91,9 +91,9 @@ public class MemberService {
 		// TODO: 관리자페이지에서 승인 받은 회원인지 검사
 		return true;
 	}
-
-	public Member findMemberByUserId(Long userId) {
-		return memberRepository.findById(userId)
+	
+	public Member findMemberByMemberId(Long memberId) {
+		return memberRepository.findById(memberId)
 			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 	}
 
