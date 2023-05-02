@@ -143,8 +143,8 @@ public class ProfileService {
 				ErrorCode.NO_PROFILE));
 	}
 
-	private String uploadProfileImage(MultipartFile idCardImage) {
-		return s3Util.profileImageUpload(idCardImage);
+	private String uploadProfileImage(MultipartFile profileImage) {
+		return s3Util.profileImageUpload(profileImage);
 	}
 
 	private void setRegistration(Member member) {
@@ -179,7 +179,7 @@ public class ProfileService {
 	public ProfileViewResponseDto getProfileDetail() {
 		Member member = authService.findMember();
 		Profile profile = getProfile(member);
-		String image = member.getIdCardImageUrl();
+		String image = profile.getImageUrl();
 		String nation = profile.getNation();
 		String nickname = profile.getNickname();
 		Boolean gender = profile.isGender();
