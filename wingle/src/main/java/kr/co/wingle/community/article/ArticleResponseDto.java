@@ -18,6 +18,7 @@ public class ArticleResponseDto {
 	private Long articleId;
 	private Long userId;
 	private String userNickname;
+	private String userImage;
 	private LocalDateTime createdTime;
 	private LocalDateTime updatedTime;
 	private Long forumId;
