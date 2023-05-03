@@ -43,7 +43,7 @@ public class ProfileService {
 
 	@Transactional
 	public ProfileResponseDto saveProfile(ProfileRequestDto request) {
-		Member member = authService.findLoggedInMember();
+		Member member = authService.findAcceptedLoggedInMember();
 
 		//TODO: setRegistration
 
@@ -74,7 +74,7 @@ public class ProfileService {
 
 	@Transactional
 	public LanguagesResponseDto saveLanguages(LanguagesRequestDto request) {
-		Member member = authService.findLoggedInMember();
+		Member member = authService.findAcceptedLoggedInMember();
 
 		// delete all memberLanguage
 		List<Language> allByMember = languageRepository.findAllByMember(member);
@@ -98,7 +98,7 @@ public class ProfileService {
 
 	@Transactional
 	public IntroductionResponseDto saveIntroduction(IntroductionRequestDto request) {
-		Member member = authService.findLoggedInMember();
+		Member member = authService.findAcceptedLoggedInMember();
 
 		Profile profile = getProfile(member);
 		profile.setIntroduction(request.getIntroduction());
@@ -108,7 +108,7 @@ public class ProfileService {
 
 	@Transactional
 	public InterestsResponseDto saveInterests(InterestsRequestDto request) {
-		Member member = authService.findLoggedInMember();
+		Member member = authService.findAcceptedLoggedInMember();
 
 		// delete all memberInterest
 		List<MemberInterest> allByMember = memberInterestRepository.findAllByMember(member);
@@ -154,7 +154,7 @@ public class ProfileService {
 
 	@Transactional
 	public ProfileGetResponseDto getProfile() {
-		Member member = authService.findLoggedInMember();
+		Member member = authService.findAcceptedLoggedInMember();
 		Profile profile = getProfile(member);
 
 		String imageUrl = profile.getImageUrl();
@@ -168,7 +168,7 @@ public class ProfileService {
 	}
 
 	public ProfileRegistrationResponseDto isRegister() {
-		Member member = authService.findLoggedInMember();
+		Member member = authService.findAcceptedLoggedInMember();
 		Profile profile = getProfile(member);
 
 		Boolean registration = profile.isRegistration();
@@ -177,7 +177,7 @@ public class ProfileService {
 	}
 
 	public ProfileViewResponseDto getProfileDetail() {
-		Member member = authService.findLoggedInMember();
+		Member member = authService.findAcceptedLoggedInMember();
 		Profile profile = getProfile(member);
 		String image = member.getIdCardImageUrl();
 		String nation = profile.getNation();

@@ -31,7 +31,7 @@ public class MessageService extends WritingService {
 
 	@Transactional
 	public MessageResponseDto send(MessageRequestDto messageRequestDto) {
-		Member member = authService.findLoggedInMember();
+		Member member = authService.findAcceptedLoggedInMember();
 		Room room = roomService.getRoomById(messageRequestDto.getRoomId());
 		// 해당 쪽지방에 있는지 검사
 		roomService.isValidRoomMember(member.getId(), room.getId());
@@ -43,7 +43,7 @@ public class MessageService extends WritingService {
 
 	@Transactional(readOnly = true)
 	public List<MessageResponseDto> getListByRoom(Long roomId, int page, int size) {
-		Member member = authService.findLoggedInMember();
+		Member member = authService.findAcceptedLoggedInMember();
 		roomService.isValidRoomMember(member.getId(), roomId);
 
 		Pageable pageable = PageRequest.of(page, size);

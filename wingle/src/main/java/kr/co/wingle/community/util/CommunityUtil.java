@@ -28,7 +28,7 @@ public class CommunityUtil {
 
 	// 게시판, 작성자에 따라 개인정보 가공
 	public ProcessedPersonalInformation processPersonalInformation(Writing writing) {
-		Member loggedInMember = authService.findLoggedInMember();
+		Member loggedInMember = authService.findAcceptedLoggedInMember();
 		Profile profile = profileService.getProfileByMemberId(writing.getMember().getId());
 
 		Forum forum;
