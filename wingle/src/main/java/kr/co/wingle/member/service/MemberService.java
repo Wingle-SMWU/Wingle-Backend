@@ -82,16 +82,18 @@ public class MemberService {
 		return RejectionResponseDto.from(request.getReason());
 	}
 
-	public boolean validate(long memberId) {
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new IllegalArgumentException(ErrorCode.NO_ID.getMessage()));
+	public boolean isAcceptedMember(Long memberId) {
+		Member member = findMemberByMemberId(memberId);
 		if (member.isDeleted() == true) {
-			throw new IllegalArgumentException(ErrorCode.NO_ID.getMessage());
+			throw new NotFoundException(ErrorCode.ALREADY_WITHDRAWN);
 		}
-		// TODO: 관리자페이지에서 승인 받은 회원인지 검사
+		// 관리자페이지에서 회원가입 승인 받은 회원인지 검사
+		if (member.getPermission() != 1) {
+			throw new NotFoundException(ErrorCode.FORBIDDEN_USER);
+		}
 		return true;
 	}
-	
+
 	public Member findMemberByMemberId(Long memberId) {
 		return memberRepository.findById(memberId)
 			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
