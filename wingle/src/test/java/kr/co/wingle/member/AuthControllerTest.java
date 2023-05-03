@@ -112,7 +112,7 @@ class AuthControllerTest {
 		Member member = MemberTemplate.makeTestMember();
 		MemberResponseDto responseDto = MemberResponseDto.from(member);
 
-		given(authService.findMember())
+		given(authService.findLoggedInMember())
 			.willReturn(member);
 
 		MockHttpServletRequestBuilder builder = get("/api/v1/auth/me")

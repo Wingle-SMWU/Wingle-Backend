@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
-import kr.co.wingle.common.util.SecurityUtil;
 import kr.co.wingle.member.dto.CertificationRequestDto;
 import kr.co.wingle.member.dto.CertificationResponseDto;
 import kr.co.wingle.member.dto.EmailRequestDto;
@@ -53,7 +52,7 @@ public class AuthController {
 
 	@GetMapping("/me")
 	public ApiResponse<MemberResponseDto> getMyAccount() {
-		Member member = authService.findMember();
+		Member member = authService.findLoggedInMember();
 		MemberResponseDto response = MemberResponseDto.from(member);
 		return ApiResponse.success(SuccessCode.ACCOUNT_READ_SUCCESS, response);
 	}

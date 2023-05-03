@@ -30,7 +30,7 @@ public class ArticleService extends WritingService {
 
 	@Transactional
 	public ArticleResponseDto create(ArticleRequestDto request) {
-		Member member = authService.findMember();
+		Member member = authService.findLoggedInMember();
 		Forum forum = forumService.getForumById(request.getForumId());
 
 		// 공지 작성 방지
@@ -65,7 +65,7 @@ public class ArticleService extends WritingService {
 		Pageable pageable = PageRequest.of(page, size);
 		List<Article> pages;
 		if (getMine) {
-			Member member = authService.findMember();
+			Member member = authService.findLoggedInMember();
 			pages = articleRepository.findByForumIdAndMemberIdAndIsDeleted(forumId, member.getId(), false, pageable);
 		} else {
 			pages = articleRepository.findByForumIdAndIsDeleted(forumId, false, pageable);
@@ -80,7 +80,7 @@ public class ArticleService extends WritingService {
 
 	@Transactional
 	public Long delete(Long forumId, Long articleId) {
-		Member member = authService.findMember();
+		Member member = authService.findLoggedInMember();
 		Article article = getArticleById(articleId);
 
 		if (isValidMember(article, member) && isExist(article) && isValidForum(article, forumId)) {

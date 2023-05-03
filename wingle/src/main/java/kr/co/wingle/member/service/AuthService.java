@@ -105,9 +105,15 @@ public class AuthService {
 	}
 
 	@Transactional(readOnly = true)
-	public Member findMember() {
+	public Member findLoggedInMember() {
 		return memberRepository.findByEmail(SecurityUtil.getCurrentUserEmail())
 			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+	}
+
+	@Transactional(readOnly = true)
+	public Member findAcceptedLoggedInMember() {
+		Member member = findLoggedInMember();
+
 	}
 
 	@Transactional

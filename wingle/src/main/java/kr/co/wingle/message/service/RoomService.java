@@ -55,7 +55,7 @@ public class RoomService {
 	@Transactional
 	public RoomResponseDto getRoom(RoomRequestDto roomRequestDto) {
 		final int oneToOneRoomSize = 2;
-		Member loggedInMember = authService.findMember();
+		Member loggedInMember = authService.findLoggedInMember();
 		OriginType originType = OriginType.from(roomRequestDto.getOriginType());
 		Room targetRoom = null;
 
@@ -97,7 +97,7 @@ public class RoomService {
 
 	@Transactional
 	private Room createRoom(RoomRequestDto roomRequestDto) {
-		Member loggedInMember = authService.findMember();
+		Member loggedInMember = authService.findLoggedInMember();
 		OriginType originType = OriginType.from(roomRequestDto.getOriginType());
 		if (!isValidOriginTypeAndId(originType, roomRequestDto.getOriginId())) {
 			throw new NotFoundException(ErrorCode.BAD_PARAMETER);
@@ -118,7 +118,7 @@ public class RoomService {
 
 	@Transactional(readOnly = true)
 	private boolean isValidOriginTypeAndId(OriginType originType, Long id) {
-		Member member = authService.findMember();
+		Member member = authService.findLoggedInMember();
 		boolean isDeleted = switch (originType) {
 			case ARTICLE -> articleService.getArticleById(id).isDeleted();
 			case COMMENT -> commentService.getCommentById(id).isDeleted();
@@ -138,7 +138,7 @@ public class RoomService {
 	}
 
 	public List<RoomResponseDto> getMyList(int page, int size) {
-		Member member = authService.findMember();
+		Member member = authService.findLoggedInMember();
 		Pageable pageable = PageRequest.of(page, size);
 		List<RoomMember> pages = roomMemberRepository.findByMemberIdAndIsDeleted(member.getId(), false, pageable);
 
