@@ -99,6 +99,13 @@ public class MemberService {
 			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 	}
 
+	public Member findAcceptedMemberByMemberId(Long memberId) {
+		if (!isAcceptedMember(memberId)) {
+			throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+		}
+		return findMemberByMemberId(memberId);
+	}
+
 	public long getTotalPages(int permission, int page) {
 		PageRequest pageRequest = PageRequest.of(page, pageSize);
 		Page<Member> pages = memberRepository.findAllByPermission(permission, pageRequest);
