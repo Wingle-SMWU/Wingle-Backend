@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.wingle.common.constants.ErrorCode;
+import kr.co.wingle.common.exception.ForbiddenException;
 import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.member.MemberRepository;
 import kr.co.wingle.member.dto.MemoRequestDto;
@@ -89,7 +90,7 @@ public class MemberService {
 		}
 		// 관리자페이지에서 회원가입 승인 받은 회원인지 검사
 		if (member.getPermission() != Permission.APPROVE.getStatus()) {
-			throw new NotFoundException(ErrorCode.FORBIDDEN_USER);
+			throw new ForbiddenException(ErrorCode.NOT_ACCEPTED);
 		}
 		return true;
 	}
