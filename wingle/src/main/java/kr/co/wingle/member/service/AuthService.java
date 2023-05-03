@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.CustomException;
 import kr.co.wingle.common.exception.DuplicateException;
+import kr.co.wingle.common.exception.ForbiddenException;
 import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.common.jwt.TokenInfo;
 import kr.co.wingle.common.jwt.TokenProvider;
@@ -113,7 +114,10 @@ public class AuthService {
 	@Transactional(readOnly = true)
 	public Member findAcceptedLoggedInMember() {
 		Member member = findLoggedInMember();
-
+		if (!memberService.isAcceptedMember(member.getId())) {
+			throw new ForbiddenException(ErrorCode.NOT_ACCEPTED);
+		}
+		return member;
 	}
 
 	@Transactional
