@@ -167,7 +167,7 @@ public class AuthService {
 	@Transactional
 	public PermissionResponseDto sendAcceptanceMail(AcceptanceRequestDto acceptanceRequestDto) {
 		Long userId = acceptanceRequestDto.getUserId();
-		Member member = validateMember(userId);
+		Member member = memberService.findMemberByMemberId(userId);
 		if (member.getPermission() == Permission.APPROVE.getStatus())
 			throw new CustomException(ErrorCode.ALREADY_ACCEPTANCE);
 
@@ -179,7 +179,7 @@ public class AuthService {
 	@Transactional
 	public PermissionResponseDto sendRejectionMail(RejectionRequestDto rejectionRequestDto) {
 		Long userId = rejectionRequestDto.getUserId();
-		Member member = validateMember(userId);
+		Member member = memberService.findMemberByMemberId(userId);
 		if (member.getPermission() == Permission.DENY.getStatus())
 			throw new CustomException(ErrorCode.ALREADY_DENY);
 		if (member.getPermission() == Permission.APPROVE.getStatus())
@@ -239,10 +239,5 @@ public class AuthService {
 
 	private String uploadIdCardImage(MultipartFile idCardImage) {
 		return s3Util.idCardImageUpload(idCardImage);
-	}
-
-	private Member validateMember(Long userId) {
-		return memberRepository.findById(userId)
-			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 	}
 }
