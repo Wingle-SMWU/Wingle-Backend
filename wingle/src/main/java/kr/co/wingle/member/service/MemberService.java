@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.wingle.common.constants.ErrorCode;
+import kr.co.wingle.common.exception.ForbiddenException;
 import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.member.MemberRepository;
 import kr.co.wingle.member.dto.MemoRequestDto;
@@ -63,38 +64,47 @@ public class MemberService {
 
 	@Transactional(readOnly = true)
 	public WaitingUserResponseDto getWaitingUserInfo(Long userId) {
-		Member member = findMemberByUserId(userId);
+		Member member = findMemberByMemberId(userId);
 		String nation = profileRepository.findNationByMember(member);
 		return WaitingUserResponseDto.from(member, nation);
 	}
 
 	@Transactional
 	public MemoResponseDto saveMemo(MemoRequestDto memoRequestDto) {
-		Member member = findMemberByUserId(memoRequestDto.getUserId());
+		Member member = findMemberByMemberId(memoRequestDto.getUserId());
 		member.setMemo(memoRequestDto.getMemo());
 		return MemoResponseDto.from(memoRequestDto.getMemo());
 	}
 
 	@Transactional
 	public RejectionResponseDto saveRejectionReason(RejectionRequestDto request) {
-		Member member = findMemberByUserId(request.getUserId());
+		Member member = findMemberByMemberId(request.getUserId());
 		member.setRejectionReason(request.getReason());
 		return RejectionResponseDto.from(request.getReason());
 	}
 
-	public boolean validate(long memberId) {
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new IllegalArgumentException(ErrorCode.NO_ID.getMessage()));
+	public boolean isAcceptedMember(Long memberId) {
+		Member member = findMemberByMemberId(memberId);
 		if (member.isDeleted() == true) {
-			throw new IllegalArgumentException(ErrorCode.NO_ID.getMessage());
+			throw new NotFoundException(ErrorCode.ALREADY_WITHDRAWN);
 		}
-		// TODO: 관리자페이지에서 승인 받은 회원인지 검사
+		// 관리자페이지에서 회원가입 승인 받은 회원인지 검사
+		if (member.getPermission() != Permission.APPROVE.getStatus()) {
+			throw new ForbiddenException(ErrorCode.NOT_ACCEPTED);
+		}
 		return true;
 	}
 
-	public Member findMemberByUserId(Long userId) {
-		return memberRepository.findById(userId)
+	public Member findMemberByMemberId(Long memberId) {
+		return memberRepository.findById(memberId)
 			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+	}
+
+	public Member findAcceptedMemberByMemberId(Long memberId) {
+		if (!isAcceptedMember(memberId)) {
+			throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+		}
+		return findMemberByMemberId(memberId);
 	}
 
 	public long getTotalPages(int permission, int page) {

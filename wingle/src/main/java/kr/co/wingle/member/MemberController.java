@@ -106,7 +106,7 @@ public class MemberController {
 	}
 
 	private void checkAdminAccount() {
-		Member member = authService.findMember();
+		Member member = authService.findLoggedInMember();
 		if (member.getAuthority() == Authority.ROLE_USER) {
 			throw new ForbiddenException(ErrorCode.FORBIDDEN_USER);
 		}

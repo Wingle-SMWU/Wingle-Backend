@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.CustomException;
 import kr.co.wingle.common.exception.DuplicateException;
+import kr.co.wingle.common.exception.ForbiddenException;
 import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.common.jwt.TokenInfo;
 import kr.co.wingle.common.jwt.TokenProvider;
@@ -105,9 +106,18 @@ public class AuthService {
 	}
 
 	@Transactional(readOnly = true)
-	public Member findMember() {
+	public Member findLoggedInMember() {
 		return memberRepository.findByEmail(SecurityUtil.getCurrentUserEmail())
 			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+	}
+
+	@Transactional(readOnly = true)
+	public Member findAcceptedLoggedInMember() {
+		Member member = findLoggedInMember();
+		if (!memberService.isAcceptedMember(member.getId())) {
+			throw new ForbiddenException(ErrorCode.NOT_ACCEPTED);
+		}
+		return member;
 	}
 
 	@Transactional
@@ -161,7 +171,7 @@ public class AuthService {
 	@Transactional
 	public PermissionResponseDto sendAcceptanceMail(AcceptanceRequestDto acceptanceRequestDto) {
 		Long userId = acceptanceRequestDto.getUserId();
-		Member member = validateMember(userId);
+		Member member = memberService.findMemberByMemberId(userId);
 		if (member.getPermission() == Permission.APPROVE.getStatus())
 			throw new CustomException(ErrorCode.ALREADY_ACCEPTANCE);
 
@@ -173,7 +183,7 @@ public class AuthService {
 	@Transactional
 	public PermissionResponseDto sendRejectionMail(RejectionRequestDto rejectionRequestDto) {
 		Long userId = rejectionRequestDto.getUserId();
-		Member member = validateMember(userId);
+		Member member = memberService.findMemberByMemberId(userId);
 		if (member.getPermission() == Permission.DENY.getStatus())
 			throw new CustomException(ErrorCode.ALREADY_DENY);
 		if (member.getPermission() == Permission.APPROVE.getStatus())
@@ -233,10 +243,5 @@ public class AuthService {
 
 	private String uploadIdCardImage(MultipartFile idCardImage) {
 		return s3Util.idCardImageUpload(idCardImage);
-	}
-
-	private Member validateMember(Long userId) {
-		return memberRepository.findById(userId)
-			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 	}
 }

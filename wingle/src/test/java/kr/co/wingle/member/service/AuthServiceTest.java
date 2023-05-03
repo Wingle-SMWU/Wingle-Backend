@@ -27,8 +27,8 @@ import kr.co.wingle.member.dto.TokenDto;
 import kr.co.wingle.member.dto.TokenRequestDto;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.entity.TermMember;
-import kr.co.wingle.profile.entity.Profile;
 import kr.co.wingle.profile.ProfileRepository;
+import kr.co.wingle.profile.entity.Profile;
 
 @SpringBootTest
 @WithMockUser(value = EMAIL, password = PASSWORD)
@@ -97,7 +97,7 @@ class AuthServiceTest {
 		memberRepository.save(member);
 
 		//when
-		Member findMember = authService.findMember();
+		Member findMember = authService.findLoggedInMember();
 
 		//then
 		assertThat(findMember.getEmail()).isEqualTo(member.getEmail());
@@ -110,7 +110,7 @@ class AuthServiceTest {
 		//when
 
 		//then
-		assertThatThrownBy(() -> authService.findMember()).isInstanceOf(NotFoundException.class)
+		assertThatThrownBy(() -> authService.findLoggedInMember()).isInstanceOf(NotFoundException.class)
 			.hasMessage(ErrorCode.USER_NOT_FOUND.getMessage());
 	}
 

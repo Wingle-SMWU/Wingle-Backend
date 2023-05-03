@@ -14,7 +14,7 @@ public class WritingUtil {
 
 	@Transactional(readOnly = true)
 	public boolean isMine(Writing writing) {
-		Member loggedInMember = authService.findMember();
+		Member loggedInMember = authService.findAcceptedLoggedInMember();
 		boolean isMine = writing.getMember().getId() == loggedInMember.getId() ? true : false;
 		return isMine;
 	}

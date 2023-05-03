@@ -15,7 +15,7 @@ public abstract class WritingService {
 
 	@Transactional
 	protected WritingDto softDelete(Long memberId, Long writingId, WritingRepository repository) {
-		memberService.validate(memberId);
+		memberService.isAcceptedMember(memberId);
 		Writing writing = repository.findById(writingId)
 			.orElseThrow(() -> new IllegalArgumentException(ErrorCode.NO_ID.getMessage()));
 		if (writing.getMember().getId() != memberId) {
