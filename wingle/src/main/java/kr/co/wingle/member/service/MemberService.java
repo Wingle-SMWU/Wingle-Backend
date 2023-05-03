@@ -88,7 +88,7 @@ public class MemberService {
 			throw new NotFoundException(ErrorCode.ALREADY_WITHDRAWN);
 		}
 		// 관리자페이지에서 회원가입 승인 받은 회원인지 검사
-		if (member.getPermission() != 1) {
+		if (member.getPermission() != Permission.APPROVE.getStatus()) {
 			throw new NotFoundException(ErrorCode.FORBIDDEN_USER);
 		}
 		return true;
