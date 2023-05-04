@@ -88,8 +88,8 @@ public class MemberService {
 		if (member.isDeleted() == true) {
 			throw new NotFoundException(ErrorCode.ALREADY_WITHDRAWN);
 		}
-		// 관리자페이지에서 회원가입 승인 받은 회원인지 검사
-		if (member.getPermission() != Permission.APPROVE.getStatus()) {
+		// 관리자페이지에서 회원가입 승인 받은 회원인지 or 관리자인지 검사
+		if (member.getPermission() == Permission.WAIT.getStatus()) {
 			throw new ForbiddenException(ErrorCode.NOT_ACCEPTED);
 		}
 		return true;
