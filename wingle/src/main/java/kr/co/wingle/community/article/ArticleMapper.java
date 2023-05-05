@@ -39,6 +39,7 @@ public class ArticleMapper {
 		articleResponseDto.isMine(processedPersonalInformation.isMine());
 		articleResponseDto.userId(processedPersonalInformation.getProcessedMemberId());
 		articleResponseDto.userImage(profileService.getProfileByMemberId(article.getMember().getId()).getImageUrl());
+		articleResponseDto.userNation(profileService.getProfileByMemberId(article.getMember().getId()).getNation());
 		articleResponseDto.forumId(article.getForum().getId());
 
 		return articleResponseDto.build();
