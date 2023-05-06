@@ -1,5 +1,5 @@
 <configuration>
-    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+    <!--    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>-->
 
     <springProperty name="AWS_ACCESS_KEY" source="cloud.aws.credentials.accessKey"/>
     <springProperty name="AWS_SECRET_KEY" source="cloud.aws.credentials.secretKey"/>
@@ -9,12 +9,25 @@
     <property name="LOG_PATTERN_PROD"
               value="[%d{yyyy-MM-dd HH:mm:ss}:%-4relative] [%thread] %-5level [%C.%M:%L] - %msg%n"/>
 
+    <!-- DEV 로그 설정 -->
+    <springProfile name="dev">
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <Pattern>${LOG_PATTERN_DEV}</Pattern>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="STDOUT"/>
+        </root>
+    </springProfile>
+
     <springProfile name="prod">
-        <appender name="Wingle-prod-log" class="ch.pjer.logback.AwsLogsAppender">
+        <appender name="Wingle-prod-log" class="ca.pjer.logback.AwsLogsAppender">
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>INFO</level>
             </filter>
-            <layout class="ch.qos.logback.classic.PatternLayout">
+            <layout>
                 <pattern>${LOG_PATTERN_PROD}</pattern>
             </layout>
             <logGroupName>Wingle-prod-log</logGroupName>
