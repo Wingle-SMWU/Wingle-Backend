@@ -22,25 +22,27 @@
         </root>
     </springProfile>
 
+    <!-- PROD 로그 설정 -->
     <springProfile name="prod">
-        <appender name="Wingle-prod-log" class="ca.pjer.logback.AwsLogsAppender">
-            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-                <level>INFO</level>
-            </filter>
-            <layout>
-                <pattern>${LOG_PATTERN_PROD}</pattern>
-            </layout>
-            <logGroupName>Wingle-prod-log</logGroupName>
-            <logStreamUuidPrefix>Wingle-prod-log-
-            </logStreamUuidPrefix>  <!-- 로그 스트림의 UUID. ex) Wingle-prod-log-1h1i2857d-a809-b1f4-2d9g8ba9379b -->
-            <logRegion>ap-northeast-2</logRegion>   <!-- aws 리전 -->
-            <maxBatchLogEvents>50</maxBatchLogEvents>   <!-- 로그가 N개 쌓이면 바로 cloudwatch에 기록한다 -->
-            <maxFlushTimeMillis>30000</maxFlushTimeMillis>  <!-- 로그가 쌓이기 시작한지 N 밀리초가 지나면 기록한다 -->
-            <maxBlockTimeMillis>5000
-            </maxBlockTimeMillis>   <!-- 로그가 전송되는 시작한 후 N 밀리초 동안은 코드 실행을 멈춘다(0일 경우 전송중 발생하는 모든 로그를 버린다) -->
-            <retentionTimeDays>7</retentionTimeDays>    <!-- 로그 그룹 보존 기간(0일 경우, 영구히 보존한다) -->
-            <accessKeyId>${AWS_ACCESS_KEY}</accessKeyId>
-            <secretAccessKey>${AWS_SECRET_KEY}</secretAccessKey>
-        </appender>
+        <root level="info">
+            <appender name="Wingle-prod-log" class="ca.pjer.logback.AwsLogsAppender">
+                <layout>
+                    <pattern>${LOG_PATTERN_PROD}</pattern>
+                </layout>
+
+                <logGroupName>Wingle-prod-log</logGroupName>
+                <logStreamUuidPrefix>Wingle-prod-log-
+                </logStreamUuidPrefix>  <!-- 로그 스트림의 UUID. ex) Wingle-prod-log-1h1i2857d-a809-b1f4-2d9g8ba9379b -->
+                <logRegion>ap-northeast-2</logRegion>   <!-- aws 리전 -->
+                <maxBatchLogEvents>50</maxBatchLogEvents>   <!-- 로그가 N개 쌓이면 바로 cloudwatch에 기록한다 -->
+                <maxFlushTimeMillis>30000</maxFlushTimeMillis>  <!-- 로그가 쌓이기 시작한지 N 밀리초가 지나면 기록한다 -->
+                <maxBlockTimeMillis>5000
+                </maxBlockTimeMillis>   <!-- 로그가 전송되는 시작한 후 N 밀리초 동안은 코드 실행을 멈춘다(0일 경우 전송중 발생하는 모든 로그를 버린다) -->
+                <retentionTimeDays>7</retentionTimeDays>    <!-- 로그 그룹 보존 기간(0일 경우, 영구히 보존한다) -->
+
+                <accessKeyId>${AWS_ACCESS_KEY}</accessKeyId>
+                <secretAccessKey>${AWS_SECRET_KEY}</secretAccessKey>
+            </appender>
+        </root>
     </springProfile>
 </configuration>
