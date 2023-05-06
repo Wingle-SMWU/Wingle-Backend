@@ -12,7 +12,7 @@
     <springProfile name="prod">
         <appender name="Wingle-prod-log" class="ch.pjer.logback.AwsLogsAppender">
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-                <level>ERROR</level>
+                <level>INFO</level>
             </filter>
             <layout class="ch.qos.logback.classic.PatternLayout">
                 <pattern>${LOG_PATTERN_PROD}</pattern>
