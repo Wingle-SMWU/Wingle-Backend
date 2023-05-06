@@ -49,6 +49,8 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.5.3.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
     testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+
+    implementation group: 'ca.pjer', name: 'logback-awslogs-appender', version: '1.6.0'
 }
 
 tasks.named('test') {

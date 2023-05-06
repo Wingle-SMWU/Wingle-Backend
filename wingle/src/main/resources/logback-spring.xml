@@ -1,82 +1,82 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-    <timestamp key="BY_DATE" datePattern="yyyy-MM-dd"/>
-    <property name="LOG_PATTERN_DEV"
-              value="[%d{yyyy-MM-dd HH:mm:ss}:%-4relative] %green([%thread]) %highlight(%-5level) %boldWhite([%C.%M:%yellow(%L)]) - %msg%n"/>
-    <property name="LOG_PATTERN_PROD"
-              value="[%d{yyyy-MM-dd HH:mm:ss}:%-4relative] [%thread] %-5level [%C.%M:%L] - %msg%n"/>
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<configuration>-->
+<!--    <timestamp key="BY_DATE" datePattern="yyyy-MM-dd"/>-->
+<!--    <property name="LOG_PATTERN_DEV"-->
+<!--              value="[%d{yyyy-MM-dd HH:mm:ss}:%-4relative] %green([%thread]) %highlight(%-5level) %boldWhite([%C.%M:%yellow(%L)]) - %msg%n"/>-->
+<!--    <property name="LOG_PATTERN_PROD"-->
+<!--              value="[%d{yyyy-MM-dd HH:mm:ss}:%-4relative] [%thread] %-5level [%C.%M:%L] - %msg%n"/>-->
 
-    <springProfile name="dev">
-        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder>
-                <Pattern>${LOG_PATTERN_DEV}</Pattern>
-            </encoder>
-        </appender>
+<!--    <springProfile name="dev">-->
+<!--        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">-->
+<!--            <encoder>-->
+<!--                <Pattern>${LOG_PATTERN_DEV}</Pattern>-->
+<!--            </encoder>-->
+<!--        </appender>-->
 
-        <root level="INFO">
-            <appender-ref ref="STDOUT"/>
-        </root>
-    </springProfile>
+<!--        <root level="INFO">-->
+<!--            <appender-ref ref="STDOUT"/>-->
+<!--        </root>-->
+<!--    </springProfile>-->
 
-    <springProfile name="prod">
-        <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <file>./log/info/info-${BY_DATE}.log</file>
-            <filter class="ch.qos.logback.classic.filter.LevelFilter">
-                <level>INFO</level>
-                <onMatch>ACCEPT</onMatch> <!-- 해당 레벨만 기록 -->
-                <onMismatch>DENY</onMismatch> <!-- 다른 수준의 레벨은 기록하지 않는다.(상위 레벨도 기록 안함), 상위 수준의 레벨에 대한 기록을 원하면 ACCEPT 로 하면 기록된다. -->
-            </filter>
-            <encoder>
-                <pattern>${LOG_PATTERN_PROD}</pattern>
-            </encoder>
-            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-                <fileNamePattern> ./backup/info/info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-                <maxFileSize>100MB</maxFileSize> <!-- 한 파일의 최대 용량 -->
-                <maxHistory>180</maxHistory> <!-- 한 파일의 최대 저장 기한(일), 지나면 폐기됨 -->
-                <totalSizeCap>3GB</totalSizeCap> <!-- 전체 파일 크기를 제어하여, 전체 크기 제한을 초과하면 가장 오래된 파일을 삭제 -->
-            </rollingPolicy>
-        </appender>
+<!--    <springProfile name="prod">-->
+<!--        <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--            <file>./log/info/info-${BY_DATE}.log</file>-->
+<!--            <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
+<!--                <level>INFO</level>-->
+<!--                <onMatch>ACCEPT</onMatch> &lt;!&ndash; 해당 레벨만 기록 &ndash;&gt;-->
+<!--                <onMismatch>DENY</onMismatch> &lt;!&ndash; 다른 수준의 레벨은 기록하지 않는다.(상위 레벨도 기록 안함), 상위 수준의 레벨에 대한 기록을 원하면 ACCEPT 로 하면 기록된다. &ndash;&gt;-->
+<!--            </filter>-->
+<!--            <encoder>-->
+<!--                <pattern>${LOG_PATTERN_PROD}</pattern>-->
+<!--            </encoder>-->
+<!--            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">-->
+<!--                <fileNamePattern> ./backup/info/info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>-->
+<!--                <maxFileSize>100MB</maxFileSize> &lt;!&ndash; 한 파일의 최대 용량 &ndash;&gt;-->
+<!--                <maxHistory>180</maxHistory> &lt;!&ndash; 한 파일의 최대 저장 기한(일), 지나면 폐기됨 &ndash;&gt;-->
+<!--                <totalSizeCap>3GB</totalSizeCap> &lt;!&ndash; 전체 파일 크기를 제어하여, 전체 크기 제한을 초과하면 가장 오래된 파일을 삭제 &ndash;&gt;-->
+<!--            </rollingPolicy>-->
+<!--        </appender>-->
 
-        <appender name="WARN_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <file>./log/warn/warn-${BY_DATE}.log</file>
-            <filter class="ch.qos.logback.classic.filter.LevelFilter">
-                <level>WARN</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
-            </filter>
-            <encoder>
-                <pattern>${LOG_PATTERN_PROD}</pattern>
-            </encoder>
-            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-                <fileNamePattern> ./backup/warn/warn-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-                <maxFileSize>100MB</maxFileSize>
-                <maxHistory>30</maxHistory>
-                <totalSizeCap>3GB</totalSizeCap>
-            </rollingPolicy>
-        </appender>
+<!--        <appender name="WARN_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--            <file>./log/warn/warn-${BY_DATE}.log</file>-->
+<!--            <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
+<!--                <level>WARN</level>-->
+<!--                <onMatch>ACCEPT</onMatch>-->
+<!--                <onMismatch>DENY</onMismatch>-->
+<!--            </filter>-->
+<!--            <encoder>-->
+<!--                <pattern>${LOG_PATTERN_PROD}</pattern>-->
+<!--            </encoder>-->
+<!--            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">-->
+<!--                <fileNamePattern> ./backup/warn/warn-%d{yyyy-MM-dd}.%i.log</fileNamePattern>-->
+<!--                <maxFileSize>100MB</maxFileSize>-->
+<!--                <maxHistory>30</maxHistory>-->
+<!--                <totalSizeCap>3GB</totalSizeCap>-->
+<!--            </rollingPolicy>-->
+<!--        </appender>-->
 
-        <appender name="ERROR_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <file>./log/error/error-${BY_DATE}.log</file>
-            <filter class="ch.qos.logback.classic.filter.LevelFilter">
-                <level>ERROR</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
-            </filter>
-            <encoder>
-                <pattern>${LOG_PATTERN_PROD}</pattern>
-            </encoder>
-            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-                <fileNamePattern> ./backup/error/error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-                <maxFileSize>100MB</maxFileSize>
-                <maxHistory>30</maxHistory>
-                <totalSizeCap>3GB</totalSizeCap>
-            </rollingPolicy>
-        </appender>
+<!--        <appender name="ERROR_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--            <file>./log/error/error-${BY_DATE}.log</file>-->
+<!--            <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
+<!--                <level>ERROR</level>-->
+<!--                <onMatch>ACCEPT</onMatch>-->
+<!--                <onMismatch>DENY</onMismatch>-->
+<!--            </filter>-->
+<!--            <encoder>-->
+<!--                <pattern>${LOG_PATTERN_PROD}</pattern>-->
+<!--            </encoder>-->
+<!--            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">-->
+<!--                <fileNamePattern> ./backup/error/error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>-->
+<!--                <maxFileSize>100MB</maxFileSize>-->
+<!--                <maxHistory>30</maxHistory>-->
+<!--                <totalSizeCap>3GB</totalSizeCap>-->
+<!--            </rollingPolicy>-->
+<!--        </appender>-->
 
-         <root level="INFO">
-            <appender-ref ref="INFO_LOG"/>
-            <appender-ref ref="WARN_LOG"/>
-            <appender-ref ref="ERROR_LOG"/>
-        </root>
-    </springProfile>
-</configuration>
+<!--         <root level="INFO">-->
+<!--            <appender-ref ref="INFO_LOG"/>-->
+<!--            <appender-ref ref="WARN_LOG"/>-->
+<!--            <appender-ref ref="ERROR_LOG"/>-->
+<!--        </root>-->
+<!--    </springProfile>-->
+<!--</configuration>-->
