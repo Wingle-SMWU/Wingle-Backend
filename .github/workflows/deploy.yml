@@ -83,6 +83,14 @@ jobs:
           mkdir info
           mkdir warn
           mkdir error
+          
+      - name: Make asciidoc directories
+        run: |
+          cd ./wingle
+          mkdir build
+          cd ./build
+          mkdir generated-snippets
+       
       - name: Grant execute permission for gradlew
         run: chmod +x ./wingle/gradlew
 
