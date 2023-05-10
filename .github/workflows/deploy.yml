@@ -89,6 +89,7 @@ jobs:
           cd ./wingle
           mkdir build
           cd ./build
+          pwd
           mkdir generated-snippets
        
       - name: Grant execute permission for gradlew
