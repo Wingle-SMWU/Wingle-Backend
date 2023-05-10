@@ -91,6 +91,7 @@ jobs:
           cd ./build
           pwd
           mkdir generated-snippets
+          ls
           
        
       - name: Grant execute permission for gradlew
