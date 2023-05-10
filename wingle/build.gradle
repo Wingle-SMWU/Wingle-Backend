@@ -50,6 +50,8 @@ dependencies {
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
     testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 
+    implementation group: 'ca.pjer', name: 'logback-awslogs-appender', version: '1.6.0'
+
     // spring rest docs
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'

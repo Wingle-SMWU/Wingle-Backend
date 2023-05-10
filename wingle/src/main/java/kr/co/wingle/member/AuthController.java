@@ -28,7 +28,9 @@ import kr.co.wingle.member.dto.TokenRequestDto;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("api/v1/auth")
 @RequiredArgsConstructor
@@ -44,12 +46,13 @@ public class AuthController {
 	@PostMapping("/login")
 	public ApiResponse<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto loginRequestDto) {
 		LoginResponseDto response = authService.login(loginRequestDto);
+		log.info("[{}] login success", loginRequestDto.getEmail());
 		return ApiResponse.success(SuccessCode.LOGIN_SUCCESS, response);
 	}
 
 	@GetMapping("/me")
 	public ApiResponse<MemberResponseDto> getMyAccount() {
-		Member member = authService.findMember();
+		Member member = authService.findLoggedInMember();
 		MemberResponseDto response = MemberResponseDto.from(member);
 		return ApiResponse.success(SuccessCode.ACCOUNT_READ_SUCCESS, response);
 	}

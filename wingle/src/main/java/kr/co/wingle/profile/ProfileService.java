@@ -16,18 +16,18 @@ import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.profile.dto.InterestsRequestDto;
 import kr.co.wingle.profile.dto.InterestsResponseDto;
 import kr.co.wingle.profile.dto.IntroductionRequestDto;
+import kr.co.wingle.profile.dto.IntroductionResponseDto;
 import kr.co.wingle.profile.dto.LanguagesRequestDto;
 import kr.co.wingle.profile.dto.LanguagesResponseDto;
 import kr.co.wingle.profile.dto.ProfileGetResponseDto;
 import kr.co.wingle.profile.dto.ProfileRegistrationResponseDto;
 import kr.co.wingle.profile.dto.ProfileRequestDto;
-import kr.co.wingle.profile.dto.IntroductionResponseDto;
 import kr.co.wingle.profile.dto.ProfileResponseDto;
+import kr.co.wingle.profile.dto.ProfileViewResponseDto;
 import kr.co.wingle.profile.entity.Interest;
 import kr.co.wingle.profile.entity.Language;
 import kr.co.wingle.profile.entity.MemberInterest;
 import kr.co.wingle.profile.entity.Profile;
-import kr.co.wingle.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -43,7 +43,7 @@ public class ProfileService {
 
 	@Transactional
 	public ProfileResponseDto saveProfile(ProfileRequestDto request) {
-		Member member = authService.findMember();
+		Member member = authService.findAcceptedLoggedInMember();
 
 		//TODO: setRegistration
 
@@ -74,7 +74,7 @@ public class ProfileService {
 
 	@Transactional
 	public LanguagesResponseDto saveLanguages(LanguagesRequestDto request) {
-		Member member = authService.findMember();
+		Member member = authService.findAcceptedLoggedInMember();
 
 		// delete all memberLanguage
 		List<Language> allByMember = languageRepository.findAllByMember(member);
@@ -98,7 +98,7 @@ public class ProfileService {
 
 	@Transactional
 	public IntroductionResponseDto saveIntroduction(IntroductionRequestDto request) {
-		Member member = authService.findMember();
+		Member member = authService.findAcceptedLoggedInMember();
 
 		Profile profile = getProfile(member);
 		profile.setIntroduction(request.getIntroduction());
@@ -108,7 +108,7 @@ public class ProfileService {
 
 	@Transactional
 	public InterestsResponseDto saveInterests(InterestsRequestDto request) {
-		Member member = authService.findMember();
+		Member member = authService.findAcceptedLoggedInMember();
 
 		// delete all memberInterest
 		List<MemberInterest> allByMember = memberInterestRepository.findAllByMember(member);
@@ -141,10 +141,10 @@ public class ProfileService {
 		return profileRepository.findByMemberId(memberId)
 			.orElseThrow(() -> new NotFoundException(
 				ErrorCode.NO_PROFILE));
-    }
-    
-	private String uploadProfileImage(MultipartFile idCardImage) {
-		return s3Util.profileImageUpload(idCardImage);
+	}
+
+	private String uploadProfileImage(MultipartFile profileImage) {
+		return s3Util.profileImageUpload(profileImage);
 	}
 
 	private void setRegistration(Member member) {
@@ -154,7 +154,7 @@ public class ProfileService {
 
 	@Transactional
 	public ProfileGetResponseDto getProfile() {
-		Member member = authService.findMember();
+		Member member = authService.findAcceptedLoggedInMember();
 		Profile profile = getProfile(member);
 
 		String imageUrl = profile.getImageUrl();
@@ -168,11 +168,34 @@ public class ProfileService {
 	}
 
 	public ProfileRegistrationResponseDto isRegister() {
-		Member member = authService.findMember();
+		Member member = authService.findAcceptedLoggedInMember();
 		Profile profile = getProfile(member);
 
 		Boolean registration = profile.isRegistration();
-		ProfileRegistrationResponseDto reponse = ProfileRegistrationResponseDto.of(registration);
-		return reponse;
+		ProfileRegistrationResponseDto response = ProfileRegistrationResponseDto.of(registration);
+		return response;
+	}
+
+	public ProfileViewResponseDto getProfileDetail() {
+		Member member = authService.findAcceptedLoggedInMember();
+		Profile profile = getProfile(member);
+		String image = profile.getImageUrl();
+		String nation = profile.getNation();
+		String nickname = profile.getNickname();
+		Boolean gender = profile.isGender();
+		List<LanguagesResponseDto.LanguageDto> languages = languageRepository.findAllByMemberOrderByOrderNumberAsc(
+				member).stream()
+			.map(language ->
+				LanguagesResponseDto.LanguageDto.of(language.getOrderNumber(), language.getName())
+			).toList();
+		List<MemberInterest> memberInterests = memberInterestRepository.findAllByMember(member);
+		List<String> interests = memberInterests.stream()
+			.map(memberInterest -> memberInterest.getInterest().getName())
+			.toList();
+
+		String introduce = profile.getIntroduction();
+		String sns = snsRepository.findAllByMember(member);
+
+		return ProfileViewResponseDto.of(image, nation, nickname, gender, languages, interests, introduce, sns);
 	}
 }

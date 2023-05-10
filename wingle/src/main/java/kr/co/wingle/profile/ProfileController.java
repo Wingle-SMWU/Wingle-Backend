@@ -15,13 +15,14 @@ import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.profile.dto.InterestsRequestDto;
 import kr.co.wingle.profile.dto.InterestsResponseDto;
 import kr.co.wingle.profile.dto.IntroductionRequestDto;
+import kr.co.wingle.profile.dto.IntroductionResponseDto;
 import kr.co.wingle.profile.dto.LanguagesRequestDto;
 import kr.co.wingle.profile.dto.LanguagesResponseDto;
 import kr.co.wingle.profile.dto.ProfileGetResponseDto;
 import kr.co.wingle.profile.dto.ProfileRegistrationResponseDto;
 import kr.co.wingle.profile.dto.ProfileRequestDto;
-import kr.co.wingle.profile.dto.IntroductionResponseDto;
 import kr.co.wingle.profile.dto.ProfileResponseDto;
+import kr.co.wingle.profile.dto.ProfileViewResponseDto;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -65,8 +66,14 @@ public class ProfileController {
 	}
 
 	@GetMapping("/registration")
-	public ApiResponse<ProfileRegistrationResponseDto> isRegister(){
+	public ApiResponse<ProfileRegistrationResponseDto> isRegister() {
 		ProfileRegistrationResponseDto response = profileService.isRegister();
-		return ApiResponse.success(SuccessCode.PROFILE_REGISTER_READ_SUCCESS,response);
+		return ApiResponse.success(SuccessCode.PROFILE_REGISTER_READ_SUCCESS, response);
+	}
+
+	@GetMapping("/detail")
+	public ApiResponse<ProfileViewResponseDto> viewProfile() {
+		ProfileViewResponseDto response = profileService.getProfileDetail();
+		return ApiResponse.success(SuccessCode.PROFILE_READ_SUCCESS, response);
 	}
 }

@@ -1,7 +1,6 @@
 package kr.co.wingle.member.dto;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,6 +11,6 @@ import lombok.NoArgsConstructor;
 public class RejectionRequestDto {
 	@NotNull(message = "사용자 id가 없습니다.")
 	private Long userId;
-	@Size(max = 40)
+	@NotNull(message = "거절 사유가 없습니다.")
 	private String reason;
 }

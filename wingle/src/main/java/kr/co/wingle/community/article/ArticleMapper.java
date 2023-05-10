@@ -7,12 +7,14 @@ import org.springframework.stereotype.Component;
 
 import kr.co.wingle.community.util.CommunityUtil;
 import kr.co.wingle.community.util.ProcessedPersonalInformation;
+import kr.co.wingle.profile.ProfileService;
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class ArticleMapper {
 	private final CommunityUtil communityUtil;
+	private final ProfileService profileService;
 
 	public ArticleResponseDto toResponseDto(Article article, List<String> images) {
 		if (article == null) {
@@ -36,6 +38,8 @@ public class ArticleMapper {
 		}
 		articleResponseDto.isMine(processedPersonalInformation.isMine());
 		articleResponseDto.userId(processedPersonalInformation.getProcessedMemberId());
+		articleResponseDto.userImage(profileService.getProfileByMemberId(article.getMember().getId()).getImageUrl());
+		articleResponseDto.userNation(profileService.getProfileByMemberId(article.getMember().getId()).getNation());
 		articleResponseDto.forumId(article.getForum().getId());
 
 		return articleResponseDto.build();

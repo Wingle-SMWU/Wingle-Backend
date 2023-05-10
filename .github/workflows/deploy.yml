@@ -7,6 +7,17 @@ on:
   pull_request:
     branches:
       - main
+  
+  workflow_dispatch:
+    inputs:
+       logLevel:
+          description: 'Log level'     
+          required: true
+          default: 'warning'
+       tags:
+          description: 'Test scenario tags'
+          required: false
+      
 env:
   S3_BUCKET_NAME: wingle-ci-bucket
   CODE_DEPLOY_APPLICATION_NAME: wingle-codedeploy-app
@@ -79,7 +90,7 @@ jobs:
           mkdir build
           cd ./build
           mkdir generated-snippets
-          
+       
       - name: Grant execute permission for gradlew
         run: chmod +x ./wingle/gradlew
 

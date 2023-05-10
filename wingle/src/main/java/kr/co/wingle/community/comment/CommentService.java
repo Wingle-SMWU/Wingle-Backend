@@ -27,7 +27,7 @@ public class CommentService extends WritingService {
 
 	@Transactional
 	public CommentResponseDto create(CommentRequestDto request) {
-		Member loggedInMember = authService.findMember();
+		Member loggedInMember = authService.findAcceptedLoggedInMember();
 		Article article = articleService.getArticleById(request.getArticleId());
 		articleService.isValidForum(article, request.getForumId());
 
@@ -51,7 +51,7 @@ public class CommentService extends WritingService {
 
 	@Transactional
 	public Long delete(Long forumId, Long articleId, Long commentId) {
-		Member member = authService.findMember();
+		Member member = authService.findAcceptedLoggedInMember();
 		Comment comment = getCommentById(commentId);
 
 		if (isValidMember(comment, member) && isExist(comment) && articleService.isValidForum(comment.getArticle(),
@@ -73,7 +73,7 @@ public class CommentService extends WritingService {
 	@Transactional(readOnly = true)
 	public boolean isValidArticle(Comment comment, Long articleId) {
 		// 게시글 안 맞으면 에러
-		if (comment.getArticle().getId() != articleId) {
+		if (!articleId.equals(comment.getArticle().getId())) {
 			throw new NotFoundException(ErrorCode.BAD_PARAMETER);
 		}
 		return true;

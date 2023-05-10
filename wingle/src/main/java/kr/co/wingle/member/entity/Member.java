@@ -43,6 +43,14 @@ public class Member extends BaseEntity {
 	@ColumnDefault("'ROLE_USER'")
 	private Authority authority = Authority.ROLE_USER;
 
+	@Column
+	@Setter
+	private String rejectionReason;
+
+	@Column
+	@Setter
+	private String memo;
+
 	public static Member createMember(String name, String idCardImageUrl, String email, String password,
 		Authority authority) {
 		Member member = new Member();

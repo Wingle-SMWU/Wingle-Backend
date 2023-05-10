@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MessageController {
 	private final MessageService messageService;
 
-	@PostMapping("/")
+	@PostMapping("")
 	public ApiResponse<MessageResponseDto> send(@RequestBody @Valid MessageRequestDto messageRequestDto) {
 		MessageResponseDto response = messageService.send(messageRequestDto);
 		return ApiResponse.success(SuccessCode.MESSAGE_SEND_SUCCESS, response);

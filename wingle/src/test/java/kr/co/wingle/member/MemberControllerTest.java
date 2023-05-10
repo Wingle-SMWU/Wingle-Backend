@@ -61,7 +61,7 @@ class MemberControllerTest {
 	@Test
 	void 수락_대기_목록_조회() throws Exception {
 		Member adminMember = makeTestAdminMember();
-		given(authService.findMember())
+		given(authService.findLoggedInMember())
 			.willReturn(adminMember);
 		List<SignupListResponseDto> response = new ArrayList<>();
 		given(memberService.getWaitingList(anyInt()))
@@ -81,7 +81,7 @@ class MemberControllerTest {
 	@Test
 	void 수락_대기_사용자_조회() throws Exception {
 		Member adminMember = makeTestAdminMember();
-		given(authService.findMember())
+		given(authService.findLoggedInMember())
 			.willReturn(adminMember);
 		WaitingUserResponseDto response = WaitingUserResponseDto.from(makeTestMember(), "KR");
 		given(memberService.getWaitingUserInfo(anyLong()))
@@ -97,11 +97,11 @@ class MemberControllerTest {
 			))
 			.andDo(print());
 	}
-  
-  @Test
+
+	@Test
 	void 수락_거절_목록_조회() throws Exception {
 		Member adminMember = makeTestAdminMember();
-		given(authService.findMember())
+		given(authService.findLoggedInMember())
 			.willReturn(adminMember);
 		List<SignupListResponseDto> response = new ArrayList<>();
 		given(memberService.getRejectionList(anyInt()))
@@ -121,7 +121,7 @@ class MemberControllerTest {
 	@Test
 	void 수락_완료_목록_조회() throws Exception {
 		Member adminMember = makeTestAdminMember();
-		given(authService.findMember())
+		given(authService.findLoggedInMember())
 			.willReturn(adminMember);
 		List<SignupListResponseDto> response = new ArrayList<>();
 		given(memberService.getAcceptanceList(anyInt()))

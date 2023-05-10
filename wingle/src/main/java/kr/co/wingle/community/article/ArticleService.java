@@ -30,7 +30,7 @@ public class ArticleService extends WritingService {
 
 	@Transactional
 	public ArticleResponseDto create(ArticleRequestDto request) {
-		Member member = authService.findMember();
+		Member member = authService.findAcceptedLoggedInMember();
 		Forum forum = forumService.getForumById(request.getForumId());
 
 		// 공지 작성 방지
@@ -65,7 +65,7 @@ public class ArticleService extends WritingService {
 		Pageable pageable = PageRequest.of(page, size);
 		List<Article> pages;
 		if (getMine) {
-			Member member = authService.findMember();
+			Member member = authService.findAcceptedLoggedInMember();
 			pages = articleRepository.findByForumIdAndMemberIdAndIsDeleted(forumId, member.getId(), false, pageable);
 		} else {
 			pages = articleRepository.findByForumIdAndIsDeleted(forumId, false, pageable);
@@ -80,7 +80,7 @@ public class ArticleService extends WritingService {
 
 	@Transactional
 	public Long delete(Long forumId, Long articleId) {
-		Member member = authService.findMember();
+		Member member = authService.findAcceptedLoggedInMember();
 		Article article = getArticleById(articleId);
 
 		if (isValidMember(article, member) && isExist(article) && isValidForum(article, forumId)) {
@@ -101,7 +101,7 @@ public class ArticleService extends WritingService {
 	@Transactional(readOnly = true)
 	public boolean isValidForum(Article article, Long forumId) {
 		// 게시판 안 맞으면 에러
-		if (article.getForum().getId() != forumId) {
+		if (!forumId.equals(article.getForum().getId())) {
 			throw new NotFoundException(ErrorCode.BAD_PARAMETER);
 		}
 		return true;

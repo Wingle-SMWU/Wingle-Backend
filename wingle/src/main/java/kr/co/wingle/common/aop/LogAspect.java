@@ -1,5 +1,6 @@
 package kr.co.wingle.common.aop;
 
+import kr.co.wingle.common.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 @Aspect
 @Component
 public class LogAspect {
-	private static final String LOG_MESSAGE_FORMAT = "{} {} : {}.{}() took {}ms. (group by '{}', traceID: {})";
+	private static final String LOG_MESSAGE_FORMAT = "[{}] {} {} : {}.{}() took {}ms. (group by '{}', traceID: {})";
 
 	@Pointcut(
 		"(execution(* kr.co.wingle..*Controller.*(..)) || execution(* kr.co.wingle..*Service.*(..)) || execution(* kr.co.wingle..*Repository.*(..)))"
@@ -36,10 +37,11 @@ public class LogAspect {
 		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest();
 
 		try {
+			String user = SecurityUtil.getCurrentUserEmail();
 			String className = proceedingJoinPoint.getSignature().getDeclaringType().getName();
 			String methodName = proceedingJoinPoint.getSignature().getName();
 			long executionTime = end - start;
-			log.info(LOG_MESSAGE_FORMAT, request.getMethod(), request.getRequestURI(),
+			log.info(LOG_MESSAGE_FORMAT, user, request.getMethod(), request.getRequestURI(),
 				className, methodName, executionTime, group(className), traceId);
 		} catch (Exception e) {
 			log.error("LogAspect error", e);

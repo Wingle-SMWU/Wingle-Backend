@@ -23,9 +23,7 @@ public class CommentMapper {
 		commentResponseDto.id(comment.getId());
 		commentResponseDto.userId(processedPersonalInformation.getProcessedMemberId());
 		commentResponseDto.userNickname(processedPersonalInformation.getNickname());
-		// TODO: Profile 엔티티에 프로필 사진 컬럼 추가
-		// commentResponseDto.userImage(profileService.getProfileByMemberId(comment.getMember().getId()).getImageUrl());
-		commentResponseDto.userImage("");
+		commentResponseDto.userImage(profileService.getProfileByMemberId(comment.getMember().getId()).getImageUrl());
 		commentResponseDto.userNation(profileService.getProfileByMemberId(comment.getMember().getId()).getNation());
 		commentResponseDto.createdTime(comment.getCreatedTime());
 		commentResponseDto.updatedTime(comment.getUpdatedTime());
