@@ -13,6 +13,7 @@ import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
+import kr.co.wingle.member.service.MemberService;
 import kr.co.wingle.profile.dto.InterestsRequestDto;
 import kr.co.wingle.profile.dto.InterestsResponseDto;
 import kr.co.wingle.profile.dto.IntroductionRequestDto;
@@ -34,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProfileService {
 	private final AuthService authService;
+	private final MemberService memberService;
 	private final ProfileRepository profileRepository;
 	private final LanguageRepository languageRepository;
 	private final MemberInterestRepository memberInterestRepository;
@@ -197,5 +199,19 @@ public class ProfileService {
 		String sns = snsRepository.findAllByMember(member);
 
 		return ProfileViewResponseDto.of(image, nation, nickname, gender, languages, interests, introduce, sns);
+	}
+
+	public ProfileGetResponseDto getUserProfile(Long id) {
+		Member member = memberService.findMemberByMemberId(id);
+		Profile profile = getProfile(member);
+
+		String imageUrl = profile.getImageUrl();
+		String nickname = profile.getNickname();
+		Boolean gender = profile.isGender();
+		String nation = profile.getNation();
+
+		ProfileGetResponseDto response = ProfileGetResponseDto.of(imageUrl, nickname, gender, nation);
+
+		return response;
 	}
 }
