@@ -40,7 +40,7 @@ public class RoomResponseDto implements Comparable<RoomResponseDto> {
 	@Override
 	public int compareTo(RoomResponseDto response) {
 		// createdTime이 없으면 정렬하지 않음
-		if (this.getCreatedTime() == null)
+		if (this.getCreatedTime() == null || response.getCreatedTime() == null)
 			return 0;
 		if (response.getCreatedTime().isAfter(this.getCreatedTime())) {
 			return 1;
