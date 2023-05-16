@@ -24,7 +24,7 @@
 
     <!-- PROD 로그 설정 -->
     <springProfile name="prod">
-        <root level="info">
+        <root level="INFO">
             <appender name="Wingle-prod-log" class="ca.pjer.logback.AwsLogsAppender">
                 <layout>
                     <pattern>${LOG_PATTERN_PROD}</pattern>
