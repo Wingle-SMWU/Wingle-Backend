@@ -1,16 +1,18 @@
 package kr.co.wingle.common.aop;
 
-import kr.co.wingle.common.util.SecurityUtil;
-import lombok.extern.slf4j.Slf4j;
+import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
+import kr.co.wingle.common.util.SecurityUtil;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Aspect
@@ -41,7 +43,7 @@ public class LogAspect {
 			String className = proceedingJoinPoint.getSignature().getDeclaringType().getName();
 			String methodName = proceedingJoinPoint.getSignature().getName();
 			long executionTime = end - start;
-			log.info(LOG_MESSAGE_FORMAT, user, request.getMethod(), request.getRequestURI(),
+			log.debug(LOG_MESSAGE_FORMAT, user, request.getMethod(), request.getRequestURI(),
 				className, methodName, executionTime, group(className), traceId);
 		} catch (Exception e) {
 			log.error("LogAspect error", e);
