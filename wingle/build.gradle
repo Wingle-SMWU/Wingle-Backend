@@ -126,7 +126,7 @@ jar {
 
 
 ext {
-    snippetsDir = file('build/generated-snippets')
+    snippetsDir = file('generated-snippets')
 }
 
 test {
