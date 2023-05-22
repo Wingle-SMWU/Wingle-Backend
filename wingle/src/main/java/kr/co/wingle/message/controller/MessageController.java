@@ -1,7 +1,5 @@
 package kr.co.wingle.message.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +15,7 @@ import kr.co.wingle.common.dto.ApiResponse;
 import kr.co.wingle.common.util.StringUtil;
 import kr.co.wingle.message.dto.MessageRequestDto;
 import kr.co.wingle.message.dto.MessageResponseDto;
+import kr.co.wingle.message.dto.MessageResponseWithRecipentDto;
 import kr.co.wingle.message.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +34,7 @@ public class MessageController {
 	}
 
 	@GetMapping("/{roomId}")
-	public ApiResponse<List<MessageResponseDto>> getList(@PathVariable String roomId,
+	public ApiResponse<MessageResponseWithRecipentDto> getList(@PathVariable String roomId,
 		@RequestParam String page, @RequestParam String size) {
 		return ApiResponse.success(SuccessCode.GET_SUCCESS,
 			messageService.getListByRoom(StringUtil.StringToLong(roomId),
