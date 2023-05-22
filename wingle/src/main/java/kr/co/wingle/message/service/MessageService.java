@@ -1,6 +1,5 @@
 package kr.co.wingle.message.service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,10 +13,13 @@ import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.message.dto.MessageRequestDto;
 import kr.co.wingle.message.dto.MessageResponseDto;
+import kr.co.wingle.message.dto.MessageResponseWithRecipentDto;
 import kr.co.wingle.message.entity.Message;
 import kr.co.wingle.message.entity.Room;
 import kr.co.wingle.message.mapper.MessageMapper;
 import kr.co.wingle.message.repository.MessageRepository;
+import kr.co.wingle.profile.ProfileService;
+import kr.co.wingle.profile.dto.ProfileGetResponseDto;
 import kr.co.wingle.writing.WritingService;
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +30,8 @@ public class MessageService extends WritingService {
 	private final MessageMapper messageMapper;
 	private final AuthService authService;
 	private final RoomService roomService;
+
+	private final ProfileService profileService;
 
 	@Transactional
 	public MessageResponseDto send(MessageRequestDto messageRequestDto) {
@@ -42,21 +46,27 @@ public class MessageService extends WritingService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<MessageResponseDto> getListByRoom(Long roomId, int page, int size) {
+	public MessageResponseWithRecipentDto getListByRoom(Long roomId, int page, int size) {
 		Member member = authService.findAcceptedLoggedInMember();
 		roomService.isValidRoomMember(member.getId(), roomId);
 
 		Pageable pageable = PageRequest.of(page, size);
 		List<Message> pages = messageRepository.findByRoomIdAndIsDeletedOrderByCreatedTimeDesc(roomId, false, pageable);
 
+		ProfileGetResponseDto profile = profileService.getProfile();
+
 		if (pages.isEmpty()) {
-			return new ArrayList<MessageResponseDto>();
+			return MessageResponseWithRecipentDto.of();
 		}
 
-		List<MessageResponseDto> result = pages.stream()
+		List<MessageResponseDto> messages = pages.stream()
 			.map(messageMapper::toResponseDto).collect(Collectors.toList());
-		Collections.sort(result, Collections.reverseOrder());
-		return result;
+		Collections.sort(messages, Collections.reverseOrder());
+
+		return MessageResponseWithRecipentDto.of(
+			profile.getImage(),
+			messages
+		);
 	}
 
 }
