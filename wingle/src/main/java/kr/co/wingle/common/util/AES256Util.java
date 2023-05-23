@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 public class AES256Util {
+	//initial vector 설정
 	private String iv = "0000000000000001";
 	private Key keySpec;
 
