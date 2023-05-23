@@ -86,11 +86,10 @@ public class ProfileController {
 		return ApiResponse.success(SuccessCode.PROFILE_READ_SUCCESS, response);
 	}
 
-	@GetMapping("/{id}")
-	public ApiResponse<ProfileGetResponseDto> getUserProfile(@PathVariable String id) throws NoSuchAlgorithmException,
+	@GetMapping("/{encryptedId}")
+	public ApiResponse<ProfileGetResponseDto> getUserProfile(@PathVariable String encryptedId) throws NoSuchAlgorithmException,
 		UnsupportedEncodingException, GeneralSecurityException {
-		id = aes.encrypt(id);
-		System.out.println("암호화된 키 = "+id);
+		String id = aes.decrypt(encryptedId);
 		ProfileGetResponseDto response = profileService.getUserProfile(id);
 		return ApiResponse.success(SuccessCode.PROFILE_READ_SUCCESS, response);
 

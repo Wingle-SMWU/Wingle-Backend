@@ -209,7 +209,6 @@ public class ProfileService {
 	public ProfileGetResponseDto getUserProfile(String id) throws
 		GeneralSecurityException,
 		UnsupportedEncodingException, NoSuchAlgorithmException {
-		id = aes.decrypt(id);
 		Long userId = Long.parseLong(id);
 		Member member = memberService.findMemberByMemberId(userId);
 		Profile profile = getProfile(member);
