@@ -53,6 +53,7 @@ dependencies {
     implementation group: 'ca.pjer', name: 'logback-awslogs-appender', version: '1.6.0'
 
     implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
+    implementation group: 'org.bouncycastle', name: 'bcprov-jdk18on', version: '1.73'
 
 }
 
