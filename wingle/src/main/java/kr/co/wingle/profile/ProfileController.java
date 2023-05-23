@@ -1,5 +1,11 @@
 package kr.co.wingle.profile;
 
+import static org.bouncycastle.asn1.nist.NISTObjectIdentifiers.*;
+
+import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
+
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
+import kr.co.wingle.common.util.AES256Util;
 import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.profile.dto.InterestsRequestDto;
 import kr.co.wingle.profile.dto.InterestsResponseDto;
@@ -32,6 +39,7 @@ import lombok.RequiredArgsConstructor;
 public class ProfileController {
 	private final ProfileService profileService;
 	private final AuthService authService;
+	private final AES256Util aes;
 
 	@PostMapping("")
 	public ApiResponse<ProfileResponseDto> saveProfile(@ModelAttribute @Valid ProfileRequestDto profileRequestDto) {
@@ -79,7 +87,10 @@ public class ProfileController {
 	}
 
 	@GetMapping("/{id}")
-	public ApiResponse<ProfileGetResponseDto> getUserProfile(@PathVariable Long id) {
+	public ApiResponse<ProfileGetResponseDto> getUserProfile(@PathVariable String id) throws NoSuchAlgorithmException,
+		UnsupportedEncodingException, GeneralSecurityException {
+		id = aes.encrypt(id);
+		System.out.println("암호화된 키 = "+id);
 		ProfileGetResponseDto response = profileService.getUserProfile(id);
 		return ApiResponse.success(SuccessCode.PROFILE_READ_SUCCESS, response);
 

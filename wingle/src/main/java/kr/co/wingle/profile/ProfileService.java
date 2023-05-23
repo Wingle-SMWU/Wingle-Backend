@@ -1,5 +1,8 @@
 package kr.co.wingle.profile;
 
+import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.DuplicateException;
 import kr.co.wingle.common.exception.NotFoundException;
+import kr.co.wingle.common.util.AES256Util;
 import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
@@ -42,6 +46,7 @@ public class ProfileService {
 	private final InterestRepository interestRepository;
 	private final SnsRepository snsRepository;
 	private final S3Util s3Util;
+	private final AES256Util aes;
 
 	@Transactional
 	public ProfileResponseDto saveProfile(ProfileRequestDto request) {
@@ -201,8 +206,12 @@ public class ProfileService {
 		return ProfileViewResponseDto.of(image, nation, nickname, gender, languages, interests, introduce, sns);
 	}
 
-	public ProfileGetResponseDto getUserProfile(Long id) {
-		Member member = memberService.findMemberByMemberId(id);
+	public ProfileGetResponseDto getUserProfile(String id) throws
+		GeneralSecurityException,
+		UnsupportedEncodingException, NoSuchAlgorithmException {
+		id = aes.decrypt(id);
+		Long userId = Long.parseLong(id);
+		Member member = memberService.findMemberByMemberId(userId);
 		Profile profile = getProfile(member);
 
 		String imageUrl = profile.getImageUrl();
