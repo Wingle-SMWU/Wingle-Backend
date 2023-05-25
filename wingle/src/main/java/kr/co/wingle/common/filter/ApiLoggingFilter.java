@@ -1,6 +1,7 @@
 package kr.co.wingle.common.filter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.FilterChain;
@@ -16,33 +17,50 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class ApiLoggingFilter extends OncePerRequestFilter {
+	private final List<String> excludeUrl = List.of("/");
+
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
+		if (excludeUrl.contains(request.getRequestURI())) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+
 		//response body를 출력하기 위한 wrapper
 		ReadableResponseBodyWrapper responseBodyWrapper = new ReadableResponseBodyWrapper(response);
 
-		if (request.getContentType().startsWith("multipart/form-data")) {
+		if (isMultipartFormData(request)) {
 			String formData = parameterMapToString(request.getParameterMap());
 
 			// form-data request log 출력
-			log.info("REQUEST {} {} :: {} ", request.getMethod(), request.getRequestURI(), formData);
+			logRequest(request, formData);
 			filterChain.doFilter(request, responseBodyWrapper);
 
 		} else {
 			ReadableRequestBodyWrapper requestBodyWrapper = new ReadableRequestBodyWrapper(request);
 
 			// GET 혹은 application/json request log 출력
-			log.info("REQUEST {} {} :: {} ", request.getMethod(), request.getRequestURI(),
-				requestBodyWrapper.getRequestBody());
-
+			logRequest(request, requestBodyWrapper.getRequestBody());
 			filterChain.doFilter(requestBodyWrapper, responseBodyWrapper);
 		}
 
 		// response log 출력
-		log.info("RESPONSE :: {} :: {}", response.getStatus(), responseBodyWrapper.getResponseBody());
-
+		logResponse(response, responseBodyWrapper.getResponseBody());
 		response.getOutputStream().write(responseBodyWrapper.getDataStream());
+	}
+
+	private boolean isMultipartFormData(HttpServletRequest request) {
+		String contentType = request.getContentType();
+		return contentType != null && contentType.startsWith("multipart/form-data");
+	}
+
+	private void logRequest(HttpServletRequest request, String requestData) {
+		log.info("REQUEST {} {} :: {}", request.getMethod(), request.getRequestURI(), requestData);
+	}
+
+	private void logResponse(HttpServletResponse response, String responseData) {
+		log.info("RESPONSE :: {} :: {}", response.getStatus(), responseData);
 	}
 
 	private static String parameterMapToString(Map<String, String[]> parameterMap) {
@@ -67,7 +85,7 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
 			));
 		});
 
-		sb.append("}");
+		sb.append("\n}");
 		return sb.toString();
 	}
 }
