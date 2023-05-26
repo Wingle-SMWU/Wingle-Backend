@@ -22,7 +22,7 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
 		//response body를 출력하기 위한 wrapper
 		ReadableResponseBodyWrapper responseBodyWrapper = new ReadableResponseBodyWrapper(response);
 
-		if (request.getContentType().startsWith("multipart/form-data")) {
+		if (request.getContentType() != null && request.getContentType().startsWith("multipart/form-data")) {
 			String formData = parameterMapToString(request.getParameterMap());
 
 			// form-data request log 출력
