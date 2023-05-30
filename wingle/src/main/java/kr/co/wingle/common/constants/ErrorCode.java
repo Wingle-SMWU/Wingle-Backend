@@ -53,6 +53,8 @@ public enum ErrorCode {
 	PROFILE_NOT_FOUND(NOT_FOUND, "유저의 프로필 정보가 존재하지 않습니다."),
 
 	/* 500 INTERNAL_SERVER_ERROR : 서버 오류 */
+	ENCRYPT_FAIL(INTERNAL_SERVER_ERROR, "암호화에 실패했습니다."),
+	DECRYPT_FAIL(INTERNAL_SERVER_ERROR, "복호화에 실패했습니다."),
 	FILE_UPLOAD_FAIL(INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다."),
 	SERVER_ERROR(INTERNAL_SERVER_ERROR, "서버 내부 오류로 인해 응답을 제공할 수 없습니다.");
 
