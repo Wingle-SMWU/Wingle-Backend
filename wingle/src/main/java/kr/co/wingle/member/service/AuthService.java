@@ -192,7 +192,7 @@ public class AuthService {
 
 	@Transactional
 	public PermissionResponseDto sendRejectionMail(RejectionRequestDto rejectionRequestDto) {
-		Long userId = rejectionRequestDto.getUserId();
+		Long userId = Long.parseLong(aes.decrypt(rejectionRequestDto.getUserId()));
 		Member member = memberService.findMemberByMemberId(userId);
 		if (member.getPermission() == Permission.DENY.getStatus())
 			throw new CustomException(ErrorCode.ALREADY_DENY);

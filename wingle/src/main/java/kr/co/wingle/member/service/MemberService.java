@@ -81,7 +81,7 @@ public class MemberService {
 
 	@Transactional
 	public RejectionResponseDto saveRejectionReason(RejectionRequestDto request) {
-		Member member = findMemberByMemberId(request.getUserId());
+		Member member = findMemberByMemberId(Long.parseLong(aes.decrypt(request.getUserId())));
 		member.setRejectionReason(request.getReason());
 		return RejectionResponseDto.from(request.getReason());
 	}
