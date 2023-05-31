@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.ForbiddenException;
 import kr.co.wingle.common.exception.NotFoundException;
+import kr.co.wingle.common.util.AES256Util;
 import kr.co.wingle.member.MemberRepository;
 import kr.co.wingle.member.dto.MemoRequestDto;
 import kr.co.wingle.member.dto.MemoResponseDto;
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberService {
 	private final MemberRepository memberRepository;
 	private final ProfileRepository profileRepository;
+	private final AES256Util aes;
 	private final int pageSize = 10;
 
 	@Transactional(readOnly = true)
@@ -71,7 +73,8 @@ public class MemberService {
 
 	@Transactional
 	public MemoResponseDto saveMemo(MemoRequestDto memoRequestDto) {
-		Member member = findMemberByMemberId(memoRequestDto.getUserId());
+
+		Member member = findMemberByMemberId(Long.parseLong(aes.decrypt(memoRequestDto.getUserId())));
 		member.setMemo(memoRequestDto.getMemo());
 		return MemoResponseDto.from(memoRequestDto.getMemo());
 	}
