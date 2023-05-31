@@ -51,7 +51,7 @@ import kr.co.wingle.member.mailVo.AcceptanceMail;
 import kr.co.wingle.member.mailVo.CodeMail;
 import kr.co.wingle.member.mailVo.RejectionMail;
 import kr.co.wingle.profile.ProfileRepository;
-import kr.co.wingle.profile.ProfileService;
+import kr.co.wingle.profile.ProfileUtil;
 import kr.co.wingle.profile.entity.Profile;
 import lombok.RequiredArgsConstructor;
 
@@ -69,7 +69,7 @@ public class AuthService {
 	private final RedisUtil redisUtil;
 	private final MailService mailService;
 	private final MemberService memberService;
-	private final ProfileService profileService;
+	private final ProfileUtil profileUtil;
 	private final AES256Util aes;
 
 	@Transactional
@@ -91,7 +91,7 @@ public class AuthService {
 		getTermAndSaveTermMember(member, TermCode.TERMS_OF_PROMOTION, request.isTermsOfPromotion());
 
 		// save profile
-		if (profileService.isDuplicatedNickname(request.getNickname())) {
+		if (profileUtil.isDuplicatedNickname(request.getNickname())) {
 			throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
 		}
 
