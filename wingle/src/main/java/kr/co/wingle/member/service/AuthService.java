@@ -87,7 +87,12 @@ public class AuthService {
 		getTermAndSaveTermMember(member, TermCode.TERMS_OF_PROMOTION, request.isTermsOfPromotion());
 
 		// save profile
-		Profile profile = Profile.createProfile(member, request.getNickname(), request.isGender(), request.getNation());
+		if (profileService.isDuplicatedNickname(request.getNickname())) {
+			throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
+		}
+
+		Profile profile = Profile.createProfile(member, request.getNickname(), request.isGender(),
+			request.getNation());
 		profileRepository.save(profile);
 
 		return SignupResponseDto.of(member.getId(), member.getName(), profile.getNickname());

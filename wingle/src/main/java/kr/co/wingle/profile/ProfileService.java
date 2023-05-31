@@ -57,7 +57,7 @@ public class ProfileService {
 		Profile profile = getProfile(member);
 
 		if (!profile.getNickname().equals(request.getNickname()) &&
-			profileRepository.existsByNickname(request.getNickname())) {
+			isDuplicatedNickname(request.getNickname())) {
 			throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
 		}
 
@@ -221,5 +221,13 @@ public class ProfileService {
 		ProfileGetResponseDto response = ProfileGetResponseDto.of(imageUrl, nickname, gender, nation);
 
 		return response;
+	}
+
+	public boolean isDuplicatedNickname(String newNickname) {
+		if (profileRepository.existsByNickname(newNickname)) {
+			throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
+		}
+
+		return false;
 	}
 }
