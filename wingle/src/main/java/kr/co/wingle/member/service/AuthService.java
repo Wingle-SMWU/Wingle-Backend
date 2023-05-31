@@ -18,6 +18,7 @@ import kr.co.wingle.common.exception.ForbiddenException;
 import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.common.jwt.TokenInfo;
 import kr.co.wingle.common.jwt.TokenProvider;
+import kr.co.wingle.common.util.AES256Util;
 import kr.co.wingle.common.util.RedisUtil;
 import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.common.util.SecurityUtil;
@@ -50,6 +51,7 @@ import kr.co.wingle.member.mailVo.AcceptanceMail;
 import kr.co.wingle.member.mailVo.CodeMail;
 import kr.co.wingle.member.mailVo.RejectionMail;
 import kr.co.wingle.profile.ProfileRepository;
+import kr.co.wingle.profile.ProfileService;
 import kr.co.wingle.profile.entity.Profile;
 import lombok.RequiredArgsConstructor;
 
@@ -67,6 +69,8 @@ public class AuthService {
 	private final RedisUtil redisUtil;
 	private final MailService mailService;
 	private final MemberService memberService;
+	private final ProfileService profileService;
+	private final AES256Util aes;
 
 	@Transactional
 	public SignupResponseDto signup(SignupRequestDto request) {
@@ -95,7 +99,8 @@ public class AuthService {
 			request.getNation());
 		profileRepository.save(profile);
 
-		return SignupResponseDto.of(member.getId(), member.getName(), profile.getNickname());
+		// encrypt and return
+		return SignupResponseDto.of(aes.encrypt(member.getId().toString()), member.getName(), profile.getNickname());
 	}
 
 	@Transactional
