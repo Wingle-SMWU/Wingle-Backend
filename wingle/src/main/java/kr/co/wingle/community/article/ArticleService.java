@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,7 +63,7 @@ public class ArticleService extends WritingService {
 
 	@Transactional(readOnly = true)
 	public List<ArticleResponseDto> getList(Long forumId, int page, int size, boolean getMine) {
-		Pageable pageable = PageRequest.of(page, size);
+		Pageable pageable = PageRequest.of(page, size, Sort.by("createdTime").descending());
 		List<Article> pages;
 		if (getMine) {
 			Member member = authService.findAcceptedLoggedInMember();
