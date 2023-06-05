@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +43,7 @@ public class CommentService extends WritingService {
 		Article article = articleService.getArticleById(articleId);
 		articleService.isValidForum(article, forumId);
 
-		Pageable pageable = PageRequest.of(page, size);
+		Pageable pageable = PageRequest.of(page, size, Sort.by("createdTime"));
 		List<Comment> pages = commentRepository.findByArticleIdAndIsDeleted(articleId, false, pageable);
 		List<CommentResponseDto> result = pages.stream()
 			.map(commentMapper::toResponseDto).collect(Collectors.toList());
