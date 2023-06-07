@@ -40,6 +40,7 @@ public class MailService {
 			MimeMessage message = createMessage(to);
 			emailSender.send(message);
 		} catch (MailException | MessagingException | UnsupportedEncodingException es) {
+			System.out.println(es);
 			throw new CustomException(ErrorCode.EMAIL_SEND_FAIL);
 		}
 		return to;
