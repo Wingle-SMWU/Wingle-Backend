@@ -153,6 +153,7 @@ public class AuthService {
 
 	public EmailResponseDto sendCodeMail(EmailRequestDto emailRequestDto) {
 		String to = emailRequestDto.getEmail();
+		checkDuplicateEmail(to);
 		String certificationKey = mailService.sendEmail(to, new CodeMail());
 		return EmailResponseDto.of(certificationKey);
 	}
