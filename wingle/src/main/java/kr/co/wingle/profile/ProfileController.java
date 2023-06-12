@@ -80,7 +80,7 @@ public class ProfileController {
 
 	@GetMapping("/{id}")
 	public ApiResponse<ProfileGetResponseDto> getUserProfile(@PathVariable Long id) {
-		ProfileGetResponseDto response = profileService.getUserProfile(id);
+		ProfileGetResponseDto response = profileService.getProfile(id);
 		return ApiResponse.success(SuccessCode.PROFILE_READ_SUCCESS, response);
 
 	}

@@ -1,5 +1,7 @@
 package kr.co.wingle.profile.dto;
 
+import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,12 +14,25 @@ public class ProfileGetResponseDto {
 	private Boolean gender;
 	private String nation;
 
-	public static ProfileGetResponseDto of(String image, String nickname, Boolean gender, String nation) {
+	private List<LanguageDto> languages;
+
+	private String introduction;
+
+	private List<String> interests;
+
+	public static ProfileGetResponseDto of(
+		String image, String nickname, Boolean gender, String nation,
+		List<LanguageDto> languages,
+		String introduction, List<String> interests
+	) {
 		ProfileGetResponseDto profileGetResponseDto = new ProfileGetResponseDto();
 		profileGetResponseDto.image = image;
 		profileGetResponseDto.nickname = nickname;
 		profileGetResponseDto.gender = gender;
 		profileGetResponseDto.nation = nation;
+		profileGetResponseDto.languages = languages;
+		profileGetResponseDto.introduction = introduction;
+		profileGetResponseDto.interests = interests;
 		return profileGetResponseDto;
 	}
 

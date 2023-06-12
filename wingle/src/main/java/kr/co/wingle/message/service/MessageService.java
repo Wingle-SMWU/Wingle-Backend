@@ -53,7 +53,7 @@ public class MessageService extends WritingService {
 		Pageable pageable = PageRequest.of(page, size);
 		List<Message> pages = messageRepository.findByRoomIdAndIsDeletedOrderByCreatedTimeDesc(roomId, false, pageable);
 
-		ProfileGetResponseDto profile = profileService.getProfile();
+		ProfileGetResponseDto profile = profileService.getProfile(member.getId());
 
 		if (pages.isEmpty()) {
 			return MessageResponseWithRecipentDto.of();
