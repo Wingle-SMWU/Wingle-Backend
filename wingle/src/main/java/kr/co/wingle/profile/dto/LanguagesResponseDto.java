@@ -16,18 +16,4 @@ public class LanguagesResponseDto {
 		languagesResponseDto.languages = languages;
 		return languagesResponseDto;
 	}
-
-	@Getter
-	@NoArgsConstructor
-	public static class LanguageDto {
-		private int order;
-		private String interest;
-
-		public static LanguageDto of(int order, String interest) {
-			LanguageDto interestDto = new LanguageDto();
-			interestDto.order = order;
-			interestDto.interest = interest;
-			return interestDto;
-		}
-	}
 }
