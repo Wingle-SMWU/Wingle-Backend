@@ -1,8 +1,5 @@
 package kr.co.wingle.profile;
 
-import java.io.UnsupportedEncodingException;
-import java.security.GeneralSecurityException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -231,22 +228,5 @@ public class ProfileService {
 		String sns = snsRepository.findAllByMember(member);
 
 		return ProfileViewResponseDto.of(image, nation, nickname, gender, languages, interests, introduce, sns);
-	}
-
-	public ProfileGetResponseDto getUserProfile(String id) throws
-		GeneralSecurityException,
-		UnsupportedEncodingException, NoSuchAlgorithmException {
-		Long userId = Long.parseLong(id);
-		Member member = memberService.findMemberByMemberId(userId);
-		Profile profile = getProfile(member);
-
-		String imageUrl = profile.getImageUrl();
-		String nickname = profile.getNickname();
-		Boolean gender = profile.isGender();
-		String nation = profile.getNation();
-
-		ProfileGetResponseDto response = ProfileGetResponseDto.of(imageUrl, nickname, gender, nation);
-
-		return response;
 	}
 }

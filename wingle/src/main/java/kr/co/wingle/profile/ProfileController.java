@@ -1,7 +1,5 @@
 package kr.co.wingle.profile;
 
-import static org.bouncycastle.asn1.nist.NISTObjectIdentifiers.*;
-
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
@@ -87,10 +85,12 @@ public class ProfileController {
 	}
 
 	@GetMapping("/{encryptedId}")
-	public ApiResponse<ProfileGetResponseDto> getUserProfile(@PathVariable String encryptedId) throws NoSuchAlgorithmException,
-		UnsupportedEncodingException, GeneralSecurityException {
+	public ApiResponse<ProfileGetResponseDto> getUserProfile(@PathVariable String encryptedId) throws
+		NoSuchAlgorithmException,
+		UnsupportedEncodingException,
+		GeneralSecurityException {
 		String id = aes.decrypt(encryptedId);
-		ProfileGetResponseDto response = profileService.getProfile(id);
+		ProfileGetResponseDto response = profileService.getProfile(Long.parseLong(id));
 		return ApiResponse.success(SuccessCode.PROFILE_READ_SUCCESS, response);
 
 	}
