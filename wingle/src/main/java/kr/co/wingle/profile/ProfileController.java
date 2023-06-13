@@ -90,7 +90,7 @@ public class ProfileController {
 	public ApiResponse<ProfileGetResponseDto> getUserProfile(@PathVariable String encryptedId) throws NoSuchAlgorithmException,
 		UnsupportedEncodingException, GeneralSecurityException {
 		String id = aes.decrypt(encryptedId);
-		ProfileGetResponseDto response = profileService.getUserProfile(id);
+		ProfileGetResponseDto response = profileService.getProfile(id);
 		return ApiResponse.success(SuccessCode.PROFILE_READ_SUCCESS, response);
 
 	}

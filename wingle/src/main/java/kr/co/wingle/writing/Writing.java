@@ -27,7 +27,7 @@ public class Writing extends BaseEntity {
 	@Setter
 	protected Member member;
 
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "TEXT")
 	@Getter
 	@Setter
 	protected String content;

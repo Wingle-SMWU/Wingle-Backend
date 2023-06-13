@@ -14,13 +14,13 @@ public class ProfileViewResponseDto {
 	private String nation;
 	private String nickname;
 	private Boolean gender;
-	private List<LanguagesResponseDto.LanguageDto> languages;
+	private List<LanguageDto> languages;
 	private List<String> interests;
 	private String introduce;
 	private String sns;
 
 	public static ProfileViewResponseDto of(String image, String nation, String nickname, Boolean gender,
-		List<LanguagesResponseDto.LanguageDto> languages, List<String> interests, String introduce,
+		List<LanguageDto> languages, List<String> interests, String introduce,
 		String sns) {
 		ProfileViewResponseDto profileViewResponseDto = new ProfileViewResponseDto();
 		profileViewResponseDto.image = image;

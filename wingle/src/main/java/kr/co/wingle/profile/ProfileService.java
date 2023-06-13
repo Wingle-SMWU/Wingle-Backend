@@ -22,6 +22,7 @@ import kr.co.wingle.profile.dto.InterestsRequestDto;
 import kr.co.wingle.profile.dto.InterestsResponseDto;
 import kr.co.wingle.profile.dto.IntroductionRequestDto;
 import kr.co.wingle.profile.dto.IntroductionResponseDto;
+import kr.co.wingle.profile.dto.LanguageDto;
 import kr.co.wingle.profile.dto.LanguagesRequestDto;
 import kr.co.wingle.profile.dto.LanguagesResponseDto;
 import kr.co.wingle.profile.dto.ProfileGetResponseDto;
@@ -54,7 +55,7 @@ public class ProfileService {
 
 		//TODO: setRegistration
 
-		Profile profile = getProfile(member);
+		Profile profile = getProfileEntity(member);
 
 		if (!profile.getNickname().equals(request.getNickname()) &&
 			profileRepository.existsByNickname(request.getNickname())) {
@@ -95,10 +96,10 @@ public class ProfileService {
 			order++;
 		}
 
-		List<LanguagesResponseDto.LanguageDto> languages = languageRepository.findAllByMemberOrderByOrderNumberAsc(
+		List<LanguageDto> languages = languageRepository.findAllByMemberOrderByOrderNumberAsc(
 				member).stream()
 			.map(language ->
-				LanguagesResponseDto.LanguageDto.of(language.getOrderNumber(), language.getName())
+				LanguageDto.of(language.getOrderNumber(), language.getName())
 			).toList();
 		return LanguagesResponseDto.of(languages);
 	}
@@ -107,7 +108,7 @@ public class ProfileService {
 	public IntroductionResponseDto saveIntroduction(IntroductionRequestDto request) {
 		Member member = authService.findAcceptedLoggedInMember();
 
-		Profile profile = getProfile(member);
+		Profile profile = getProfileEntity(member);
 		profile.setIntroduction(request.getIntroduction());
 
 		return IntroductionResponseDto.of(profile.getIntroduction());
@@ -139,7 +140,7 @@ public class ProfileService {
 		return interestRepository.save(interest);
 	}
 
-	private Profile getProfile(Member member) {
+	private Profile getProfileEntity(Member member) {
 		return profileRepository.findByMember(member)
 			.orElseThrow(() -> new NotFoundException(ErrorCode.PROFILE_NOT_FOUND));
 	}
@@ -159,24 +160,50 @@ public class ProfileService {
 		// profile.setRegistration(true);
 	}
 
-	@Transactional
 	public ProfileGetResponseDto getProfile() {
 		Member member = authService.findAcceptedLoggedInMember();
-		Profile profile = getProfile(member);
+		return getProfile(member);
+	}
+
+	@Transactional
+	public ProfileGetResponseDto getProfile(Member member) {
+		Profile profile = getProfileEntity(member);
 
 		String imageUrl = profile.getImageUrl();
 		String nickname = profile.getNickname();
 		Boolean gender = profile.isGender();
 		String nation = profile.getNation();
+		String introduction = profile.getIntroduction();
 
-		ProfileGetResponseDto response = ProfileGetResponseDto.of(imageUrl, nickname, gender, nation);
+		List<LanguageDto> languages = languageRepository.findAllByMemberOrderByOrderNumberAsc(member)
+			.stream()
+			.map(language ->
+				LanguageDto.of(language.getOrderNumber(), language.getName()))
+			.toList();
+
+		List<String> interests = memberInterestRepository.findAllByMember(member)
+			.stream()
+			.map(interest -> interest.getInterest().getName())
+			.toList();
+
+		ProfileGetResponseDto response = ProfileGetResponseDto.of(
+			imageUrl, nickname, gender, nation, languages,
+			introduction, interests);
+
+		return response;
+	}
+
+	public ProfileGetResponseDto getProfile(Long id) {
+		Member member = memberService.findMemberByMemberId(id);
+
+		ProfileGetResponseDto response = getProfile(member);
 
 		return response;
 	}
 
 	public ProfileRegistrationResponseDto isRegister() {
 		Member member = authService.findAcceptedLoggedInMember();
-		Profile profile = getProfile(member);
+		Profile profile = getProfileEntity(member);
 
 		Boolean registration = profile.isRegistration();
 		ProfileRegistrationResponseDto response = ProfileRegistrationResponseDto.of(registration);
@@ -185,15 +212,15 @@ public class ProfileService {
 
 	public ProfileViewResponseDto getProfileDetail() {
 		Member member = authService.findAcceptedLoggedInMember();
-		Profile profile = getProfile(member);
+		Profile profile = getProfileEntity(member);
 		String image = profile.getImageUrl();
 		String nation = profile.getNation();
 		String nickname = profile.getNickname();
 		Boolean gender = profile.isGender();
-		List<LanguagesResponseDto.LanguageDto> languages = languageRepository.findAllByMemberOrderByOrderNumberAsc(
+		List<LanguageDto> languages = languageRepository.findAllByMemberOrderByOrderNumberAsc(
 				member).stream()
 			.map(language ->
-				LanguagesResponseDto.LanguageDto.of(language.getOrderNumber(), language.getName())
+				LanguageDto.of(language.getOrderNumber(), language.getName())
 			).toList();
 		List<MemberInterest> memberInterests = memberInterestRepository.findAllByMember(member);
 		List<String> interests = memberInterests.stream()
