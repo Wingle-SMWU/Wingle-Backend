@@ -72,10 +72,11 @@ public class ArticleService extends WritingService {
 			pages = articleRepository.findByForumIdAndIsDeleted(forumId, false, pageable);
 		}
 		// TODO: new ArrayList<String> 부분을 s3에서 받은 이미지 경로로 변경
-		return pages.stream()
+		List<ArticleResponseDto> result = pages.stream()
 			.map(x -> articleMapper.toResponseDto(x, new ArrayList<String>()))
 			.collect(
 				Collectors.toList());
+		return result;
 	}
 
 	@Transactional

@@ -16,7 +16,7 @@ import lombok.Setter;
 @Builder
 public class ArticleResponseDto {
 	private Long articleId;
-	private String userId;
+	private Long userId;
 	private String userNickname;
 	private String userImage;
 	private String userNation;
