@@ -1,5 +1,9 @@
 package kr.co.wingle.profile;
 
+import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
+
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
+import kr.co.wingle.common.util.AES256Util;
 import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.profile.dto.InterestsRequestDto;
 import kr.co.wingle.profile.dto.InterestsResponseDto;
@@ -32,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 public class ProfileController {
 	private final ProfileService profileService;
 	private final AuthService authService;
+	private final AES256Util aes;
 
 	@PostMapping("")
 	public ApiResponse<ProfileResponseDto> saveProfile(@ModelAttribute @Valid ProfileRequestDto profileRequestDto) {
@@ -78,9 +84,13 @@ public class ProfileController {
 		return ApiResponse.success(SuccessCode.PROFILE_READ_SUCCESS, response);
 	}
 
-	@GetMapping("/{id}")
-	public ApiResponse<ProfileGetResponseDto> getUserProfile(@PathVariable Long id) {
-		ProfileGetResponseDto response = profileService.getProfile(id);
+	@GetMapping("/{encryptedId}")
+	public ApiResponse<ProfileGetResponseDto> getUserProfile(@PathVariable String encryptedId) throws
+		NoSuchAlgorithmException,
+		UnsupportedEncodingException,
+		GeneralSecurityException {
+		String id = aes.decrypt(encryptedId);
+		ProfileGetResponseDto response = profileService.getProfile(Long.parseLong(id));
 		return ApiResponse.success(SuccessCode.PROFILE_READ_SUCCESS, response);
 
 	}
