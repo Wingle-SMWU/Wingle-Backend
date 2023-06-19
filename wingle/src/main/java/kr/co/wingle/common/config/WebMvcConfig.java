@@ -12,6 +12,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfig implements WebMvcConfigurer {
 	private final String host = "https://wingle.kr";
 	private final String admin = "https://adm-wingle.netlify.app";
+
+	private final String web = "https://wingle-kder.vercel.app";
 	private final String localhost = "http://localhost:";
 	private final int allowedMinPort = 3000;
 	private final int allowedMaxPort = 3010;
@@ -24,6 +26,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		int allowedPort = allowedMinPort;
 		allowedOrigins.add(host);
 		allowedOrigins.add(admin);
+		allowedOrigins.add(web);
 		while (allowedPort <= allowedMaxPort) {
 			allowedOrigins.add(localhost + allowedPort);
 			allowedPort += 1;
