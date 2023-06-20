@@ -154,6 +154,19 @@ public class AuthService {
 	public EmailResponseDto sendCodeMail(EmailRequestDto emailRequestDto) {
 		String to = emailRequestDto.getEmail();
 		checkDuplicateEmail(to);
+
+		String attemptEmailKey = RedisUtil.PREFIX_EMAIL + to;
+		if (redisUtil.existsData(attemptEmailKey)) {
+			int count = Integer.parseInt(redisUtil.getData(attemptEmailKey));
+			redisUtil.updateData(attemptEmailKey, String.valueOf(++count));
+		} else {
+			redisUtil.setDataExpire(attemptEmailKey, String.valueOf(1), 1000 * 60 * 60 * 24L);
+		}
+
+		if (Integer.parseInt(redisUtil.getData(attemptEmailKey)) > 5) {
+			throw new CustomException(ErrorCode.TOO_MANY_EMAIL_REQUEST);
+		}
+
 		String certificationKey = mailService.sendEmail(to, new CodeMail());
 		return EmailResponseDto.of(certificationKey);
 	}
