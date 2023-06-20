@@ -157,6 +157,7 @@ public class AuthService {
 
 		String attemptEmailKey = RedisUtil.PREFIX_EMAIL + to;
 		if (redisUtil.existsData(attemptEmailKey)) {
+			System.out.println("here");
 			int count = Integer.parseInt(redisUtil.getData(attemptEmailKey));
 			redisUtil.updateData(attemptEmailKey, String.valueOf(++count));
 		} else {
