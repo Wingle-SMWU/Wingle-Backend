@@ -36,6 +36,7 @@ public enum ErrorCode {
 	EMAIL_BAD_REQUEST(BAD_REQUEST, "이메일 형식이 유효하지 않습니다."),
 	EMAIL_SEND_FAIL(BAD_REQUEST, "이메일을 전송할 수 없습니다."),
 	NO_EMAIL_CODE(BAD_REQUEST, "해당 이메일에 유효한 인증정보가 없습니다."),
+	TOO_MANY_EMAIL_REQUEST(BAD_REQUEST, "메일 인증 요청은 하루에 5회까지 가능합니다."),
 	// 프로필
 	DUPLICATE_NICKNAME(BAD_REQUEST, "이미 사용 중인 닉네임입니다."),
 	NO_PROFILE(BAD_REQUEST, "존재하지 않는 프로필입니다"),
