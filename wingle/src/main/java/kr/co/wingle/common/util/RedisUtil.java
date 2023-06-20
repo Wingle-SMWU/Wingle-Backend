@@ -44,7 +44,14 @@ public class RedisUtil {
 	}
 
 	public void updateData(String key, String value) {
-		RedisScript script = RedisScript.of("return redis.call('SET', KEYS[1], ARGV[1], 'KEEPTTL')");
-		redisTemplate.execute(script, Collections.singletonList(key), value);
+		System.out.println("In updateData");
+		try {
+			RedisScript script = RedisScript.of("return redis.call('SET', KEYS[1], ARGV[1], 'KEEPTTL')");
+			redisTemplate.execute(script, Collections.singletonList(key), value);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
+		System.out.println("Out updateData");
 	}
 }
