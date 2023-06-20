@@ -160,9 +160,9 @@ public class AuthService {
 			int count = Integer.parseInt(redisUtil.getData(attemptEmailKey));
 			redisUtil.updateData(attemptEmailKey, String.valueOf(++count));
 		} else {
-			redisUtil.setDataExpire(attemptEmailKey, String.valueOf(1), 1000 * 60 * 3L);
+			redisUtil.setDataExpire(attemptEmailKey, String.valueOf(1), 1000 * 60 * 60 * 24L);
 		}
-		
+
 		if (Integer.parseInt(redisUtil.getData(attemptEmailKey)) > 5) {
 			throw new CustomException(ErrorCode.TOO_MANY_EMAIL_REQUEST);
 		}
