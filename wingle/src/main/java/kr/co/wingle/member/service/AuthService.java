@@ -47,6 +47,7 @@ import kr.co.wingle.member.entity.Term;
 import kr.co.wingle.member.entity.TermCode;
 import kr.co.wingle.member.entity.TermMember;
 import kr.co.wingle.member.mailVo.AcceptanceMail;
+import kr.co.wingle.member.mailVo.ApplyMail;
 import kr.co.wingle.member.mailVo.CodeMail;
 import kr.co.wingle.member.mailVo.RejectionMail;
 import kr.co.wingle.profile.ProfileRepository;
@@ -89,6 +90,9 @@ public class AuthService {
 		// save profile
 		Profile profile = Profile.createProfile(member, request.getNickname(), request.isGender(), request.getNation());
 		profileRepository.save(profile);
+
+		// send mail
+		mailService.sendEmail(member.getEmail(), new ApplyMail(profile.getNickname()));
 
 		return SignupResponseDto.of(member.getId(), member.getName(), profile.getNickname());
 	}

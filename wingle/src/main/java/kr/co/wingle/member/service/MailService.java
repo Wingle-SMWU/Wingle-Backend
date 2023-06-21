@@ -20,9 +20,11 @@ import kr.co.wingle.common.util.RedisUtil;
 import kr.co.wingle.member.mailVo.CodeMail;
 import kr.co.wingle.member.mailVo.Mail;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MailService {
 	private final MailConfig mailConfig;
 	private final RedisUtil redisUtil;
@@ -40,6 +42,8 @@ public class MailService {
 			MimeMessage message = createMessage(to);
 			emailSender.send(message);
 		} catch (MailException | MessagingException | UnsupportedEncodingException es) {
+			log.error(es.getMessage());
+			log.error(es.getStackTrace().toString());
 			throw new CustomException(ErrorCode.EMAIL_SEND_FAIL);
 		}
 		return to;
