@@ -92,7 +92,7 @@ public class AuthService {
 		profileRepository.save(profile);
 
 		// send mail
-		mailService.sendEmail(member.getEmail(), new ApplyMail(profile.getNickname()));
+		mailService.sendEmail(member.getEmail(), new ApplyMail(member.getName()));
 
 		return SignupResponseDto.of(member.getId(), member.getName(), profile.getNickname());
 	}
