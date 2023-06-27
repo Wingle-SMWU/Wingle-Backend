@@ -1,5 +1,8 @@
 package kr.co.wingle.member.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -164,7 +167,13 @@ public class AuthService {
 			int count = Integer.parseInt(redisUtil.getData(attemptEmailKey));
 			redisUtil.updateData(attemptEmailKey, String.valueOf(++count));
 		} else {
-			redisUtil.setDataExpire(attemptEmailKey, String.valueOf(1), 1000 * 60 * 60 * 24L);
+			long currentTime = LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toInstant().toEpochMilli();
+			long tomorrow = LocalDate.now()
+				.plusDays(1)
+				.atStartOfDay(ZoneId.of("Asia/Seoul"))
+				.toInstant()
+				.toEpochMilli();
+			redisUtil.setDataExpire(attemptEmailKey, String.valueOf(1), tomorrow - currentTime);
 		}
 
 		if (Integer.parseInt(redisUtil.getData(attemptEmailKey)) > 5) {
