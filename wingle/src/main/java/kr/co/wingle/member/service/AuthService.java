@@ -181,7 +181,7 @@ public class AuthService {
 		}
 
 		String certificationKey = mailService.sendEmail(to, new CodeMail());
-		return EmailResponseDto.of(certificationKey);
+		return EmailResponseDto.of(certificationKey, Integer.parseInt(redisUtil.getData(attemptEmailKey)));
 	}
 
 	public CertificationResponseDto checkEmailAndCode(CertificationRequestDto certificationRequestDto) {
