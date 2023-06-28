@@ -8,10 +8,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EmailResponseDto {
 	private String certificationKey;
+	private int requestCount;
 
-	public static EmailResponseDto of(String certificationKey) {
+	public static EmailResponseDto of(String certificationKey, int requestCount) {
 		EmailResponseDto emailResponseDto = new EmailResponseDto();
 		emailResponseDto.certificationKey = certificationKey;
+		emailResponseDto.requestCount = requestCount;
 		return emailResponseDto;
 	}
 }
