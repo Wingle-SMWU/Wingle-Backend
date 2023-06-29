@@ -52,6 +52,7 @@ import kr.co.wingle.member.mailVo.CodeMail;
 import kr.co.wingle.member.mailVo.RejectionMail;
 import kr.co.wingle.profile.ProfileRepository;
 import kr.co.wingle.profile.entity.Profile;
+import kr.co.wingle.profile.util.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -68,11 +69,15 @@ public class AuthService {
 	private final RedisUtil redisUtil;
 	private final MailService mailService;
 	private final MemberService memberService;
+	private final ProfileUtil profileUtil;
 
 	@Transactional
 	public SignupResponseDto signup(SignupRequestDto request) {
 		String email = request.getEmail();
 		checkDuplicateEmail(email);
+		if (profileUtil.isDuplicatedNickname(request.getNickname())) {
+			throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
+		}
 
 		// upload S3
 		String idCardImageUrl = uploadIdCardImage(request.getIdCardImage());
