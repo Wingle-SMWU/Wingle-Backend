@@ -84,16 +84,21 @@ public class AuthService {
 		// upload S3
 		String idCardImageUrl = uploadIdCardImage(request.getIdCardImage());
 
-		// save member
+		// 회원, 프로필 객체 생성
 		Member member = request.toMember(idCardImageUrl, passwordEncoder);
+		Profile profile = Profile.createProfile(member, request.getNickname(), request.isGender(), request.getNation());
 
 		if (memberRepository.existsByEmail(email)) { // 거절됐던 회원인 경우
 			// save member
 			Member existMember = memberRepository.findByEmail(email).get();
 			member = Member.copyMember(member, existMember);
 
+			// save profile
+			Profile existProfile = profileRepository.findByMember(member).get();
+			profile = Profile.copyProfile(profile, existProfile);
 		} else { // 신규 회원
-		memberRepository.save(member);
+			memberRepository.save(member);
+			profileRepository.save(profile);
 		}
 
 		// save termMember
@@ -101,10 +106,6 @@ public class AuthService {
 		getTermAndSaveTermMember(member, TermCode.TERMS_OF_PERSONAL_INFORMATION,
 			request.isTermsOfPersonalInformation());
 		getTermAndSaveTermMember(member, TermCode.TERMS_OF_PROMOTION, request.isTermsOfPromotion());
-
-		// save profile
-		Profile profile = Profile.createProfile(member, request.getNickname(), request.isGender(), request.getNation());
-		profileRepository.save(profile);
 
 		// send mail
 		mailService.sendEmail(member.getEmail(), new ApplyMail(member.getName()));
