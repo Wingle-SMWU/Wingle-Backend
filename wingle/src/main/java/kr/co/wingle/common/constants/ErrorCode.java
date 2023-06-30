@@ -32,6 +32,7 @@ public enum ErrorCode {
 	ALREADY_DENY(BAD_REQUEST, "이미 가입 거절한 유저입니다."),
 	ALREADY_WITHDRAWN(BAD_REQUEST, "이미 탈퇴한 유저입니다."),
 	NOT_ACCEPTED(BAD_REQUEST, "승인되지 않은 유저입니다."),
+	DENYED_USER(BAD_REQUEST, "가입 거절된 유저입니다"),
 	// 메일
 	EMAIL_BAD_REQUEST(BAD_REQUEST, "이메일 형식이 유효하지 않습니다."),
 	EMAIL_SEND_FAIL(BAD_REQUEST, "이메일을 전송할 수 없습니다."),
