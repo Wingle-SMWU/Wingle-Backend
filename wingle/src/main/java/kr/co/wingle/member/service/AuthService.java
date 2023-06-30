@@ -236,10 +236,19 @@ public class AuthService {
 		if (termOptional.isEmpty()) {
 			Term term = Term.createTerm(termCode.getCode(), termCode.getName(), termCode.isNecessity());
 			termRepository.save(term);
-			TermMember termMember = TermMember.createTermMember(term, member, agreement);
-			termMemberRepository.save(termMember);
+			saveTermMember(term, member, agreement);
 		} else {
-			TermMember termMember = TermMember.createTermMember(termOptional.get(), member, agreement);
+			saveTermMember(termOptional.get(), member, agreement);
+		}
+	}
+
+	private void saveTermMember(Term term, Member member, boolean agreement) {
+		Optional<TermMember> termMemberOptional = termMemberRepository.findByMemberAndTerm(member, term);
+		if (termMemberOptional.isPresent()) { // 가입 거절된 회원
+			TermMember termMember = termMemberOptional.get();
+			termMember.setAgreement(agreement);
+		} else { // 신규 회원
+			TermMember termMember = TermMember.createTermMember(term, member, agreement);
 			termMemberRepository.save(termMember);
 		}
 	}
