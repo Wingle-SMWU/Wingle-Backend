@@ -62,5 +62,15 @@ public class Member extends BaseEntity {
 		member.authority = authority;
 		return member;
 	}
+
+	public static Member copyMember(Member from, Member to) {
+		to.name = from.name;
+		to.idCardImageUrl = from.idCardImageUrl;
+		to.email = from.email;
+		to.password = from.password;
+		to.permission = from.permission;
+		to.authority = from.authority;
+		return to;
+	}
 }
 

@@ -86,7 +86,15 @@ public class AuthService {
 
 		// save member
 		Member member = request.toMember(idCardImageUrl, passwordEncoder);
+
+		if (memberRepository.existsByEmail(email)) { // 거절됐던 회원인 경우
+			// save member
+			Member existMember = memberRepository.findByEmail(email).get();
+			member = Member.copyMember(member, existMember);
+
+		} else { // 신규 회원
 		memberRepository.save(member);
+		}
 
 		// save termMember
 		getTermAndSaveTermMember(member, TermCode.TERMS_OF_USE, request.isTermsOfUse());
