@@ -74,7 +74,9 @@ public class AuthService {
 	@Transactional
 	public SignupResponseDto signup(SignupRequestDto request) {
 		String email = request.getEmail();
-		checkDuplicateEmail(email);
+		if (!isSignupAvailableEmail(email)) {
+			throw new DuplicateException(ErrorCode.SIGNUP_UNAVAILABLE_EMAIL);
+		}
 		if (profileUtil.isDuplicatedNickname(request.getNickname())) {
 			throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
 		}
@@ -162,7 +164,9 @@ public class AuthService {
 
 	public EmailResponseDto sendCodeMail(EmailRequestDto emailRequestDto) {
 		String to = emailRequestDto.getEmail();
-		checkDuplicateEmail(to);
+		if (!isSignupAvailableEmail(to)) {
+			throw new DuplicateException(ErrorCode.SIGNUP_UNAVAILABLE_EMAIL);
+		}
 
 		String attemptEmailKey = RedisUtil.PREFIX_EMAIL + to;
 		if (redisUtil.existsData(attemptEmailKey)) {
@@ -250,10 +254,19 @@ public class AuthService {
 		return UUID.randomUUID().toString().substring(0, 6);
 	}
 
-	private void checkDuplicateEmail(String email) {
-		if (memberRepository.existsByEmail(email)) {
-			throw new DuplicateException(ErrorCode.DUPLICATE_EMAIL);
+	private boolean isSignupAvailableEmail(String email) {
+		Member member = memberRepository.findByEmail(email).orElseGet(() -> null);
+		// 중복된 이메일 없음
+		if (member == null) {
+			return true;
 		}
+
+		// 이미 거절되어 재가입하려는 이메일
+		if (Permission.DENY.getStatus() == member.getPermission()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public NicknameResponseDto checkDuplicateNickname(NicknameRequestDto request) {
