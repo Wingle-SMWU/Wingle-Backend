@@ -77,10 +77,12 @@ public class AuthService {
 		if (!isSignupAvailableEmail(email)) {
 			throw new DuplicateException(ErrorCode.SIGNUP_UNAVAILABLE_EMAIL);
 		}
+		// 재가입인 경우에도 예전에 썼던 닉네임 다시 쓸 수 없음
 		if (profileUtil.isDuplicatedNickname(request.getNickname())) {
 			throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
 		}
 
+		// TODO: S3 저장 로직 다른 API로 분리
 		// upload S3
 		String idCardImageUrl = uploadIdCardImage(request.getIdCardImage());
 
