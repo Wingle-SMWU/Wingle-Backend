@@ -3,6 +3,7 @@ package kr.co.wingle.message.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +20,7 @@ import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.member.service.MemberService;
 import kr.co.wingle.message.OriginType;
 import kr.co.wingle.message.dto.MessageResponseDto;
+import kr.co.wingle.message.dto.RoomMemberDto;
 import kr.co.wingle.message.dto.RoomRequestDto;
 import kr.co.wingle.message.dto.RoomResponseDto;
 import kr.co.wingle.message.entity.Room;
@@ -167,5 +169,23 @@ public class RoomService {
 		Collections.sort(result);
 
 		return result;
+	}
+
+	@Transactional
+	public RoomMemberDto getRecipient(Long roomId, Long userId) {
+		List<RoomMember> members = roomMemberRepository.findAllByRoomIdAndIsDeleted(roomId, false);
+
+		RoomMemberDto dto = null;
+		for (RoomMember roomMember : members) {
+			if (!Objects.equals(roomMember.getMember().getId(), userId)) {
+				Room room = roomMember.getRoom();
+				Member member = roomMember.getMember();
+				dto = RoomMemberDto.of(room.getId(), room.getOriginType(), member.getId(), member.getName(),
+					member.getEmail(),
+					member.getPermission());
+			}
+		}
+
+		return dto;
 	}
 }
