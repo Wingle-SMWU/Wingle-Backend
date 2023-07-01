@@ -14,6 +14,7 @@ import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.message.dto.MessageRequestDto;
 import kr.co.wingle.message.dto.MessageResponseDto;
 import kr.co.wingle.message.dto.MessageResponseWithRecipentDto;
+import kr.co.wingle.message.dto.RoomMemberDto;
 import kr.co.wingle.message.entity.Message;
 import kr.co.wingle.message.entity.Room;
 import kr.co.wingle.message.mapper.MessageMapper;
@@ -49,11 +50,12 @@ public class MessageService extends WritingService {
 	public MessageResponseWithRecipentDto getListByRoom(Long roomId, int page, int size) {
 		Member member = authService.findAcceptedLoggedInMember();
 		roomService.isValidRoomMember(member.getId(), roomId);
+		RoomMemberDto recipient = roomService.getRecipient(roomId, member.getId());
 
 		Pageable pageable = PageRequest.of(page, size);
 		List<Message> pages = messageRepository.findByRoomIdAndIsDeletedOrderByCreatedTimeDesc(roomId, false, pageable);
 
-		ProfileGetResponseDto profile = profileService.getProfile(member.getId());
+		ProfileGetResponseDto profile = profileService.getProfile(recipient.getMemberId());
 
 		if (pages.isEmpty()) {
 			return MessageResponseWithRecipentDto.of();
@@ -64,6 +66,7 @@ public class MessageService extends WritingService {
 		Collections.sort(messages, Collections.reverseOrder());
 
 		return MessageResponseWithRecipentDto.of(
+			recipient.getMemberId(),
 			profile.getImage(),
 			messages
 		);
