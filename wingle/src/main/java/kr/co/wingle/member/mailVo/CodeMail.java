@@ -3,7 +3,7 @@ package kr.co.wingle.member.mailVo;
 import java.util.Random;
 
 public class CodeMail extends Mail {
-	public static final long VALID_TIME = 1000 * 60 * 3L; // 3분
+	public static final long VALID_TIME = 1000 * 60 * 5L; // 5분
 
 	public CodeMail() {
 		super("code", "윙글(Wingle) 이메일 인증코드");
