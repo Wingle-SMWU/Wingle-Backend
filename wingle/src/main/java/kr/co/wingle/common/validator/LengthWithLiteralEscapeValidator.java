@@ -22,7 +22,7 @@ public class LengthWithLiteralEscapeValidator implements
 			return false;
 
 		System.out.println("before: " + value.length());
-		String replacedValue = value.replaceAll("\\\\t|\\\\n|\\\\x0B|\\\\f|\\\\r", " ");
+		String replacedValue = value.replaceAll("\\s+", " ");
 		System.out.println("after: " + replacedValue.length());
 		return min <= replacedValue.length() && replacedValue.length() <= max;
 	}
