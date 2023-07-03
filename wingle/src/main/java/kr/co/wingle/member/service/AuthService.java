@@ -106,6 +106,14 @@ public class AuthService {
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
+		// 승인된 유저만 허용
+		if (member.getPermission() == Permission.WAIT.getStatus()) {
+			throw new ForbiddenException(ErrorCode.NOT_ACCEPTED);
+		}
+		if (member.getPermission() == Permission.DENY.getStatus()) {
+			throw new ForbiddenException(ErrorCode.DENYED_USER);
+		}
+
 		UsernamePasswordAuthenticationToken authenticationToken = loginRequestDto.toAuthentication();
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 		TokenDto tokenDto = getRedisTokenKey(authentication);
