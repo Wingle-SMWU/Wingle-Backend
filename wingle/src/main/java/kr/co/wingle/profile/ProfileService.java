@@ -54,8 +54,7 @@ public class ProfileService {
 
 		Profile profile = getProfileEntity(member);
 
-		if (!profile.getNickname().equals(request.getNickname()) &&
-			profileUtil.isDuplicatedNickname(request.getNickname())) {
+		if (profileUtil.isDuplicatedNicknameByMemberId(request.getNickname(), member.getId())) {
 			throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
 		}
 

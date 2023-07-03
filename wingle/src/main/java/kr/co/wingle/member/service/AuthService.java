@@ -77,10 +77,6 @@ public class AuthService {
 		if (!isSignupAvailableEmail(email)) {
 			throw new DuplicateException(ErrorCode.SIGNUP_UNAVAILABLE_EMAIL);
 		}
-		// 재가입인 경우에도 예전에 썼던 닉네임 다시 쓸 수 없음
-		if (profileUtil.isDuplicatedNickname(request.getNickname())) {
-			throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
-		}
 
 		// TODO: S3 저장 로직 다른 API로 분리
 		// upload S3
@@ -95,10 +91,18 @@ public class AuthService {
 			Member existMember = memberRepository.findByEmail(email).get();
 			member = Member.copyMember(member, existMember);
 
+			// 예전에 썼던 닉네임 다시 쓸 수 있음
+			if (profileUtil.isDuplicatedNicknameByMemberId(request.getNickname(), member.getId())) {
+				throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
+			}
+			
 			// save profile
 			Profile existProfile = profileRepository.findByMember(member).get();
 			profile = Profile.copyProfile(profile, existProfile);
 		} else { // 신규 회원
+			if (profileUtil.isDuplicatedNickname(request.getNickname())) {
+				throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
+			}
 			memberRepository.save(member);
 			profileRepository.save(profile);
 		}
