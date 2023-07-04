@@ -1,7 +1,9 @@
 package kr.co.wingle.profile;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,7 +87,8 @@ public class ProfileService {
 
 		// save
 		int order = 1;
-		for (String languageCode : request.getLanguages()) {
+		Set<String> requestLanguageSet = new HashSet<>(request.getLanguages());
+		for (String languageCode : requestLanguageSet) {
 			Language language = Language.createLanguage(member, languageCode, order);
 			languageRepository.save(language);
 			order++;
