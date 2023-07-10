@@ -7,7 +7,8 @@ public class CodeMail extends Mail {
 
 	public CodeMail() {
 		super("code", "윙글(Wingle) 이메일 인증코드");
-		super.setValue(createCode());
+		super.values.put("code", createCode());
+
 	}
 
 	private String createCode() {
