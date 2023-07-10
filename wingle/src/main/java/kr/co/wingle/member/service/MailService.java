@@ -1,6 +1,7 @@
 package kr.co.wingle.member.service;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
@@ -36,7 +37,7 @@ public class MailService {
 		try {
 			this.mail = mail;
 			if (mail instanceof CodeMail) {
-				final String code = mail.getValue();
+				final String code = mail.getValues().get("code");
 				redisUtil.setDataExpire(to, code, CodeMail.VALID_TIME);
 			}
 			MimeMessage message = createMessage(to);
@@ -63,10 +64,14 @@ public class MailService {
 	}
 
 	private String setContext() {
-		final String name = "value";
 		Context context = new Context();
-		if (!mail.getValue().isEmpty())
-			context.setVariable(name, mail.getValue());
+		Map<String, String> values = mail.getValues();
+
+		if (!values.isEmpty()) {
+			for (String key : values.keySet())
+				context.setVariable(key, values.get(key));
+		}
+
 		return templateEngine.process(mail.getFileName(), context);
 	}
 }

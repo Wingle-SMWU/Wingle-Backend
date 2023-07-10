@@ -2,16 +2,32 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>가입 거절</title>
-    <p>안녕하세요, WINGLE입니다.</p>
-    <p>학생증 인증에 실패하였습니다.</p>
-    <span th:text="${value}"></span>
-    <p>WINGLE 서비스를 이용하시려면 아래 '바로가기'를 눌러 회원가입을 다시 진행해주시기 바랍니다.</p>
-    <p>감사합니다.</p>
-
-    <a href="https://wingle-kder.vercel.app/auth/signup">윙글 바로가기</a>
 </head>
 <body>
-
+<h1><img src="https://wingle-bucket.s3.ap-northeast-2.amazonaws.com/wingleResource/wingle_logo.png" alt="logo"
+         width="138" height="83"/></h1>
+<p style="font-size:44px"><strong>&nbsp;안녕하세요.<br/>&nbsp;WINGLE입니다.</strong></p>
+<p>&nbsp; 안녕하세요 <span th:text="${name}"></span>님<br/>
+    &nbsp; 아래와 같은 사유로 가입에 실패하였습니다.&nbsp;<br/>&nbsp;
+    <strong>[사유 : <span th:text="${reason}"></span>]</strong><br/>&nbsp;&nbsp;
+    <br/>&nbsp; 아래 링크를 눌러 회원가입을 다시 진행해주시기 바랍니다.&nbsp;</p>
+<table style="height: 18px; width: 53.3865%; border-collapse: collapse; border-color: #fafafa; background-color: #fafafa; margin-left: auto; margin-right: auto;"
+       border="1">
+    <tbody>
+    <tr style="height: 18px;">
+        <td style="width: 100%; text-align: center; height: 18px;">
+            <p>
+                <span style="color: #ff6600;">
+                    <a style="color: #ff6600;" href="https://wingle-national.netlify.app/auth/signup">
+                        <strong>WINGLE 바로가기</strong>
+                    </a>
+                </span>
+            </p>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<p>&nbsp;</p>
+<p>&nbsp; 감사합니다.&nbsp;</p>
 </body>
 </html>
