@@ -209,7 +209,7 @@ public class AuthService {
 
 		member.setPermission(Permission.DENY.getStatus());
 		memberService.saveRejectionReason(rejectionRequestDto);
-		mailService.sendEmail(member.getEmail(), new RejectionMail(rejectionRequestDto.getReason()));
+		mailService.sendEmail(member.getEmail(), new RejectionMail(member.getName(), rejectionRequestDto.getReason()));
 		return PermissionResponseDto.of(userId, false);
 	}
 

@@ -6,7 +6,7 @@ public class CodeMail extends Mail {
 	public static final long VALID_TIME = 1000 * 60 * 3L; // 3분
 
 	public CodeMail() {
-		super("code", "윙글(Wingle) 이메일 인증코드");
+		super("code", "[WINGLE] 회원가입 인증번호");
 		super.values.put("code", createCode());
 
 	}
