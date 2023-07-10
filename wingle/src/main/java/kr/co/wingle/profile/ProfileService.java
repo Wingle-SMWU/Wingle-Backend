@@ -32,6 +32,7 @@ import kr.co.wingle.profile.entity.Interest;
 import kr.co.wingle.profile.entity.Language;
 import kr.co.wingle.profile.entity.MemberInterest;
 import kr.co.wingle.profile.entity.Profile;
+import kr.co.wingle.profile.util.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -45,6 +46,7 @@ public class ProfileService {
 	private final InterestRepository interestRepository;
 	private final SnsRepository snsRepository;
 	private final S3Util s3Util;
+	private final ProfileUtil profileUtil;
 
 	@Transactional
 	public ProfileResponseDto saveProfile(ProfileRequestDto request) {
@@ -54,8 +56,7 @@ public class ProfileService {
 
 		Profile profile = getProfileEntity(member);
 
-		if (!profile.getNickname().equals(request.getNickname()) &&
-			profileRepository.existsByNickname(request.getNickname())) {
+		if (profileUtil.isDuplicatedNicknameByMemberId(request.getNickname(), member.getId())) {
 			throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
 		}
 
@@ -230,4 +231,5 @@ public class ProfileService {
 
 		return ProfileViewResponseDto.of(image, nation, nickname, gender, languages, interests, introduce, sns);
 	}
+
 }
