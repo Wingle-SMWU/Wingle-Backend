@@ -191,7 +191,7 @@ public class AuthService {
 	public EmailResponseDto sendCodeMail(EmailRequestDto emailRequestDto) {
 		String to = emailRequestDto.getEmail();
 		if (!isSignupAvailableEmail(to)) {
-			throw new DuplicateException(ErrorCode.SIGNUP_UNAVAILABLE_EMAIL);
+			throw new DuplicateException(ErrorCode.DUPLICATE_EMAIL);
 		}
 
 		String attemptEmailKey = RedisUtil.PREFIX_EMAIL + to;
