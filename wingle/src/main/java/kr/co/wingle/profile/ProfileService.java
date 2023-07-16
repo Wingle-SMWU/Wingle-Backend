@@ -1,7 +1,9 @@
 package kr.co.wingle.profile;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,7 @@ import kr.co.wingle.profile.entity.Interest;
 import kr.co.wingle.profile.entity.Language;
 import kr.co.wingle.profile.entity.MemberInterest;
 import kr.co.wingle.profile.entity.Profile;
+import kr.co.wingle.profile.util.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -43,6 +46,7 @@ public class ProfileService {
 	private final InterestRepository interestRepository;
 	private final SnsRepository snsRepository;
 	private final S3Util s3Util;
+	private final ProfileUtil profileUtil;
 
 	@Transactional
 	public ProfileResponseDto saveProfile(ProfileRequestDto request) {
@@ -52,8 +56,7 @@ public class ProfileService {
 
 		Profile profile = getProfileEntity(member);
 
-		if (!profile.getNickname().equals(request.getNickname()) &&
-			profileRepository.existsByNickname(request.getNickname())) {
+		if (profileUtil.isDuplicatedNicknameByMemberId(request.getNickname(), member.getId())) {
 			throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
 		}
 
@@ -85,7 +88,8 @@ public class ProfileService {
 
 		// save
 		int order = 1;
-		for (String languageCode : request.getLanguages()) {
+		Set<String> requestLanguageSet = new HashSet<>(request.getLanguages());
+		for (String languageCode : requestLanguageSet) {
 			Language language = Language.createLanguage(member, languageCode, order);
 			languageRepository.save(language);
 			order++;
@@ -227,4 +231,5 @@ public class ProfileService {
 
 		return ProfileViewResponseDto.of(image, nation, nickname, gender, languages, interests, introduce, sns);
 	}
+
 }

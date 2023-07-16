@@ -55,6 +55,7 @@ import kr.co.wingle.member.mailVo.CodeMail;
 import kr.co.wingle.member.mailVo.RejectionMail;
 import kr.co.wingle.profile.ProfileRepository;
 import kr.co.wingle.profile.entity.Profile;
+import kr.co.wingle.profile.util.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -71,28 +72,49 @@ public class AuthService {
 	private final RedisUtil redisUtil;
 	private final MailService mailService;
 	private final MemberService memberService;
+	private final ProfileUtil profileUtil;
 
 	@Transactional
 	public SignupResponseDto signup(SignupRequestDto request) {
 		String email = request.getEmail();
-		checkDuplicateEmail(email);
+		if (!isSignupAvailableEmail(email)) {
+			throw new DuplicateException(ErrorCode.SIGNUP_UNAVAILABLE_EMAIL);
+		}
 
+		// TODO: S3 저장 로직 다른 API로 분리
 		// upload S3
 		String idCardImageUrl = uploadIdCardImage(request.getIdCardImage());
 
-		// save member
+		// 회원, 프로필 객체 생성
 		Member member = request.toMember(idCardImageUrl, passwordEncoder);
-		memberRepository.save(member);
+		Profile profile = Profile.createProfile(member, request.getNickname(), request.isGender(), request.getNation());
+
+		if (memberRepository.existsByEmail(email)) { // 거절됐던 회원인 경우
+			// save member
+			Member existMember = memberRepository.findByEmail(email).get();
+			member = Member.copyMember(member, existMember);
+
+			// 예전에 썼던 닉네임 다시 쓸 수 있음
+			if (profileUtil.isDuplicatedNicknameByMemberId(request.getNickname(), member.getId())) {
+				throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
+			}
+			
+			// save profile
+			Profile existProfile = profileRepository.findByMember(member).get();
+			profile = Profile.copyProfile(profile, existProfile);
+		} else { // 신규 회원
+			if (profileUtil.isDuplicatedNickname(request.getNickname())) {
+				throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
+			}
+			memberRepository.save(member);
+			profileRepository.save(profile);
+		}
 
 		// save termMember
 		getTermAndSaveTermMember(member, TermCode.TERMS_OF_USE, request.isTermsOfUse());
 		getTermAndSaveTermMember(member, TermCode.TERMS_OF_PERSONAL_INFORMATION,
 			request.isTermsOfPersonalInformation());
 		getTermAndSaveTermMember(member, TermCode.TERMS_OF_PROMOTION, request.isTermsOfPromotion());
-
-		// save profile
-		Profile profile = Profile.createProfile(member, request.getNickname(), request.isGender(), request.getNation());
-		profileRepository.save(profile);
 
 		// send mail
 		mailService.sendEmail(member.getEmail(), new ApplyMail(member.getName()));
@@ -105,6 +127,14 @@ public class AuthService {
 		String email = loginRequestDto.getEmail();
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+		// 승인된 유저만 허용
+		if (member.getPermission() == Permission.WAIT.getStatus()) {
+			throw new ForbiddenException(ErrorCode.NOT_ACCEPTED);
+		}
+		if (member.getPermission() == Permission.DENY.getStatus()) {
+			throw new ForbiddenException(ErrorCode.DENYED_USER);
+		}
 
 		UsernamePasswordAuthenticationToken authenticationToken = loginRequestDto.toAuthentication();
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -160,7 +190,9 @@ public class AuthService {
 
 	public EmailResponseDto sendCodeMail(EmailRequestDto emailRequestDto) {
 		String to = emailRequestDto.getEmail();
-		checkDuplicateEmail(to);
+		if (!isSignupAvailableEmail(to)) {
+			throw new DuplicateException(ErrorCode.DUPLICATE_EMAIL);
+		}
 
 		String attemptEmailKey = RedisUtil.PREFIX_EMAIL + to;
 		if (redisUtil.existsData(attemptEmailKey)) {
@@ -218,7 +250,7 @@ public class AuthService {
 
 		member.setPermission(Permission.DENY.getStatus());
 		memberService.saveRejectionReason(rejectionRequestDto);
-		mailService.sendEmail(member.getEmail(), new RejectionMail(rejectionRequestDto.getReason()));
+		mailService.sendEmail(member.getEmail(), new RejectionMail(member.getName(), rejectionRequestDto.getReason()));
 		return PermissionResponseDto.of(userId, false);
 	}
 
@@ -227,10 +259,19 @@ public class AuthService {
 		if (termOptional.isEmpty()) {
 			Term term = Term.createTerm(termCode.getCode(), termCode.getName(), termCode.isNecessity());
 			termRepository.save(term);
-			TermMember termMember = TermMember.createTermMember(term, member, agreement);
-			termMemberRepository.save(termMember);
+			saveTermMember(term, member, agreement);
 		} else {
-			TermMember termMember = TermMember.createTermMember(termOptional.get(), member, agreement);
+			saveTermMember(termOptional.get(), member, agreement);
+		}
+	}
+
+	private void saveTermMember(Term term, Member member, boolean agreement) {
+		Optional<TermMember> termMemberOptional = termMemberRepository.findByMemberAndTerm(member, term);
+		if (termMemberOptional.isPresent()) { // 가입 거절된 회원
+			TermMember termMember = termMemberOptional.get();
+			termMember.setAgreement(agreement);
+		} else { // 신규 회원
+			TermMember termMember = TermMember.createTermMember(term, member, agreement);
 			termMemberRepository.save(termMember);
 		}
 	}
@@ -254,10 +295,19 @@ public class AuthService {
 		return UUID.randomUUID().toString().substring(0, 6);
 	}
 
-	private void checkDuplicateEmail(String email) {
-		if (memberRepository.existsByEmail(email)) {
-			throw new DuplicateException(ErrorCode.DUPLICATE_EMAIL);
+	private boolean isSignupAvailableEmail(String email) {
+		Member member = memberRepository.findByEmail(email).orElseGet(() -> null);
+		// 중복된 이메일 없음
+		if (member == null) {
+			return true;
 		}
+
+		// 이미 거절되어 재가입하려는 이메일
+		if (Permission.DENY.getStatus() == member.getPermission()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public NicknameResponseDto checkDuplicateNickname(NicknameRequestDto request) {

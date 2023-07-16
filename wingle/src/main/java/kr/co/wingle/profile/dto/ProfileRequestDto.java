@@ -1,7 +1,7 @@
 package kr.co.wingle.profile.dto;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +20,6 @@ public class ProfileRequestDto {
 	@NotNull
 	private boolean imageDelete;
 
-	@NotBlank(message = "닉네임이 없습니다.")
+	@Pattern(regexp = "^[0-9a-zA-Z가-힣]{2,10}$", message = "닉네임은 한글/영문/숫자 2자 이상 10자 미만이어야 합니다.")
 	private String nickname;
 }

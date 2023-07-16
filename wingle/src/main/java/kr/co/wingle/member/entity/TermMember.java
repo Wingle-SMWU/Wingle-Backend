@@ -13,6 +13,7 @@ import kr.co.wingle.common.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "term_member")
@@ -30,6 +31,7 @@ public class TermMember extends BaseEntity {
 
 	@Column(nullable = false, columnDefinition = "TINYINT", length = 1)
 	@ColumnDefault("0")
+	@Setter
 	private boolean agreement = false;
 
 	public static TermMember createTermMember(Term term, Member member, boolean agreement) {

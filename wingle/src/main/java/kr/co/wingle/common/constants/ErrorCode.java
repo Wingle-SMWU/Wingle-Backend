@@ -28,10 +28,12 @@ public enum ErrorCode {
 	// 인증
 	INCONSISTENT_CODE(BAD_REQUEST, "인증정보가 일치하지 않습니다."),
 	DUPLICATE_EMAIL(BAD_REQUEST, "이미 가입된 유저입니다."),
+	SIGNUP_UNAVAILABLE_EMAIL(BAD_REQUEST, "회원가입이 불가능한 이메일입니다."),
 	ALREADY_ACCEPTANCE(BAD_REQUEST, "이미 가입 승인한 유저입니다."),
 	ALREADY_DENY(BAD_REQUEST, "이미 가입 거절한 유저입니다."),
 	ALREADY_WITHDRAWN(BAD_REQUEST, "이미 탈퇴한 유저입니다."),
 	NOT_ACCEPTED(BAD_REQUEST, "승인되지 않은 유저입니다."),
+	DENYED_USER(BAD_REQUEST, "가입 거절된 유저입니다"),
 	// 메일
 	EMAIL_BAD_REQUEST(BAD_REQUEST, "이메일 형식이 유효하지 않습니다."),
 	EMAIL_SEND_FAIL(BAD_REQUEST, "이메일을 전송할 수 없습니다."),

@@ -60,4 +60,13 @@ public class Profile extends BaseEntity {
 		return profile;
 	}
 
+	public static Profile copyProfile(Profile from, Profile to) {
+		to.nickname = from.nickname;
+		to.introduction = from.introduction;
+		to.gender = from.gender;
+		to.registration = from.registration;
+		to.nation = from.nation;
+		return to;
+	}
+
 }
