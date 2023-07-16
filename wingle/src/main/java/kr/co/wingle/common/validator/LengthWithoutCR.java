@@ -10,9 +10,7 @@ import javax.validation.Constraint;
 
 /**
  * The annotated element length must be between the specified boundaries (included).
- * The length will be calculated except the literal escape sequence characters.
- * e.g. String value "Hello\\n" will be counted to 8 lengths by @Size or @Length,
- *      but this annotation will count it to 7 lengths.
+ * The length will be calculated without the escape sequence character "/r" a.k.a. CR.
  * Supported types are:
  * CharSequence (length of character sequence is evaluated)
  * null elements are considered valid.
@@ -22,8 +20,8 @@ import javax.validation.Constraint;
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = LengthWithLiteralEscapeValidator.class)
-public @interface LengthWithLiteralEscape {
+@Constraint(validatedBy = LengthWithoutCRValidator.class)
+public @interface LengthWithoutCR {
 	String message() default "size must be between {min} and {max}";
 
 	Class[] groups() default {};

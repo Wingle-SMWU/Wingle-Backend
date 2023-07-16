@@ -3,7 +3,7 @@ package kr.co.wingle.community.comment;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-import kr.co.wingle.common.validator.LengthWithLiteralEscape;
+import kr.co.wingle.common.validator.LengthWithoutCR;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +24,6 @@ public class CommentRequestDto {
 	@Nullable
 	private Long originCommentId;
 
-	@LengthWithLiteralEscape(min = 1, max = 1000, message = "내용은 1자 이상 1000자 이하만 가능합니다.")
+	@LengthWithoutCR(min = 1, max = 1000, message = "내용은 1자 이상 1000자 이하만 가능합니다.")
 	private String content;
 }
