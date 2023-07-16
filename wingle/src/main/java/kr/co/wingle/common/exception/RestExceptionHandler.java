@@ -1,13 +1,9 @@
 package kr.co.wingle.common.exception;
 
-import javax.servlet.http.HttpServletRequest;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import kr.co.wingle.common.constants.ErrorCode;
-import kr.co.wingle.common.dto.ApiResponse;
-import lombok.extern.slf4j.Slf4j;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
@@ -18,12 +14,36 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import kr.co.wingle.common.constants.ErrorCode;
+import kr.co.wingle.common.dto.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @RestControllerAdvice
 public class RestExceptionHandler {
 
-	@ExceptionHandler(CustomException.class)
-	protected ApiResponse<Object> handleCustomException(CustomException exception, HttpServletRequest request) {
+	// Custom Bad Request Error
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(BadRequestException.class)
+	protected ApiResponse<Object> handleBadRequestException(BadRequestException exception, HttpServletRequest request) {
+		logInfo(request, exception.getCode().getStatus(), exception.getCode().getMessage());
+		return ApiResponse.error(exception.getCode());
+	}
+
+	// Custom Unauthorized Error
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	@ExceptionHandler(UnauthorizedException.class)
+	protected ApiResponse<Object> handleUnauthorizedException(UnauthorizedException exception,
+		HttpServletRequest request) {
+		logInfo(request, exception.getCode().getStatus(), exception.getCode().getMessage());
+		return ApiResponse.error(exception.getCode());
+	}
+
+	// Custom Internal Server Error
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ExceptionHandler(InternalServerErrorException.class)
+	protected ApiResponse<Object> handleInternalServerErrorException(InternalServerErrorException exception,
+		HttpServletRequest request) {
 		logInfo(request, exception.getCode().getStatus(), exception.getCode().getMessage());
 		return ApiResponse.error(exception.getCode());
 	}

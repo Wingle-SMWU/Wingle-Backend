@@ -17,7 +17,8 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
 
 import kr.co.wingle.common.constants.ErrorCode;
-import kr.co.wingle.common.exception.CustomException;
+import kr.co.wingle.common.exception.BadRequestException;
+import kr.co.wingle.common.exception.InternalServerErrorException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,7 +53,7 @@ public class S3Util {
 			return upload(file, "idCardImage");
 		} catch (IOException e) {
 			log.warn(e.getMessage());
-			throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL);
+			throw new InternalServerErrorException(ErrorCode.FILE_UPLOAD_FAIL);
 		}
 	}
 
@@ -61,7 +62,7 @@ public class S3Util {
 			return upload(file, "profileImage");
 		} catch (IOException e) {
 			log.warn(e.getMessage());
-			throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL);
+			throw new InternalServerErrorException(ErrorCode.FILE_UPLOAD_FAIL);
 		}
 	}
 
@@ -90,7 +91,7 @@ public class S3Util {
 
 	private String getFileExtension(String fileName) {
 		if (!fileName.contains(".")) {
-			throw new CustomException(ErrorCode.BAD_FILE_NAME);
+			throw new BadRequestException(ErrorCode.BAD_FILE_NAME);
 		}
 		String fileExtension = fileName.substring(fileName.lastIndexOf("."));
 
@@ -98,7 +99,7 @@ public class S3Util {
 			|| fileExtension.equalsIgnoreCase(".png") || fileExtension.equalsIgnoreCase(".heic")) {
 			return fileExtension;
 		} else {
-			throw new CustomException(ErrorCode.BAD_FILE_EXTENSION);
+			throw new BadRequestException(ErrorCode.BAD_FILE_EXTENSION);
 		}
 	}
 }

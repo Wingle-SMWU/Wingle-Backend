@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.wingle.common.constants.ErrorCode;
-import kr.co.wingle.common.exception.CustomException;
+import kr.co.wingle.common.exception.BadRequestException;
 import kr.co.wingle.common.exception.DuplicateException;
 import kr.co.wingle.common.exception.ForbiddenException;
 import kr.co.wingle.common.exception.NotFoundException;
@@ -98,7 +98,7 @@ public class AuthService {
 			if (profileUtil.isDuplicatedNicknameByMemberId(request.getNickname(), member.getId())) {
 				throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
 			}
-			
+
 			// save profile
 			Profile existProfile = profileRepository.findByMember(member).get();
 			profile = Profile.copyProfile(profile, existProfile);
@@ -209,7 +209,7 @@ public class AuthService {
 		}
 
 		if (Integer.parseInt(redisUtil.getData(attemptEmailKey)) > 5) {
-			throw new CustomException(ErrorCode.TOO_MANY_EMAIL_REQUEST);
+			throw new BadRequestException(ErrorCode.TOO_MANY_EMAIL_REQUEST);
 		}
 
 		String certificationKey = mailService.sendEmail(to, new CodeMail());
@@ -221,9 +221,9 @@ public class AuthService {
 		String inputCode = certificationRequestDto.getCertificationCode();
 		String code = redisUtil.getData(email);
 		if (code == null)
-			throw new CustomException(ErrorCode.NO_EMAIL_CODE);
+			throw new BadRequestException(ErrorCode.NO_EMAIL_CODE);
 		if (!code.equals(inputCode))
-			throw new CustomException(ErrorCode.INCONSISTENT_CODE);
+			throw new BadRequestException(ErrorCode.INCONSISTENT_CODE);
 		return CertificationResponseDto.of(true);
 	}
 
@@ -232,7 +232,7 @@ public class AuthService {
 		Long userId = acceptanceRequestDto.getUserId();
 		Member member = memberService.findMemberByMemberId(userId);
 		if (member.getPermission() == Permission.APPROVE.getStatus())
-			throw new CustomException(ErrorCode.ALREADY_ACCEPTANCE);
+			throw new BadRequestException(ErrorCode.ALREADY_ACCEPTANCE);
 
 		member.setPermission(Permission.APPROVE.getStatus());
 		mailService.sendEmail(member.getEmail(), new AcceptanceMail(member.getName()));
@@ -244,9 +244,9 @@ public class AuthService {
 		Long userId = rejectionRequestDto.getUserId();
 		Member member = memberService.findMemberByMemberId(userId);
 		if (member.getPermission() == Permission.DENY.getStatus())
-			throw new CustomException(ErrorCode.ALREADY_DENY);
+			throw new BadRequestException(ErrorCode.ALREADY_DENY);
 		if (member.getPermission() == Permission.APPROVE.getStatus())
-			throw new CustomException(ErrorCode.ALREADY_ACCEPTANCE);
+			throw new BadRequestException(ErrorCode.ALREADY_ACCEPTANCE);
 
 		member.setPermission(Permission.DENY.getStatus());
 		memberService.saveRejectionReason(rejectionRequestDto);

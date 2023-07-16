@@ -16,7 +16,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import kr.co.wingle.common.config.MailConfig;
 import kr.co.wingle.common.constants.ErrorCode;
-import kr.co.wingle.common.exception.CustomException;
+import kr.co.wingle.common.exception.BadRequestException;
 import kr.co.wingle.common.util.RedisUtil;
 import kr.co.wingle.member.mailVo.CodeMail;
 import kr.co.wingle.member.mailVo.Mail;
@@ -45,7 +45,7 @@ public class MailService {
 		} catch (MailException | MessagingException | UnsupportedEncodingException es) {
 			log.error(es.getMessage());
 			log.error(es.getStackTrace().toString());
-			throw new CustomException(ErrorCode.EMAIL_SEND_FAIL);
+			throw new BadRequestException(ErrorCode.EMAIL_SEND_FAIL);
 		}
 		return to;
 	}
