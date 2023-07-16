@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class IntroductionRequestDto {
 
-	@LengthWithoutCR(min = 1, max = 400, message = "자기소개는 400자 이하만 가능합니다.")
+	@LengthWithoutCR(min = 1, max = 400, message = "자기소개는 1자 이상 400자 이하만 가능합니다.")
 	private String introduction;
 }
