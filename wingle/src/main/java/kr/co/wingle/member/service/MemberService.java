@@ -20,6 +20,7 @@ import kr.co.wingle.member.dto.WaitingUserResponseDto;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.entity.Permission;
 import kr.co.wingle.profile.ProfileRepository;
+import kr.co.wingle.profile.entity.Profile;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -65,8 +66,9 @@ public class MemberService {
 	@Transactional(readOnly = true)
 	public WaitingUserResponseDto getWaitingUserInfo(Long userId) {
 		Member member = findMemberByMemberId(userId);
-		String nation = profileRepository.findNationByMember(member);
-		return WaitingUserResponseDto.from(member, nation);
+		Profile profile = profileRepository.findByMember(member)
+			.orElseThrow(() -> new NotFoundException(ErrorCode.DATA_NOT_FOUND));
+		return WaitingUserResponseDto.from(member, profile);
 	}
 
 	@Transactional

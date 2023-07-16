@@ -3,14 +3,14 @@ package kr.co.wingle.common.validator;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class LengthWithLiteralEscapeValidator implements
-	ConstraintValidator<LengthWithLiteralEscape, String> {
+public class LengthWithoutCRValidator implements
+	ConstraintValidator<LengthWithoutCR, String> {
 
 	int min;
 	int max;
 
 	@Override
-	public void initialize(LengthWithLiteralEscape constraintAnnotation) {
+	public void initialize(LengthWithoutCR constraintAnnotation) {
 		this.min = constraintAnnotation.min();
 		this.max = constraintAnnotation.max();
 	}
@@ -21,9 +21,7 @@ public class LengthWithLiteralEscapeValidator implements
 		if (value == null)
 			return false;
 
-		System.out.println("before: " + value.length());
-		String replacedValue = value.replaceAll("\\s+", " ");
-		System.out.println("after: " + replacedValue.length());
+		String replacedValue = value.replaceAll("\\r", "");
 		return min <= replacedValue.length() && replacedValue.length() <= max;
 	}
 }
