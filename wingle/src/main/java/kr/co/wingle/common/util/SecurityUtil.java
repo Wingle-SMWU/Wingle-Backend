@@ -4,7 +4,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import kr.co.wingle.common.constants.ErrorCode;
-import kr.co.wingle.common.exception.CustomException;
+import kr.co.wingle.common.exception.UnauthorizedException;
 
 public class SecurityUtil {
 
@@ -15,7 +15,7 @@ public class SecurityUtil {
 		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		if (authentication == null || authentication.getName() == null) {
-			throw new CustomException(ErrorCode.UNAUTHORIZED_USER);
+			throw new UnauthorizedException(ErrorCode.UNAUTHORIZED_USER);
 		}
 
 		return authentication.getName();
