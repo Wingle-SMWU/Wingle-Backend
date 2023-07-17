@@ -15,6 +15,7 @@ import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.constants.SuccessCode;
 import kr.co.wingle.common.dto.ApiResponse;
 import kr.co.wingle.common.exception.ForbiddenException;
+import kr.co.wingle.common.util.AES256Util;
 import kr.co.wingle.member.dto.AcceptanceRequestDto;
 import kr.co.wingle.member.dto.MemoRequestDto;
 import kr.co.wingle.member.dto.MemoResponseDto;
@@ -50,9 +51,12 @@ public class MemberController {
 	}
 
 	@GetMapping("/waiting/{userId}")
-	public ApiResponse<WaitingUserResponseDto> waitingUser(@PathVariable Long userId) {
+	public ApiResponse<WaitingUserResponseDto> waitingUser(@PathVariable String userId) {
 		checkAdminAccount();
-		WaitingUserResponseDto response = memberService.getWaitingUserInfo(userId);
+
+		Long userId_long = Long.parseLong(AES256Util.decrypt(userId));
+
+		WaitingUserResponseDto response = memberService.getWaitingUserInfo(userId_long);
 		return ApiResponse.success(SuccessCode.WAITING_USER_READ_SUCCESS, response);
 	}
 

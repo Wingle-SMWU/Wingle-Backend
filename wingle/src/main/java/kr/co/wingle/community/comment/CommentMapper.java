@@ -2,6 +2,7 @@ package kr.co.wingle.community.comment;
 
 import org.springframework.stereotype.Component;
 
+import kr.co.wingle.common.util.AES256Util;
 import kr.co.wingle.community.util.CommunityUtil;
 import kr.co.wingle.community.util.ProcessedPersonalInformation;
 import kr.co.wingle.profile.ProfileService;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class CommentMapper {
+	private final AES256Util aes;
 	private final CommunityUtil communityUtil;
 	private final ProfileService profileService;
 
@@ -21,7 +23,7 @@ public class CommentMapper {
 		CommentResponseDto.CommentResponseDtoBuilder commentResponseDto = CommentResponseDto.builder();
 
 		commentResponseDto.id(comment.getId());
-		commentResponseDto.userId(processedPersonalInformation.getProcessedMemberId());
+		commentResponseDto.userId(aes.encrypt(processedPersonalInformation.getProcessedMemberId().toString()));
 		commentResponseDto.userNickname(processedPersonalInformation.getNickname());
 		commentResponseDto.userImage(profileService.getProfileByMemberId(comment.getMember().getId()).getImageUrl());
 		commentResponseDto.userNation(profileService.getProfileByMemberId(comment.getMember().getId()).getNation());
