@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class MessageResponseWithRecipentDto {
-	private Long recipientUserId;
+	private String recipientUserId;
 
 	private String recipientImage;
 
@@ -21,7 +21,7 @@ public class MessageResponseWithRecipentDto {
 			.build();
 	}
 
-	public static MessageResponseWithRecipentDto of(Long recipientUserId, String recipientImage,
+	public static MessageResponseWithRecipentDto of(String recipientUserId, String recipientImage,
 		List<MessageResponseDto> messages) {
 		return MessageResponseWithRecipentDto.builder()
 			.recipientUserId(recipientUserId)

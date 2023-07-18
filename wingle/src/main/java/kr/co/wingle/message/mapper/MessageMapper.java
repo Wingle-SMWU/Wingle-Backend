@@ -28,7 +28,8 @@ public class MessageMapper {
 		Profile profile = profileService.getProfileByMemberId(message.getMember().getId());
 
 		// 메세지 송신자가 나 자신일 경우 닉네임 대신 null 반환
-		return MessageResponseDto.of(message.getId(),
+		return MessageResponseDto.of(
+			message.getId(),
 			!Objects.equals(profile.getMember().getId(), member.getId()) ? profile.getNickname() : null,
 			message.getContent(),
 			message.getCreatedTime(), isMine);

@@ -11,7 +11,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.stereotype.Component;
 
 import kr.co.wingle.common.constants.ErrorCode;
-import kr.co.wingle.common.exception.CustomException;
+import kr.co.wingle.common.exception.InternalServerErrorException;
 
 @Component
 public class AES256Util {
@@ -41,7 +41,7 @@ public class AES256Util {
 			// String enStr = new String(Base64.encodeBase64(encrypted));
 			return new java.math.BigInteger(encrypted).toString(16);
 		} catch (GeneralSecurityException | UnsupportedEncodingException e) {
-			throw new CustomException(ErrorCode.ENCRYPT_FAIL);
+			throw new InternalServerErrorException(ErrorCode.ENCRYPT_FAIL);
 		}
 	}
 
@@ -54,7 +54,11 @@ public class AES256Util {
 			byte[] byteStr = new java.math.BigInteger(str, 16).toByteArray();
 			return new String(c.doFinal(byteStr), "UTF-8");
 		} catch (GeneralSecurityException | UnsupportedEncodingException e) {
-			throw new CustomException(ErrorCode.DECRYPT_FAIL);
+			throw new InternalServerErrorException(ErrorCode.DECRYPT_FAIL);
 		}
+	}
+
+	public static Long userIdDecrypt(String userId) {
+		return Long.parseLong(decrypt(userId));
 	}
 }

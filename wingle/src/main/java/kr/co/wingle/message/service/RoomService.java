@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.NotFoundException;
+import kr.co.wingle.common.util.AES256Util;
 import kr.co.wingle.community.article.ArticleService;
 import kr.co.wingle.community.comment.CommentService;
 import kr.co.wingle.member.entity.Member;
@@ -56,13 +57,17 @@ public class RoomService {
 
 	@Transactional
 	public RoomResponseDto getRoom(RoomRequestDto roomRequestDto) {
+		// originType이 profile 뿐이라고 가정한 코드입니다
+		// 추후 originType이 추가될 경우 분기 필요
+		Long userId = AES256Util.userIdDecrypt(roomRequestDto.getOriginId());
+
 		final int oneToOneRoomSize = 2;
 		Member loggedInMember = authService.findAcceptedLoggedInMember();
 		OriginType originType = OriginType.from(roomRequestDto.getOriginType());
 		Room targetRoom = null;
 
 		// 자기자신과 쪽지 방지
-		if (loggedInMember.getId() == roomRequestDto.getOriginId()) {
+		if (loggedInMember.getId() == userId) {
 			throw new NotFoundException(ErrorCode.BAD_PARAMETER);
 		}
 
@@ -83,7 +88,7 @@ public class RoomService {
 			if (found.size() != oneToOneRoomSize)
 				continue;
 			List<RoomMember> checkMember = found.stream()
-				.filter(x -> x.getMember().getId() == roomRequestDto.getOriginId()).collect(Collectors.toList());
+				.filter(x -> x.getMember().getId() == userId).collect(Collectors.toList());
 			if (checkMember.size() != 1)
 				continue;
 			targetRoom = room;
@@ -98,19 +103,21 @@ public class RoomService {
 	}
 
 	@Transactional
-	private Room createRoom(RoomRequestDto roomRequestDto) {
+	Room createRoom(RoomRequestDto roomRequestDto) {
+		Long userId = AES256Util.userIdDecrypt(roomRequestDto.getOriginId());
+
 		Member loggedInMember = authService.findAcceptedLoggedInMember();
 		OriginType originType = OriginType.from(roomRequestDto.getOriginType());
-		if (!isValidOriginTypeAndId(originType, roomRequestDto.getOriginId())) {
+		if (!isValidOriginTypeAndId(originType, userId)) {
 			throw new NotFoundException(ErrorCode.BAD_PARAMETER);
 		}
-		Room room = Room.of(roomRequestDto.getOriginId(), originType);
+		Room room = Room.of(userId, originType);
 		roomRepository.save(room);
 
 		if (originType == OriginType.PROFILE) {
-			Member targetMember = memberService.findAcceptedMemberByMemberId(roomRequestDto.getOriginId());
+			Member targetMember = memberService.findAcceptedMemberByMemberId(userId);
 			roomMemberRepository.save(RoomMember.of(room, loggedInMember));
-			if (loggedInMember.getId() != roomRequestDto.getOriginId()) {
+			if (loggedInMember.getId() != userId) {
 				roomMemberRepository.save(RoomMember.of(room, targetMember));
 			}
 		}
@@ -119,7 +126,7 @@ public class RoomService {
 	}
 
 	@Transactional(readOnly = true)
-	private boolean isValidOriginTypeAndId(OriginType originType, Long id) {
+	boolean isValidOriginTypeAndId(OriginType originType, Long id) {
 		Member member = authService.findAcceptedLoggedInMember();
 		boolean isDeleted = switch (originType) {
 			case ARTICLE -> articleService.getArticleById(id).isDeleted();

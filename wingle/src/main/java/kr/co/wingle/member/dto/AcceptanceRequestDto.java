@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AcceptanceRequestDto {
 	@NotNull(message = "사용자 id가 없습니다.")
-	private Long userId;
+	private String userId;
 }
