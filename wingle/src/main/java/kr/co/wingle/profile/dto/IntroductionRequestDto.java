@@ -1,7 +1,6 @@
 package kr.co.wingle.profile.dto;
 
-import javax.validation.constraints.NotNull;
-
+import kr.co.wingle.common.validator.LengthWithoutCR;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class IntroductionRequestDto {
-	@NotNull
+
+	@LengthWithoutCR(min = 1, max = 400, message = "자기소개는 1자 이상 400자 이하만 가능합니다.")
 	private String introduction;
 }
