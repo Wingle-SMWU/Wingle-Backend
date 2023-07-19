@@ -11,7 +11,7 @@ import lombok.Setter;
 @Builder
 public class CommentResponseDto {
 	private Long id;
-	private Long userId;
+	private String userId;
 	private String userNickname;
 	private String userImage;
 	private String userNation;

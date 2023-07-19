@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RejectionRequestDto {
 	@NotNull(message = "사용자 id가 없습니다.")
-	private Long userId;
+	private String userId;
 	@NotNull(message = "거절 사유가 없습니다.")
 	private String reason;
 }

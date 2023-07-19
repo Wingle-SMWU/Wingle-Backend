@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.co.wingle.common.util.AES256Util;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
 import kr.co.wingle.message.dto.MessageRequestDto;
@@ -66,7 +67,7 @@ public class MessageService extends WritingService {
 		Collections.sort(messages, Collections.reverseOrder());
 
 		return MessageResponseWithRecipentDto.of(
-			recipient.getMemberId(),
+			AES256Util.encrypt(recipient.getMemberId().toString()),
 			profile.getImage(),
 			messages
 		);

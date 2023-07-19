@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.ForbiddenException;
 import kr.co.wingle.common.exception.NotFoundException;
+import kr.co.wingle.common.util.AES256Util;
 import kr.co.wingle.member.MemberRepository;
 import kr.co.wingle.member.dto.MemoRequestDto;
 import kr.co.wingle.member.dto.MemoResponseDto;
@@ -73,14 +74,16 @@ public class MemberService {
 
 	@Transactional
 	public MemoResponseDto saveMemo(MemoRequestDto memoRequestDto) {
-		Member member = findMemberByMemberId(memoRequestDto.getUserId());
+		Long userId = AES256Util.userIdDecrypt(memoRequestDto.getUserId());
+		Member member = findMemberByMemberId(userId);
 		member.setMemo(memoRequestDto.getMemo());
 		return MemoResponseDto.from(memoRequestDto.getMemo());
 	}
 
 	@Transactional
 	public RejectionResponseDto saveRejectionReason(RejectionRequestDto request) {
-		Member member = findMemberByMemberId(request.getUserId());
+		Long userId = AES256Util.userIdDecrypt(request.getUserId());
+		Member member = findMemberByMemberId(userId);
 		member.setRejectionReason(request.getReason());
 		return RejectionResponseDto.from(request.getReason());
 	}

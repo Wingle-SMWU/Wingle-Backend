@@ -21,6 +21,7 @@ import kr.co.wingle.common.exception.ForbiddenException;
 import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.common.jwt.TokenInfo;
 import kr.co.wingle.common.jwt.TokenProvider;
+import kr.co.wingle.common.util.AES256Util;
 import kr.co.wingle.common.util.RedisUtil;
 import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.common.util.SecurityUtil;
@@ -229,7 +230,7 @@ public class AuthService {
 
 	@Transactional
 	public PermissionResponseDto sendAcceptanceMail(AcceptanceRequestDto acceptanceRequestDto) {
-		Long userId = acceptanceRequestDto.getUserId();
+		Long userId = AES256Util.userIdDecrypt(acceptanceRequestDto.getUserId());
 		Member member = memberService.findMemberByMemberId(userId);
 		if (member.getPermission() == Permission.APPROVE.getStatus())
 			throw new BadRequestException(ErrorCode.ALREADY_ACCEPTANCE);
@@ -241,7 +242,7 @@ public class AuthService {
 
 	@Transactional
 	public PermissionResponseDto sendRejectionMail(RejectionRequestDto rejectionRequestDto) {
-		Long userId = rejectionRequestDto.getUserId();
+		Long userId = AES256Util.userIdDecrypt(rejectionRequestDto.getUserId());
 		Member member = memberService.findMemberByMemberId(userId);
 		if (member.getPermission() == Permission.DENY.getStatus())
 			throw new BadRequestException(ErrorCode.ALREADY_DENY);
