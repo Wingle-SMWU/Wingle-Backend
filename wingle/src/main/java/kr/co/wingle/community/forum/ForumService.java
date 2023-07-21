@@ -34,7 +34,7 @@ public class ForumService {
 		final String nationCodeKor = "KR";
 		final String anonymousKor = "한국 윙그리";
 		final String anonymousNoneKor = "외국 윙그리";
-		final String admin = "관리자";
+		final String admin = "윙그리";
 
 		ForumCode forumCode = ForumCode.from(forum.getName());
 
