@@ -45,7 +45,7 @@ public class CommunityUtil {
 		Long processedMemberId = forumService.processMemberIdByForum(forum,
 			writing.getMember().getId());
 		// 게시판별 작성자 학교이름
-		String schoolName = forumService.getSchoolNameByForum(forum, loggedInMember.getSchool());
+		String schoolName = forumService.getSchoolNameByForum(forum, writing.getMember().getSchool());
 		boolean isMine = writingUtil.isMine(writing);
 		return ProcessedPersonalInformation.of(nickname, processedMemberId, schoolName, isMine);
 	}
