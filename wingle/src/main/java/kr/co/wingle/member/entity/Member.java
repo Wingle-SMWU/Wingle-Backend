@@ -4,10 +4,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.ColumnDefault;
 
+import kr.co.wingle.affliation.entity.School;
 import kr.co.wingle.common.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -51,8 +54,17 @@ public class Member extends BaseEntity {
 	@Setter
 	private String memo;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	private School school;
+
+	@Column(nullable = false)
+	private String department;
+
+	@Column(nullable = false)
+	private String studentNumber;
+
 	public static Member createMember(String name, String idCardImageUrl, String email, String password,
-		Authority authority) {
+		Authority authority, School school, String department, String studentNumber) {
 		Member member = new Member();
 		member.name = name;
 		member.idCardImageUrl = idCardImageUrl;
@@ -60,6 +72,9 @@ public class Member extends BaseEntity {
 		member.password = password;
 		member.permission = Permission.WAIT.getStatus();
 		member.authority = authority;
+		member.school = school;
+		member.department = department;
+		member.studentNumber = studentNumber;
 		return member;
 	}
 
@@ -70,6 +85,9 @@ public class Member extends BaseEntity {
 		to.password = from.password;
 		to.permission = from.permission;
 		to.authority = from.authority;
+		to.school = from.school;
+		to.department = from.department;
+		to.studentNumber = from.studentNumber;
 		return to;
 	}
 }

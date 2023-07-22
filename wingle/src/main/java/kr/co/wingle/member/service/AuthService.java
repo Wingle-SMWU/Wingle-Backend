@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import kr.co.wingle.affliation.entity.School;
+import kr.co.wingle.affliation.repository.SchoolRepository;
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.BadRequestException;
 import kr.co.wingle.common.exception.DuplicateException;
@@ -66,6 +68,7 @@ public class AuthService {
 	private final ProfileRepository profileRepository;
 	private final TermRepository termRepository;
 	private final TermMemberRepository termMemberRepository;
+	private final SchoolRepository schoolRepository;
 	private final TokenProvider tokenProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final PasswordEncoder passwordEncoder;
@@ -86,8 +89,12 @@ public class AuthService {
 		// upload S3
 		String idCardImageUrl = uploadIdCardImage(request.getIdCardImage());
 
+		// 학교 찾기
+		School school = schoolRepository.findById(request.getSchoolId())
+			.orElseThrow(() -> new NotFoundException(ErrorCode.SCHOOL_NOT_FOUND));
+
 		// 회원, 프로필 객체 생성
-		Member member = request.toMember(idCardImageUrl, passwordEncoder);
+		Member member = request.toMember(idCardImageUrl, passwordEncoder, school);
 		Profile profile = Profile.createProfile(member, request.getNickname(), request.isGender(), request.getNation());
 
 		if (memberRepository.existsByEmail(email)) { // 거절됐던 회원인 경우

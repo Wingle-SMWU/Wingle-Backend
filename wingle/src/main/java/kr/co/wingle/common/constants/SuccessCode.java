@@ -45,7 +45,9 @@ public enum SuccessCode {
 	PROFILE_REGISTER_READ_SUCCESS(OK, "프로필 등록 여부 조회 성공"),
 	LANGUAGES_SAVE_SUCCESS(OK, "사용 가능 언어 저장 성공"),
 	INTRODUCTION_SAVE_SUCCESS(OK, "자기소개 저장 성공"),
-	INTERESTS_SAVE_SUCCESS(OK, "관심사 저장 성공");
+	INTERESTS_SAVE_SUCCESS(OK, "관심사 저장 성공"),
+	// 소속
+	SCHOOL_GET_SUCCESS(OK, "학교 조회 성공");
 
 	private final HttpStatus status;
 	private final String message;
