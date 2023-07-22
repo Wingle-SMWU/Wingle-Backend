@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.co.wingle.affliation.entity.School;
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.profile.entity.Profile;
@@ -60,5 +61,18 @@ public class ForumService {
 			default -> throw new IllegalStateException(ErrorCode.NO_FORUM.getMessage());
 		};
 		return processedId;
+	}
+
+	static public String getSchoolNameByForum(Forum forum, School school) {
+
+		ForumCode forumCode = ForumCode.from(forum.getName());
+
+		String schoolName = switch (forumCode) {
+			case FREE -> "";
+			case EXCHANGE -> school.getName();
+			case NOTICE -> "";
+			default -> throw new IllegalStateException(ErrorCode.NO_FORUM.getMessage());
+		};
+		return schoolName;
 	}
 }

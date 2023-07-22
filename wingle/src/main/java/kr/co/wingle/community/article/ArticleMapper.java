@@ -41,6 +41,7 @@ public class ArticleMapper {
 		articleResponseDto.userId(AES256Util.encrypt(processedPersonalInformation.getProcessedMemberId().toString()));
 		articleResponseDto.userImage(profileService.getProfileByMemberId(article.getMember().getId()).getImageUrl());
 		articleResponseDto.userNation(profileService.getProfileByMemberId(article.getMember().getId()).getNation());
+		articleResponseDto.userSchoolName(processedPersonalInformation.getSchoolName());
 		articleResponseDto.forumId(article.getForum().getId());
 
 		return articleResponseDto.build();

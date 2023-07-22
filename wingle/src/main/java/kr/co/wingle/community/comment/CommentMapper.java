@@ -26,6 +26,7 @@ public class CommentMapper {
 		commentResponseDto.userNickname(processedPersonalInformation.getNickname());
 		commentResponseDto.userImage(profileService.getProfileByMemberId(comment.getMember().getId()).getImageUrl());
 		commentResponseDto.userNation(profileService.getProfileByMemberId(comment.getMember().getId()).getNation());
+		commentResponseDto.userSchoolName(processedPersonalInformation.getSchoolName());
 		commentResponseDto.createdTime(comment.getCreatedTime());
 		commentResponseDto.updatedTime(comment.getUpdatedTime());
 		commentResponseDto.content(comment.getContent());
