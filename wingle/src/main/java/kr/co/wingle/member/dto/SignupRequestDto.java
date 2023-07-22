@@ -36,25 +36,26 @@ public class SignupRequestDto {
 	private String name;
 
 	@AssertTrue(message = "닉네임 중복 검사를 통과해야 합니다.")
-	private boolean isNicknameChecked;
+	// 래퍼로 해야 값이 넘어옴
+	private Boolean isNicknameChecked;
 
 	@NotBlank(message = "닉네임이 없습니다.")
 	private String nickname;
 
 	@NotNull
-	private boolean gender;
+	private Boolean gender;
 
 	@NotBlank(message = "국가 정보가 없습니다.")
 	private String nation;
 
 	@AssertTrue(message = "약관에 필수로 동의해야 합니다.")
-	private boolean termsOfUse;
+	private Boolean termsOfUse;
 
 	@AssertTrue(message = "약관에 필수로 동의해야 합니다.")
-	private boolean termsOfPersonalInformation;
+	private Boolean termsOfPersonalInformation;
 
 	@NotNull
-	private boolean termsOfPromotion;
+	private Boolean termsOfPromotion;
 
 	@NotNull(message = "학교 Id가 없습니다.")
 	private Long schoolId;
