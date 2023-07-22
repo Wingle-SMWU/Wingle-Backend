@@ -13,6 +13,8 @@ public enum SuccessCode {
 	// 일반
 	EXAMPLE_SUCCESS(OK, "예시 성공"),
 	GET_SUCCESS(OK, "조회 성공"),
+	UPLOAD_IMAGE_SUCCESS(OK, "이미지 업로드 성공"),
+
 	// 커뮤니티
 	ARTICLE_CREATE_SUCCESS(OK, "게시물 생성 성공"),
 	ARTICLE_DELETE_SUCCESS(OK, "게시물 삭제 성공"),

@@ -15,6 +15,8 @@ import kr.co.wingle.member.dto.CertificationRequestDto;
 import kr.co.wingle.member.dto.CertificationResponseDto;
 import kr.co.wingle.member.dto.EmailRequestDto;
 import kr.co.wingle.member.dto.EmailResponseDto;
+import kr.co.wingle.member.dto.IdCardImageReqeustDto;
+import kr.co.wingle.member.dto.IdCardImageResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
 import kr.co.wingle.member.dto.LoginResponseDto;
 import kr.co.wingle.member.dto.LogoutRequestDto;
@@ -38,7 +40,7 @@ public class AuthController {
 	private final AuthService authService;
 
 	@PostMapping("/signup")
-	public ApiResponse<SignupResponseDto> signup(@ModelAttribute @Valid SignupRequestDto signupRequestDto) {
+	public ApiResponse<SignupResponseDto> signup(@RequestBody @Valid SignupRequestDto signupRequestDto) {
 		SignupResponseDto response = authService.signup(signupRequestDto);
 		return ApiResponse.success(SuccessCode.SIGNUP_SUCCESS, response);
 	}
@@ -48,6 +50,13 @@ public class AuthController {
 		LoginResponseDto response = authService.login(loginRequestDto);
 		log.info("[{}] login success", loginRequestDto.getEmail());
 		return ApiResponse.success(SuccessCode.LOGIN_SUCCESS, response);
+	}
+
+	@PostMapping("/idcardimage")
+	public ApiResponse<IdCardImageResponseDto> signup(
+		@ModelAttribute @Valid IdCardImageReqeustDto idCardImageReqeustDto) {
+		IdCardImageResponseDto response = authService.uploadIdCardImage(idCardImageReqeustDto.getIdCardImage());
+		return ApiResponse.success(SuccessCode.UPLOAD_IMAGE_SUCCESS, response);
 	}
 
 	@GetMapping("/me")

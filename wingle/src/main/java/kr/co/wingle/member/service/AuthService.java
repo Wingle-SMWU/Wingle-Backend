@@ -35,6 +35,7 @@ import kr.co.wingle.member.dto.CertificationRequestDto;
 import kr.co.wingle.member.dto.CertificationResponseDto;
 import kr.co.wingle.member.dto.EmailRequestDto;
 import kr.co.wingle.member.dto.EmailResponseDto;
+import kr.co.wingle.member.dto.IdCardImageResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
 import kr.co.wingle.member.dto.LoginResponseDto;
 import kr.co.wingle.member.dto.LogoutRequestDto;
@@ -84,7 +85,7 @@ public class AuthService {
 		if (!isSignupAvailableEmail(email)) {
 			throw new DuplicateException(ErrorCode.SIGNUP_UNAVAILABLE_EMAIL);
 		}
-		
+
 		// 학교 찾기
 		School school = schoolRepository.findById(request.getSchoolId())
 			.orElseThrow(() -> new NotFoundException(ErrorCode.SCHOOL_NOT_FOUND));
@@ -322,7 +323,7 @@ public class AuthService {
 		return NicknameResponseDto.of(true);
 	}
 
-	private String uploadIdCardImage(MultipartFile idCardImage) {
-		return s3Util.idCardImageUpload(idCardImage);
+	public IdCardImageResponseDto uploadIdCardImage(MultipartFile idCardImage) {
+		return IdCardImageResponseDto.of(s3Util.getFileName(idCardImage), s3Util.idCardImageUpload(idCardImage));
 	}
 }

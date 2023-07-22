@@ -10,13 +10,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import kr.co.wingle.affliation.entity.School;
 import kr.co.wingle.member.entity.Authority;
 import kr.co.wingle.member.entity.Member;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SignupRequestDto {
 
 	@NotBlank(message = "파일 url이 없습니다.")
