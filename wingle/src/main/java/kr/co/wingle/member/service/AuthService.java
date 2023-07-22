@@ -35,6 +35,7 @@ import kr.co.wingle.member.dto.CertificationRequestDto;
 import kr.co.wingle.member.dto.CertificationResponseDto;
 import kr.co.wingle.member.dto.EmailRequestDto;
 import kr.co.wingle.member.dto.EmailResponseDto;
+import kr.co.wingle.member.dto.IdCardImageResponseDto;
 import kr.co.wingle.member.dto.LoginRequestDto;
 import kr.co.wingle.member.dto.LoginResponseDto;
 import kr.co.wingle.member.dto.LogoutRequestDto;
@@ -85,17 +86,14 @@ public class AuthService {
 			throw new DuplicateException(ErrorCode.SIGNUP_UNAVAILABLE_EMAIL);
 		}
 
-		// TODO: S3 저장 로직 다른 API로 분리
-		// upload S3
-		String idCardImageUrl = uploadIdCardImage(request.getIdCardImage());
-
 		// 학교 찾기
 		School school = schoolRepository.findById(request.getSchoolId())
 			.orElseThrow(() -> new NotFoundException(ErrorCode.SCHOOL_NOT_FOUND));
 
 		// 회원, 프로필 객체 생성
-		Member member = request.toMember(idCardImageUrl, passwordEncoder, school);
-		Profile profile = Profile.createProfile(member, request.getNickname(), request.isGender(), request.getNation());
+		Member member = request.toMember(passwordEncoder, school);
+		Profile profile = Profile.createProfile(member, request.getNickname(), request.getGender(),
+			request.getNation());
 
 		if (memberRepository.existsByEmail(email)) { // 거절됐던 회원인 경우
 			// save member
@@ -119,10 +117,10 @@ public class AuthService {
 		}
 
 		// save termMember
-		getTermAndSaveTermMember(member, TermCode.TERMS_OF_USE, request.isTermsOfUse());
+		getTermAndSaveTermMember(member, TermCode.TERMS_OF_USE, request.getTermsOfUse());
 		getTermAndSaveTermMember(member, TermCode.TERMS_OF_PERSONAL_INFORMATION,
-			request.isTermsOfPersonalInformation());
-		getTermAndSaveTermMember(member, TermCode.TERMS_OF_PROMOTION, request.isTermsOfPromotion());
+			request.getTermsOfPersonalInformation());
+		getTermAndSaveTermMember(member, TermCode.TERMS_OF_PROMOTION, request.getTermsOfPromotion());
 
 		// send mail
 		mailService.sendEmail(member.getEmail(), new ApplyMail(member.getName()));
@@ -326,7 +324,7 @@ public class AuthService {
 		return NicknameResponseDto.of(true);
 	}
 
-	private String uploadIdCardImage(MultipartFile idCardImage) {
-		return s3Util.idCardImageUpload(idCardImage);
+	public IdCardImageResponseDto uploadIdCardImage(MultipartFile idCardImage) {
+		return IdCardImageResponseDto.of(s3Util.getFileName(idCardImage), s3Util.idCardImageUpload(idCardImage));
 	}
 }

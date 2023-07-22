@@ -76,7 +76,7 @@ public class S3Util {
 		amazonS3Client.deleteObject(deleteObjectRequest);
 	}
 
-	private String getFileName(MultipartFile file) {
+	public String getFileName(MultipartFile file) {
 		String originalFilename = file.getOriginalFilename();
 		if (originalFilename == null) {
 			throw new NullPointerException(ErrorCode.BAD_FILE_NAME.getMessage());
