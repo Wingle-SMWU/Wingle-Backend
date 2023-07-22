@@ -2,6 +2,7 @@ package kr.co.wingle.member.service;
 
 import static kr.co.wingle.member.MemberTemplate.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 
@@ -11,14 +12,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.co.wingle.affliation.entity.School;
 import kr.co.wingle.member.MemberRepository;
 import kr.co.wingle.member.dto.SignupListResponseDto;
 import kr.co.wingle.member.dto.WaitingUserResponseDto;
 import kr.co.wingle.member.entity.Authority;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.entity.Permission;
-import kr.co.wingle.profile.entity.Profile;
 import kr.co.wingle.profile.ProfileRepository;
+import kr.co.wingle.profile.entity.Profile;
 
 @SpringBootTest
 @WithMockUser(value = EMAIL, password = PASSWORD)
@@ -39,7 +41,7 @@ class MemberServiceTest {
 		long count = getExistCount(Permission.WAIT);
 		for (int i = 0; i < 17; i++) {
 			Member member = Member.createMember("name", "url", "wingle" + i + "@example.com",
-				"password", Authority.ROLE_USER);
+				"password", Authority.ROLE_USER, mock(School.class), "department", "0123456");
 			memberRepository.save(member);
 			if (i == 16) {
 				member.setPermission(Permission.APPROVE.getStatus());
@@ -62,7 +64,7 @@ class MemberServiceTest {
 		long count = getExistCount(Permission.DENY);
 		for (int i = 0; i < 17; i++) {
 			Member member = Member.createMember("name", "url", "wingle" + i + "@example.com", "password",
-				Authority.ROLE_USER);
+				Authority.ROLE_USER, mock(School.class), "department", "0123456");
 			memberRepository.save(member);
 			if (i == 16) {
 				break;
@@ -86,7 +88,7 @@ class MemberServiceTest {
 		long count = getExistCount(Permission.APPROVE);
 		for (int i = 0; i < 17; i++) {
 			Member member = Member.createMember("name", "url", "wingle" + i + "@example.com", "password",
-				Authority.ROLE_USER);
+				Authority.ROLE_USER, mock(School.class), "department", "0123456");
 			memberRepository.save(member);
 			if (i == 16) {
 				break;
