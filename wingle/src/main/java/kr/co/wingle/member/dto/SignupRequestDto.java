@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 
+import kr.co.wingle.affliation.entity.School;
 import kr.co.wingle.member.entity.Authority;
 import kr.co.wingle.member.entity.Member;
 import lombok.AllArgsConstructor;
@@ -53,8 +54,18 @@ public class SignupRequestDto {
 	@NotNull
 	private boolean termsOfPromotion;
 
-	public Member toMember(String idCardImageUrl, PasswordEncoder passwordEncoder) {
-		return Member.createMember(name, idCardImageUrl, email, passwordEncoder.encode(password), Authority.ROLE_USER);
+	@NotNull(message = "학교 Id가 없습니다.")
+	private Long schoolId;
+
+	@NotBlank(message = "학과가 없습니다.")
+	private String department;
+
+	@NotBlank(message = "학번이 없습니다.")
+	private String studentNumber;
+
+	public Member toMember(String idCardImageUrl, PasswordEncoder passwordEncoder, School school) {
+		return Member.createMember(name, idCardImageUrl, email, passwordEncoder.encode(password), Authority.ROLE_USER,
+			school, department, studentNumber);
 	}
 }
 
