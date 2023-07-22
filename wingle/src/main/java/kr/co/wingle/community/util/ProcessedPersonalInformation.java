@@ -9,9 +9,11 @@ import lombok.Getter;
 public class ProcessedPersonalInformation {
 	private String nickname;
 	private Long processedMemberId;
+	private String schoolName;
 	private boolean isMine;
 
-	public static ProcessedPersonalInformation of(String nickname, Long processedMemberId, boolean isMine) {
-		return new ProcessedPersonalInformation(nickname, processedMemberId, isMine);
+	public static ProcessedPersonalInformation of(String nickname, Long processedMemberId, String schoolName,
+		boolean isMine) {
+		return new ProcessedPersonalInformation(nickname, processedMemberId, schoolName, isMine);
 	}
 }
