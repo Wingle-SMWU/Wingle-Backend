@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class ArticleMapper {
-	private final AES256Util aes;
 	private final CommunityUtil communityUtil;
 	private final ProfileService profileService;
 
@@ -39,7 +38,7 @@ public class ArticleMapper {
 			articleResponseDto.images(new ArrayList<String>(list));
 		}
 		articleResponseDto.isMine(processedPersonalInformation.isMine());
-		articleResponseDto.userId(aes.encrypt(processedPersonalInformation.getProcessedMemberId().toString()));
+		articleResponseDto.userId(AES256Util.encrypt(processedPersonalInformation.getProcessedMemberId().toString()));
 		articleResponseDto.userImage(profileService.getProfileByMemberId(article.getMember().getId()).getImageUrl());
 		articleResponseDto.userNation(profileService.getProfileByMemberId(article.getMember().getId()).getNation());
 		articleResponseDto.forumId(article.getForum().getId());
