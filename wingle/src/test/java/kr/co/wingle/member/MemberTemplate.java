@@ -48,7 +48,8 @@ public class MemberTemplate {
 	}
 
 	public static SignupRequestDto makeTestSignUpRequestDto() throws Exception {
-		return new SignupRequestDto(getTestIdCardImage(), EMAIL, PASSWORD, NAME, true, NICKNAME, GENDER, NATION, true,
+		return new SignupRequestDto(getTestIdCardImage().getName(), EMAIL, PASSWORD, NAME, true, NICKNAME, GENDER,
+			NATION, true,
 			true, false, SCHOOL.getId(), DEPARTMENT, STUDENT_NUMBER);
 	}
 

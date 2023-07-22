@@ -84,17 +84,13 @@ public class AuthService {
 		if (!isSignupAvailableEmail(email)) {
 			throw new DuplicateException(ErrorCode.SIGNUP_UNAVAILABLE_EMAIL);
 		}
-
-		// TODO: S3 저장 로직 다른 API로 분리
-		// upload S3
-		String idCardImageUrl = uploadIdCardImage(request.getIdCardImage());
-
+		
 		// 학교 찾기
 		School school = schoolRepository.findById(request.getSchoolId())
 			.orElseThrow(() -> new NotFoundException(ErrorCode.SCHOOL_NOT_FOUND));
 
 		// 회원, 프로필 객체 생성
-		Member member = request.toMember(idCardImageUrl, passwordEncoder, school);
+		Member member = request.toMember(passwordEncoder, school);
 		Profile profile = Profile.createProfile(member, request.getNickname(), request.isGender(), request.getNation());
 
 		if (memberRepository.existsByEmail(email)) { // 거절됐던 회원인 경우

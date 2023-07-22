@@ -6,7 +6,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.wingle.affliation.entity.School;
 import kr.co.wingle.member.entity.Authority;
@@ -20,8 +19,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SignupRequestDto {
 
-	@NotNull(message = "파일이 없습니다.")
-	private MultipartFile idCardImage;
+	@NotBlank(message = "파일 url이 없습니다.")
+	private String idCardImageUrl;
 
 	@Email
 	@NotBlank(message = "이메일이 없습니다.")
@@ -63,7 +62,7 @@ public class SignupRequestDto {
 	@NotBlank(message = "학번이 없습니다.")
 	private String studentNumber;
 
-	public Member toMember(String idCardImageUrl, PasswordEncoder passwordEncoder, School school) {
+	public Member toMember(PasswordEncoder passwordEncoder, School school) {
 		return Member.createMember(name, idCardImageUrl, email, passwordEncoder.encode(password), Authority.ROLE_USER,
 			school, department, studentNumber);
 	}
