@@ -17,17 +17,20 @@ public class RoomResponseDto implements Comparable<RoomResponseDto> {
 	private String nickname;
 	private String recentChat;
 	private LocalDateTime createdTime;
+	private String schoolName;
 
 	public static RoomResponseDto from(Long roomId) {
 		return RoomResponseDto.builder().roomId(roomId).build();
 	}
 
-	public static RoomResponseDto roomPreview(Long roomId, Profile profile, MessageResponseDto message) {
+	public static RoomResponseDto roomPreview(Long roomId, Profile profile, MessageResponseDto message,
+		String schoolName) {
 		RoomResponseDto roomResponseDto = RoomResponseDto.builder()
 			.roomId(roomId)
 			.image(profile.getImageUrl())
 			.nation(profile.getNation())
 			.nickname(profile.getNickname())
+			.schoolName(schoolName)
 			.build();
 
 		if (message != null) {

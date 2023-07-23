@@ -169,7 +169,8 @@ public class RoomService {
 
 			if (messages.size() > 0)
 				recent = messages.get(0);
-			result.add(RoomResponseDto.roomPreview(room.getId(), otherProfile, recent));
+			result.add(
+				RoomResponseDto.roomPreview(room.getId(), otherProfile, recent, otherMember.getSchool().getName()));
 		}
 
 		// 최신메시지순
