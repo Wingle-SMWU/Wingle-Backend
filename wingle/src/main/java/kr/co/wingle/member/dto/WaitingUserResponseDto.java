@@ -22,6 +22,9 @@ public class WaitingUserResponseDto {
 	private String reason;
 	private String memo;
 	private String nation;
+	private String schoolName;
+	private String departmentName;
+	private String studentNumber;
 
 	public static WaitingUserResponseDto from(Member member, Profile profile) {
 		WaitingUserResponseDto waitingUserResponseDto = new WaitingUserResponseDto();
@@ -35,6 +38,9 @@ public class WaitingUserResponseDto {
 		waitingUserResponseDto.nation = profile.getNation();
 		waitingUserResponseDto.gender = profile.isGender();
 		waitingUserResponseDto.nickname = profile.getNickname();
+		waitingUserResponseDto.schoolName = member.getSchool().getName();
+		waitingUserResponseDto.departmentName = member.getDepartment();
+		waitingUserResponseDto.studentNumber = member.getStudentNumber();
 		return waitingUserResponseDto;
 	}
 }
