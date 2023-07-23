@@ -32,7 +32,7 @@ public class ForumService {
 	}
 
 	static public String getNicknameByForum(Forum forum, Profile profile) {
-		final String nationCodeKor = "KR";
+		final String nationCodeKor = "Republic of Korea";
 		final String anonymousKor = "한국 윙그리";
 		final String anonymousNoneKor = "외국 윙그리";
 		final String admin = "윙그리";
