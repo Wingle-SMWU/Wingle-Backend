@@ -13,10 +13,14 @@ public class SignupListResponseWithPagesDto {
 
 	private Long totalPages;
 
-	public static SignupListResponseWithPagesDto from(List<SignupListResponseDto> list, Long totalPages) {
+	private Long totalUsers;
+
+	public static SignupListResponseWithPagesDto from(List<SignupListResponseDto> list, Long totalPages,
+		Long totalUsers) {
 		SignupListResponseWithPagesDto signupListResponseWithPagesDto = new SignupListResponseWithPagesDto();
 		signupListResponseWithPagesDto.list = list;
 		signupListResponseWithPagesDto.totalPages = totalPages;
+		signupListResponseWithPagesDto.totalUsers = totalUsers;
 		return signupListResponseWithPagesDto;
 	}
 }
