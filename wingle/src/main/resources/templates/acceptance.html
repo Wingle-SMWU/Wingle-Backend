@@ -1,35 +1,60 @@
+<!-- 가입 성공시 메일 -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
 </head>
-<body>
-<h1><img src="https://wingle-bucket.s3.ap-northeast-2.amazonaws.com/wingleResource/wingle_logo.png" alt="logo"
-         width="138" height="83"/></h1>
-<p style="font-size:44px">
-    <strong>&nbsp;
-        <span th:text="${name}"></span> 윙그리님<br/>&nbsp;가입을 환영합니다!&nbsp;
-    </strong>
-</p>
-<p>&nbsp; 안녕하세요 <span th:text="${name}"></span>님!<br/>&nbsp; 학생증 인증이 완료되었습니다.<br/>
-    &nbsp; 아래 링크를 누르면 WINGLE 로그인 페이지로 이동합니다.<br/><br/></p>
-<table style="height: 18px; width: 53.3865%; border-collapse: collapse; border-color: #fafafa; background-color: #fafafa; margin-left: auto; margin-right: auto;"
-       border="1">
-    <tbody>
-    <tr style="height: 18px;">
-        <td style="width: 100%; text-align: center; height: 18px;">
-            <p>
-                <span style="color: #ff6600;">
-                    <a style="color: #ff6600;" href="https://wingle-national.netlify.app/auth/login">
-                        <strong>WINGLE 바로가기</strong>
-                    </a>
-                </span>
-            </p>
-        </td>
-    </tr>
-    </tbody>
-</table>
-<p>&nbsp;</p>
-<p>&nbsp; 감사합니다.&nbsp;</p>
+<body
+        style="
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9f9f9;
+    "
+>
+<div
+        style="
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 20px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+      "
+>
+    <h1 style="text-align: center; margin-bottom: 50px">
+        <img
+                src="https://wingle-bucket.s3.ap-northeast-2.amazonaws.com/wingleResource/wingle_logo.png"
+                alt="logo"
+                width="138"
+                height="83"
+        />
+    </h1>
+    <h1 style="text-align: center; margin-bottom: 50px">
+        &nbsp;<span th:text="${name}"></span> 윙그리님<br/>&nbsp;가입을
+        환영합니다!&nbsp;
+    </h1>
+    <p style="text-align: center; margin-bottom: 50px">
+        &nbsp;안녕하세요 <span th:text="${name}"></span>님!<br/>&nbsp;학생증
+        인증이 완료되었습니다.<br/>
+        &nbsp;아래 링크를 누르면 WINGLE 로그인 페이지로 이동합니다.<br/>
+    </p>
+    <div style="text-align: center">
+        <a
+                th:href="@{https://wingle-kder.vercel.app/auth/login}"
+                style="
+            color: #ff6600;
+            text-decoration: none;
+            border: 1px solid #ff6600;
+            padding: 16px 24px;
+            border-radius: 4px;
+          "
+        >
+            <strong>WINGLE 바로가기</strong>
+        </a>
+    </div>
+    <p style="text-align: center">&nbsp;</p>
+    <p style="text-align: center">&nbsp;감사합니다.&nbsp;</p>
+</div>
 </body>
 </html>
