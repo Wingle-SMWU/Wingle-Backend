@@ -43,9 +43,10 @@ public class MemberController {
 	public ApiResponse<SignupListResponseWithPagesDto> waitingList(@PathVariable int page) {
 		checkAdminAccount();
 		List<SignupListResponseDto> list = memberService.getWaitingList(page);
-		long total = memberService.getTotalPages(Permission.WAIT.getStatus(), page);
+		long totalPages = memberService.getTotalPages(Permission.WAIT.getStatus(), page);
+		long totalUsers = memberService.getTotalUsers(Permission.WAIT.getStatus());
 
-		SignupListResponseWithPagesDto response = SignupListResponseWithPagesDto.from(list, total);
+		SignupListResponseWithPagesDto response = SignupListResponseWithPagesDto.from(list, totalPages, totalUsers);
 
 		return ApiResponse.success(SuccessCode.WAITING_LIST_READ_SUCCESS, response);
 	}
@@ -65,8 +66,9 @@ public class MemberController {
 		checkAdminAccount();
 		List<SignupListResponseDto> list = memberService.getRejectionList(page);
 		long totalPages = memberService.getTotalPages(Permission.DENY.getStatus(), page);
+		long totalUsers = memberService.getTotalUsers(Permission.DENY.getStatus());
 
-		SignupListResponseWithPagesDto response = SignupListResponseWithPagesDto.from(list, totalPages);
+		SignupListResponseWithPagesDto response = SignupListResponseWithPagesDto.from(list, totalPages, totalUsers);
 		return ApiResponse.success(SuccessCode.REJECTION_LIST_READ_SUCCESS, response);
 	}
 
@@ -75,8 +77,9 @@ public class MemberController {
 		checkAdminAccount();
 		List<SignupListResponseDto> list = memberService.getAcceptanceList(page);
 		long totalPages = memberService.getTotalPages(Permission.APPROVE.getStatus(), page);
+		long totalUsers = memberService.getTotalUsers(Permission.APPROVE.getStatus());
 
-		SignupListResponseWithPagesDto response = SignupListResponseWithPagesDto.from(list, totalPages);
+		SignupListResponseWithPagesDto response = SignupListResponseWithPagesDto.from(list, totalPages, totalUsers);
 		return ApiResponse.success(SuccessCode.ACCEPTANCE_LIST_READ_SUCCESS, response);
 	}
 

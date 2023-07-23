@@ -117,4 +117,8 @@ public class MemberService {
 		Page<Member> pages = memberRepository.findAllByPermission(permission, pageRequest);
 		return pages.getTotalPages();
 	}
+
+	public Long getTotalUsers(int permission) {
+		return memberRepository.countByPermission(permission);
+	}
 }

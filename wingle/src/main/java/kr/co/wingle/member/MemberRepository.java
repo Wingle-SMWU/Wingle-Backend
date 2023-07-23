@@ -16,7 +16,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
 	List<Member> findAllByPermissionOrderByCreatedTimeDesc(int permission, Pageable pageable);
 
-	long countByPermission(int permission);
+	Long countByPermission(int permission);
 
 	Page<Member> findAllByPermission(int permission, Pageable pageable);
 }
