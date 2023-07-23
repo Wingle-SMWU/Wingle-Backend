@@ -15,6 +15,7 @@ public class WaitingUserResponseDto {
 	private String userId;
 	private String name;
 	private LocalDateTime createdTime;
+	private LocalDateTime updateTime;
 	private String idCardImage;
 	private boolean gender;
 	private String email;
@@ -25,12 +26,14 @@ public class WaitingUserResponseDto {
 	private String schoolName;
 	private String departmentName;
 	private String studentNumber;
+	private String permission;
 
 	public static WaitingUserResponseDto from(Member member, Profile profile) {
 		WaitingUserResponseDto waitingUserResponseDto = new WaitingUserResponseDto();
 		waitingUserResponseDto.userId = AES256Util.encrypt(member.getId().toString());
 		waitingUserResponseDto.name = member.getName();
 		waitingUserResponseDto.createdTime = member.getCreatedTime();
+		waitingUserResponseDto.updateTime = member.getUpdatedTime();
 		waitingUserResponseDto.idCardImage = member.getIdCardImageUrl();
 		waitingUserResponseDto.reason = member.getRejectionReason();
 		waitingUserResponseDto.memo = member.getMemo();
@@ -41,6 +44,13 @@ public class WaitingUserResponseDto {
 		waitingUserResponseDto.schoolName = member.getSchool().getName();
 		waitingUserResponseDto.departmentName = member.getDepartment();
 		waitingUserResponseDto.studentNumber = member.getStudentNumber();
+
+		switch (member.getPermission()) {
+			case 0 -> waitingUserResponseDto.permission = "DENY";
+			case 1 -> waitingUserResponseDto.permission = "APPROVE";
+			default -> waitingUserResponseDto.permission = "WAIT";
+		}
+
 		return waitingUserResponseDto;
 	}
 }
