@@ -19,11 +19,13 @@ public class ProfileGetResponseDto {
 	private String introduction;
 
 	private List<String> interests;
+	private String schoolName;
 
 	public static ProfileGetResponseDto of(
 		String image, String nickname, Boolean gender, String nation,
 		List<LanguageDto> languages,
-		String introduction, List<String> interests
+		String introduction, List<String> interests,
+		String schoolName
 	) {
 		ProfileGetResponseDto profileGetResponseDto = new ProfileGetResponseDto();
 		profileGetResponseDto.image = image;
@@ -33,6 +35,7 @@ public class ProfileGetResponseDto {
 		profileGetResponseDto.languages = languages;
 		profileGetResponseDto.introduction = introduction;
 		profileGetResponseDto.interests = interests;
+		profileGetResponseDto.schoolName = schoolName;
 		return profileGetResponseDto;
 	}
 

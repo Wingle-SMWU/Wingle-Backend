@@ -69,6 +69,7 @@ public class MessageService extends WritingService {
 		return MessageResponseWithRecipentDto.of(
 			AES256Util.encrypt(recipient.getMemberId().toString()),
 			profile.getImage(),
+			recipient.getSchoolName(),
 			messages
 		);
 	}

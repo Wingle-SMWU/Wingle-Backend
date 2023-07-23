@@ -175,6 +175,7 @@ public class ProfileService {
 		Boolean gender = profile.isGender();
 		String nation = profile.getNation();
 		String introduction = profile.getIntroduction();
+		String schoolName = member.getSchool().getName();
 
 		List<LanguageDto> languages = languageRepository.findAllByMemberOrderByOrderNumberAsc(member)
 			.stream()
@@ -189,7 +190,7 @@ public class ProfileService {
 
 		ProfileGetResponseDto response = ProfileGetResponseDto.of(
 			imageUrl, nickname, gender, nation, languages,
-			introduction, interests);
+			introduction, interests, schoolName);
 
 		return response;
 	}

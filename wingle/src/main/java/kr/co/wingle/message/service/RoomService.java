@@ -189,7 +189,8 @@ public class RoomService {
 				Member member = roomMember.getMember();
 				dto = RoomMemberDto.of(room.getId(), room.getOriginType(), member.getId(), member.getName(),
 					member.getEmail(),
-					member.getPermission());
+					member.getPermission(),
+					member.getSchool().getName());
 			}
 		}
 

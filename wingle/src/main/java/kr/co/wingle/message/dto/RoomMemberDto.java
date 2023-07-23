@@ -15,9 +15,10 @@ public class RoomMemberDto {
 	private String name;
 	private String email;
 	private int permission;
+	private String schoolName;
 
 	public static RoomMemberDto of(Long roomId, OriginType originType, Long memberId, String name, String email,
-		int permission) {
+		int permission, String schoolName) {
 		return RoomMemberDto.builder()
 			.roomId(roomId)
 			.originType(originType)
@@ -25,6 +26,7 @@ public class RoomMemberDto {
 			.name(name)
 			.email(email)
 			.permission(permission)
+			.schoolName(schoolName)
 			.build();
 	}
 }
