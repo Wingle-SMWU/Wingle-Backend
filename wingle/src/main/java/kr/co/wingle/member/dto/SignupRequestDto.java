@@ -57,8 +57,8 @@ public class SignupRequestDto {
 	@NotNull
 	private Boolean termsOfPromotion;
 
-	@NotNull(message = "학교 Id가 없습니다.")
-	private Long schoolId;
+	@NotNull(message = "학교 코드가 없습니다.")
+	private String schoolCode;
 
 	@NotBlank(message = "학과가 없습니다.")
 	private String department;

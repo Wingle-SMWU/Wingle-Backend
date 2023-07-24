@@ -43,7 +43,7 @@ public enum ErrorCode {
 	DUPLICATE_NICKNAME(BAD_REQUEST, "이미 사용 중인 닉네임입니다."),
 	NO_PROFILE(BAD_REQUEST, "존재하지 않는 프로필입니다"),
 	// 소속
-	SCHOOL_NOT_FOUND(BAD_REQUEST, "존재하지 않는 학교 id입니다."),
+	SCHOOL_NOT_FOUND_BY_CODE(BAD_REQUEST, "존재하지 않는 학교 코드입니다."),
 
 	/* 401 UNAUTHORIZED: 인증 실패 */
 	UNAUTHORIZED_USER(UNAUTHORIZED, "만료되었거나 잘못된 토큰입니다. 토큰을 확인해주세요."),
