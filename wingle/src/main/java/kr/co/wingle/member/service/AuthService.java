@@ -87,8 +87,8 @@ public class AuthService {
 		}
 
 		// 학교 찾기
-		School school = schoolRepository.findById(request.getSchoolId())
-			.orElseThrow(() -> new NotFoundException(ErrorCode.SCHOOL_NOT_FOUND));
+		School school = schoolRepository.findByCode(request.getSchoolCode())
+			.orElseThrow(() -> new NotFoundException(ErrorCode.SCHOOL_NOT_FOUND_BY_CODE));
 
 		// 회원, 프로필 객체 생성
 		Member member = request.toMember(passwordEncoder, school);
