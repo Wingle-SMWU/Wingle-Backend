@@ -260,7 +260,9 @@ public class AuthService {
 
 		member.setPermission(Permission.DENY.getStatus());
 		memberService.saveRejectionReason(rejectionRequestDto);
-		mailService.sendEmail(member.getEmail(), new RejectionMail(member.getName(), rejectionRequestDto.getReason()));
+		Profile profile = profileService.getProfileByMemberId(userId);
+		mailService.sendEmail(member.getEmail(),
+			new RejectionMail(member.getName(), rejectionRequestDto.getReason(), profile.getNation()));
 		return PermissionResponseDto.of(userId, false);
 	}
 
