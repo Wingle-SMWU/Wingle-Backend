@@ -18,4 +18,9 @@ public class Mail {
 		this.fileName = fileName;
 		this.title = title;
 	}
+
+	protected void setMailFields(String fileName, String title) {
+		this.fileName = fileName;
+		this.title = title;
+	}
 }

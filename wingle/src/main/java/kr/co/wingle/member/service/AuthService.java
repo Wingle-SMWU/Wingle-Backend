@@ -123,7 +123,7 @@ public class AuthService {
 		getTermAndSaveTermMember(member, TermCode.TERMS_OF_PROMOTION, request.getTermsOfPromotion());
 
 		// send mail
-		mailService.sendEmail(member.getEmail(), new ApplyMail(member.getName()));
+		mailService.sendEmail(member.getEmail(), new ApplyMail(member.getName(), profile.getNation()));
 
 		return SignupResponseDto.of(member.getId(), member.getName(), profile.getNickname());
 	}
@@ -241,7 +241,9 @@ public class AuthService {
 			throw new BadRequestException(ErrorCode.ALREADY_ACCEPTANCE);
 
 		member.setPermission(Permission.APPROVE.getStatus());
-		mailService.sendEmail(member.getEmail(), new AcceptanceMail(member.getName()));
+
+		mailService.sendEmail(member.getEmail(),
+			new AcceptanceMail(member.getName(), profileUtil.getProfile(userId).getNation()));
 		return PermissionResponseDto.of(userId, true);
 	}
 
@@ -256,7 +258,10 @@ public class AuthService {
 
 		member.setPermission(Permission.DENY.getStatus());
 		memberService.saveRejectionReason(rejectionRequestDto);
-		mailService.sendEmail(member.getEmail(), new RejectionMail(member.getName(), rejectionRequestDto.getReason()));
+
+		mailService.sendEmail(member.getEmail(),
+			new RejectionMail(member.getName(), rejectionRequestDto.getReason(),
+				profileUtil.getProfile(userId).getNation()));
 		return PermissionResponseDto.of(userId, false);
 	}
 

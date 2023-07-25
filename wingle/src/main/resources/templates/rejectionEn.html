@@ -1,0 +1,64 @@
+<!-- 가입 실패시 메일 -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+</head>
+<body
+        style="
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9f9f9;
+    "
+>
+<div
+        style="
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 20px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+      "
+>
+    <h1 style="text-align: center; margin-bottom: 50px">
+        <img
+                src="https://wingle-bucket.s3.ap-northeast-2.amazonaws.com/wingleResource/wingle_logo.png"
+                alt="logo"
+                width="138"
+                height="83"
+        />
+    </h1>
+    <h1 style="text-align: center; margin-bottom: 50px">
+        &nbsp;Hello<br/>&nbsp;We're WINGLE.&nbsp;
+    </h1>
+    <p style="text-align: center; margin-bottom: 30px">
+        Hello, <span th:text="${name}"></span><br/>
+        Sign up has been rejected for the following reasons.
+    </p>
+    <p style="text-align: center; margin-bottom: 50px">
+        <span><strong>[Reason : <span th:text="${reason}"></span>]</strong></span
+        ><br/>
+        <br/>
+        Please click the link below to register again
+    </p>
+    <div style="text-align: center">
+        <a
+                th:href="@{https://wingle-kder.vercel.app/auth/login}"
+                style="
+            color: #ff6600;
+            text-decoration: none;
+            border: 1px solid #ff6600;
+            padding: 16px 30px;
+            border-radius: 4px;
+          "
+        >
+            <strong>Go to WINGLE</strong>
+        </a>
+    </div>
+    <p style="text-align: center">&nbsp;</p>
+    <p style="text-align: center">&nbsp;Thank You&nbsp;</p>
+</div>
+</body>
+</html>
