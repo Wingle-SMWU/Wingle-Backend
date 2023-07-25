@@ -38,9 +38,9 @@
         Sign up has been rejected for the following reasons.
     </p>
     <p style="text-align: center; margin-bottom: 50px">
-        <span><strong>[Reason : ]</strong></span
+        <span><strong>[Reason : <span th:text="${reason}"></span>]</strong></span
         ><br/>
-        <span th:text="${reason}"></span><br/>
+        <br/>
         Please click the link below to register again
     </p>
     <div style="text-align: center">
