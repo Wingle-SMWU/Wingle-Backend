@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.NotFoundException;
+import kr.co.wingle.member.service.MemberService;
 import kr.co.wingle.profile.ProfileRepository;
 import kr.co.wingle.profile.entity.Profile;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class ProfileUtil {
 	private final ProfileRepository profileRepository;
+	private final MemberService memberService;
 
 	public boolean isDuplicatedNickname(String nickname) {
 		if (profileRepository.existsByNickname(nickname)) {
@@ -31,5 +33,12 @@ public class ProfileUtil {
 			return true;
 		}
 		return false;
+	}
+
+	// TODO: Service랑 비교하면서 리팩터링
+	public Profile getProfile(Long memberId) {
+		Profile profile = profileRepository.findByMemberId(memberId)
+			.orElseThrow(() -> new NotFoundException(ErrorCode.NO_PROFILE));
+		return profile;
 	}
 }

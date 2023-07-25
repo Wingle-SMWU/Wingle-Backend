@@ -58,7 +58,6 @@ import kr.co.wingle.member.mailVo.ApplyMail;
 import kr.co.wingle.member.mailVo.CodeMail;
 import kr.co.wingle.member.mailVo.RejectionMail;
 import kr.co.wingle.profile.ProfileRepository;
-import kr.co.wingle.profile.ProfileService;
 import kr.co.wingle.profile.entity.Profile;
 import kr.co.wingle.profile.util.ProfileUtil;
 import lombok.RequiredArgsConstructor;
@@ -78,7 +77,6 @@ public class AuthService {
 	private final RedisUtil redisUtil;
 	private final MailService mailService;
 	private final MemberService memberService;
-	private final ProfileService profileService;
 	private final ProfileUtil profileUtil;
 
 	@Transactional
@@ -244,8 +242,8 @@ public class AuthService {
 
 		member.setPermission(Permission.APPROVE.getStatus());
 
-		Profile profile = profileService.getProfileByMemberId(userId);
-		mailService.sendEmail(member.getEmail(), new AcceptanceMail(member.getName(), profile.getNation()));
+		mailService.sendEmail(member.getEmail(),
+			new AcceptanceMail(member.getName(), profileUtil.getProfile(userId).getNation()));
 		return PermissionResponseDto.of(userId, true);
 	}
 
@@ -260,9 +258,10 @@ public class AuthService {
 
 		member.setPermission(Permission.DENY.getStatus());
 		memberService.saveRejectionReason(rejectionRequestDto);
-		Profile profile = profileService.getProfileByMemberId(userId);
+
 		mailService.sendEmail(member.getEmail(),
-			new RejectionMail(member.getName(), rejectionRequestDto.getReason(), profile.getNation()));
+			new RejectionMail(member.getName(), rejectionRequestDto.getReason(),
+				profileUtil.getProfile(userId).getNation()));
 		return PermissionResponseDto.of(userId, false);
 	}
 
