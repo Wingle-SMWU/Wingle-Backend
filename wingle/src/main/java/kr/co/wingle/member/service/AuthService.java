@@ -58,6 +58,7 @@ import kr.co.wingle.member.mailVo.ApplyMail;
 import kr.co.wingle.member.mailVo.CodeMail;
 import kr.co.wingle.member.mailVo.RejectionMail;
 import kr.co.wingle.profile.ProfileRepository;
+import kr.co.wingle.profile.ProfileService;
 import kr.co.wingle.profile.entity.Profile;
 import kr.co.wingle.profile.util.ProfileUtil;
 import lombok.RequiredArgsConstructor;
@@ -77,6 +78,7 @@ public class AuthService {
 	private final RedisUtil redisUtil;
 	private final MailService mailService;
 	private final MemberService memberService;
+	private final ProfileService profileService;
 	private final ProfileUtil profileUtil;
 
 	@Transactional
@@ -241,7 +243,9 @@ public class AuthService {
 			throw new BadRequestException(ErrorCode.ALREADY_ACCEPTANCE);
 
 		member.setPermission(Permission.APPROVE.getStatus());
-		mailService.sendEmail(member.getEmail(), new AcceptanceMail(member.getName()));
+
+		Profile profile = profileService.getProfileByMemberId(userId);
+		mailService.sendEmail(member.getEmail(), new AcceptanceMail(member.getName(), profile.getNation()));
 		return PermissionResponseDto.of(userId, true);
 	}
 
