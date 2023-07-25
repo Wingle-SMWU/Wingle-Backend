@@ -231,7 +231,9 @@ public class ProfileService {
 
 		String introduce = profile.getIntroduction();
 		String sns = snsRepository.findAllByMember(member);
+		String schoolName = member.getSchool().getName();
 
-		return ProfileViewResponseDto.of(image, nation, nickname, gender, languages, interests, introduce, sns);
+		return ProfileViewResponseDto.of(image, nation, nickname, gender, languages, interests, introduce, sns,
+			schoolName);
 	}
 }
