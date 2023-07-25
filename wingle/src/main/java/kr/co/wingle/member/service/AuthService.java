@@ -123,7 +123,7 @@ public class AuthService {
 		getTermAndSaveTermMember(member, TermCode.TERMS_OF_PROMOTION, request.getTermsOfPromotion());
 
 		// send mail
-		mailService.sendEmail(member.getEmail(), new ApplyMail(member.getName()));
+		mailService.sendEmail(member.getEmail(), new ApplyMail(member.getName(), profile.getNation()));
 
 		return SignupResponseDto.of(member.getId(), member.getName(), profile.getNickname());
 	}

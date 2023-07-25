@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+</head>
+<body
+        style="
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9f9f9;
+    "
+>
+<div
+        style="
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 20px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+      "
+>
+    <h1 style="text-align: center; margin-bottom: 50px">
+        <img
+                src="https://wingle-bucket.s3.ap-northeast-2.amazonaws.com/wingleResource/wingle_logo.png"
+                alt="logo"
+                width="138"
+                height="83"
+        />
+    </h1>
+    <p style="font-size: 24px; text-align: center">
+        <strong>&nbsp;Hello<br/>&nbsp;We're WINGLE</strong>
+    </p>
+    <p style="text-align: center; margin-top: 40px">
+        Hello, <span th:text="${name}"></span>
+    </p>
+    <p style="text-align: center">Your Sign up application has been completed.</p>
+    <p style="text-align: center">
+        We will send you an email once your application has been approved.
+    </p>
+    <p style="text-align: center">
+        If you don't get an email, please check your spam box or contact wingle.kr@gmail.com
+    </p>
+    <p style="text-align: center; margin-top: 50px">Thank you</p>
+    <div style="text-align: center; margin-top: 50px">
+        <a
+                href="https://wingle-national.netlify.app/auth/login"
+                style="
+            color: #ff6600;
+            text-decoration: none;
+            border: 1px solid #ff6600;
+            padding: 16px 24px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 40px;
+          "
+        >
+            <strong>Go to WINGLE</strong>
+        </a>
+    </div>
+</div>
+</body>
+</html>
