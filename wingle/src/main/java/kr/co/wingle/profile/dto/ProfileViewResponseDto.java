@@ -18,10 +18,11 @@ public class ProfileViewResponseDto {
 	private List<String> interests;
 	private String introduce;
 	private String sns;
+	private String schoolName;
 
 	public static ProfileViewResponseDto of(String image, String nation, String nickname, Boolean gender,
 		List<LanguageDto> languages, List<String> interests, String introduce,
-		String sns) {
+		String sns, String schoolName) {
 		ProfileViewResponseDto profileViewResponseDto = new ProfileViewResponseDto();
 		profileViewResponseDto.image = image;
 		profileViewResponseDto.nation = nation;
@@ -31,6 +32,7 @@ public class ProfileViewResponseDto {
 		profileViewResponseDto.interests = interests;
 		profileViewResponseDto.introduce = introduce;
 		profileViewResponseDto.sns = sns;
+		profileViewResponseDto.schoolName = schoolName;
 
 		return profileViewResponseDto;
 	}
