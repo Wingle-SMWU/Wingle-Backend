@@ -49,13 +49,27 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
   
-      - name: make main application.yml
+      - name: 🚀 PROD - make main application.yml
         run: |
           sudo mkdir -p ./wingle/src/main/resources
           sudo chmod 777 ./wingle/src/main/resources
           cd ./wingle/src/main/resources
           touch ./application.yml
           echo "${{ secrets.MAIN_YML }}" > ./application.yml 
+      # 파일 없으면 빌드 에러
+      - uses: actions/upload-artifact@v3
+        with:
+          name: application.yml
+          path: ./wingle/src/main/resources/application.yml
+          if-no-files-found: 'error'
+
+      - name: 👀 TEST - make stage application.yml
+        run: |
+          sudo mkdir -p ./wingle/src/main/resources
+          sudo chmod 777 ./wingle/src/main/resources
+          cd ./wingle/src/main/resources
+          touch ./application.yml
+          echo "${{ secrets.STAGE_YML }}" > ./application.yml 
       # 파일 없으면 빌드 에러
       - uses: actions/upload-artifact@v3
         with:
