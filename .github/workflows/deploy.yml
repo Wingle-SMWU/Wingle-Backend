@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - test
   pull_request:
     branches:
       - main
+      - test
   
   workflow_dispatch:
     inputs:
@@ -20,6 +22,7 @@ on:
       
 env:
   S3_BUCKET_NAME: wingle-ci-bucket
+  TEST_S3_BUCKET_NAME: wingle-ci-bucket
   CODE_DEPLOY_APPLICATION_NAME: wingle-codedeploy-app
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: wingle-codedeploy-group
 
@@ -104,11 +107,11 @@ jobs:
         shell: bash
 
       - name: Make zip file
-        if: contains(github.ref, 'main')
+#         if: contains(github.ref, 'main')
         run: zip -r ./$GITHUB_SHA.zip .
         shell: bash
 
-      - name: Configure AWS credentials
+      - name: 🚀 PROD - Configure AWS credentials
         if: contains(github.ref, 'main')
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -116,7 +119,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
   
-      - name: Upload to AWS S3
+      - name: 🚀 PROD - Upload to AWS S3
         if: contains(github.ref, 'main')
         run: |
           cd ./wingle
@@ -127,7 +130,7 @@ jobs:
             --source .
   
       # S3 버킷에 있는 파일을 대상으로 CodeDeploy 실행
-      - name: Deploy to AWS EC2 from S3
+      - name: 🚀 PROD - Deploy to AWS EC2 from S3
         if: contains(github.ref, 'main')
         run: |
           aws deploy create-deployment \
@@ -135,3 +138,32 @@ jobs:
             --deployment-config-name CodeDeployDefault.AllAtOnce \
             --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
             --s3-location bucket=$S3_BUCKET_NAME,key=build/$GITHUB_SHA.zip,bundleType=zip
+
+
+      - name: 👀 TEST - Configure AWS credentials
+        if: contains(github.ref, 'test')
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+  
+      - name: 👀 TEST - Upload to AWS S3
+        if: contains(github.ref, 'test')
+        run: |
+          cd ./wingle
+          aws deploy push \
+            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+            --ignore-hidden-files \
+            --s3-location s3://$TEST_S3_BUCKET_NAME/build/$GITHUB_SHA.zip \
+            --source .
+  
+      # S3 버킷에 있는 파일을 대상으로 CodeDeploy 실행
+      - name: 👀 TEST - Deploy to AWS EC2 from S3
+        if: contains(github.ref, 'test')
+        run: |
+          aws deploy create-deployment \
+            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
+            --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
+            --s3-location bucket=$TEST_S3_BUCKET_NAME,key=build/$GITHUB_SHA.zip,bundleType=zip
