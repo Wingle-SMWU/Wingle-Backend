@@ -50,6 +50,7 @@ jobs:
             ${{ runner.os }}-gradle-
   
       - name: 🚀 PROD - make main application.yml
+        if: contains(github.ref, 'main')
         run: |
           sudo mkdir -p ./wingle/src/main/resources
           sudo chmod 777 ./wingle/src/main/resources
@@ -64,6 +65,7 @@ jobs:
           if-no-files-found: 'error'
 
       - name: 👀 TEST - make stage application.yml
+        if: contains(github.ref, 'test')
         run: |
           sudo mkdir -p ./wingle/src/main/resources
           sudo chmod 777 ./wingle/src/main/resources
