@@ -22,7 +22,8 @@ public class CommentMapper {
 		CommentResponseDto.CommentResponseDtoBuilder commentResponseDto = CommentResponseDto.builder();
 
 		commentResponseDto.id(comment.getId());
-		commentResponseDto.userId(AES256Util.encrypt(processedPersonalInformation.getProcessedMemberId().toString()));
+		commentResponseDto.userId(
+			AES256Util.encrypt(comment.getMember().getId().toString(), comment.getArticle().getId().toString()));
 		commentResponseDto.userNickname(processedPersonalInformation.getNickname());
 		commentResponseDto.userImage(profileService.getProfileByMemberId(comment.getMember().getId()).getImageUrl());
 		commentResponseDto.userNation(profileService.getProfileByMemberId(comment.getMember().getId()).getNation());
