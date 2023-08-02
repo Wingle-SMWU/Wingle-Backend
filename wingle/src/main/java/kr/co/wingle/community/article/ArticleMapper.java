@@ -38,7 +38,8 @@ public class ArticleMapper {
 			articleResponseDto.images(new ArrayList<String>(list));
 		}
 		articleResponseDto.isMine(processedPersonalInformation.isMine());
-		articleResponseDto.userId(AES256Util.encrypt(processedPersonalInformation.getProcessedMemberId().toString()));
+		articleResponseDto.userId(
+			AES256Util.encrypt(article.getMember().getId().toString(), article.getId().toString()));
 		articleResponseDto.userImage(profileService.getProfileByMemberId(article.getMember().getId()).getImageUrl());
 		articleResponseDto.userNation(profileService.getProfileByMemberId(article.getMember().getId()).getNation());
 		articleResponseDto.userSchoolName(processedPersonalInformation.getSchoolName());
