@@ -22,7 +22,7 @@ on:
       
 env:
   S3_BUCKET_NAME: wingle-ci-bucket
-  TEST_S3_BUCKET_NAME: test-wingle-ci-bucket
+  TEST_S3_BUCKET_NAME: wingle-test-ci-bucket
   CODE_DEPLOY_APPLICATION_NAME: wingle-codedeploy-app
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: wingle-codedeploy-group
 
