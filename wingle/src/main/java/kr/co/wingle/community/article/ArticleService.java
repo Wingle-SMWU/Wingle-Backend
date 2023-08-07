@@ -62,6 +62,26 @@ public class ArticleService extends WritingService {
 		return articleMapper.toResponseDto(article, imageUrlList);
 	}
 
+	public ArticleResponseDto editArticle(Long forumId, Long articleId, ArticleEditRequestDto request) {
+		Article article = getArticleById(articleId);
+		isValidForum(article, forumId);
+
+		article.setContent(request.getContent());
+
+		List<ArticleImage> allByArticle = articleImageRepository.findAllByArticleId(articleId);
+		articleImageRepository.deleteAll(allByArticle);
+
+		ArrayList<String> imageUrlList = (ArrayList<String>)request.getOriginImages();
+		imageUrlList.addAll(request.getNewImages().stream().map(image -> s3Util.articleImageUpload(image))
+			.collect(Collectors.toList()));
+
+		for (int i = 0; i < imageUrlList.size(); i++) {
+			articleImageRepository.save(new ArticleImage(article, imageUrlList.get(i), i + 1));
+		}
+
+		return articleMapper.toResponseDto(article, imageUrlList);
+	}
+
 	@Transactional(readOnly = true)
 	public ArticleResponseDto getOne(Long forumId, Long articleId) {
 		Article article = getArticleById(articleId);
