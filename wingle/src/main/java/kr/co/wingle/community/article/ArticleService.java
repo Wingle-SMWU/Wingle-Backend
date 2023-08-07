@@ -99,6 +99,8 @@ public class ArticleService extends WritingService {
 		Article article = getArticleById(articleId);
 
 		if (isValidMember(article, member) && isExist(article) && isValidForum(article, forumId)) {
+			articleImageRepository.getArticleImagesByArticleIdAndIsDeletedOrderByOrderNumber(articleId, false)
+				.forEach(articleImage -> articleImage.softDelete());
 			article.softDelete();
 		}
 		return article.getId();
