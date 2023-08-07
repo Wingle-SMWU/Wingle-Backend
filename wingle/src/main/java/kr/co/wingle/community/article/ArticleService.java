@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.ForbiddenException;
 import kr.co.wingle.common.exception.NotFoundException;
+import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.community.forum.Forum;
 import kr.co.wingle.community.forum.ForumCode;
 import kr.co.wingle.community.forum.ForumService;
@@ -25,9 +26,11 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class ArticleService extends WritingService {
 	private final ArticleRepository articleRepository;
+	private final ArticleImageRepository articleImageRepository;
 	private final ForumService forumService;
 	private final AuthService authService;
 	private final ArticleMapper articleMapper;
+	private final S3Util s3Util;
 
 	@Transactional
 	public ArticleResponseDto create(ArticleRequestDto request) {
@@ -47,18 +50,28 @@ public class ArticleService extends WritingService {
 
 		articleRepository.save(article);
 
+		ArrayList<String> imageUrlList = new ArrayList<>();
+		for (int i = 0; i < request.getImages().size(); i++) {
+			String imageUrl = s3Util.articleImageUpload(request.getImages().get(i));
+			imageUrlList.add(imageUrl);
+			articleImageRepository.save(new ArticleImage(article, imageUrl, i + 1));
+		}
+
 		// TODO: Redis 최신목록에 등록
 
-		// TODO: new ArrayList<String> 부분을 s3에서 받은 이미지 경로로 변경
-		return articleMapper.toResponseDto(article, new ArrayList<String>());
+		return articleMapper.toResponseDto(article, imageUrlList);
 	}
 
 	@Transactional(readOnly = true)
 	public ArticleResponseDto getOne(Long forumId, Long articleId) {
 		Article article = getArticleById(articleId);
 		isValidForum(article, forumId);
-		// TODO: new ArrayList<String> 부분을 s3에서 받은 이미지 경로로 변경
-		return articleMapper.toResponseDto(article, new ArrayList<String>());
+
+		List<String> imageUrlList = articleImageRepository.getArticleImagesByArticleIdAndIsDeletedOrderByOrderNumber(
+				article.getId(), false)
+			.stream().map(articleImage -> articleImage.getImageUrl()).collect(Collectors.toList());
+
+		return articleMapper.toResponseDto(article, imageUrlList);
 	}
 
 	@Transactional(readOnly = true)
@@ -71,9 +84,11 @@ public class ArticleService extends WritingService {
 		} else {
 			pages = articleRepository.findByForumIdAndIsDeleted(forumId, false, pageable);
 		}
-		// TODO: new ArrayList<String> 부분을 s3에서 받은 이미지 경로로 변경
+
 		return pages.stream()
-			.map(x -> articleMapper.toResponseDto(x, new ArrayList<String>()))
+			.map(x -> articleMapper.toResponseDto(x,
+				articleImageRepository.getArticleImagesByArticleIdAndIsDeletedOrderByOrderNumber(x.getId(), false)
+					.stream().map(articleImage -> articleImage.getImageUrl()).collect(Collectors.toList())))
 			.collect(
 				Collectors.toList());
 	}
