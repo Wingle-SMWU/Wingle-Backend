@@ -66,8 +66,13 @@ public class S3Util {
 		}
 	}
 
-	public String articleImageUpload(MultipartFile file) throws IOException {
-		return upload(file, "article");
+	public String articleImageUpload(MultipartFile file) {
+		try {
+			return upload(file, "article");
+		} catch (IOException e) {
+			log.warn(e.getMessage());
+			throw new InternalServerErrorException(ErrorCode.FILE_UPLOAD_FAIL);
+		}
 	}
 
 	public void delete(String url) {
