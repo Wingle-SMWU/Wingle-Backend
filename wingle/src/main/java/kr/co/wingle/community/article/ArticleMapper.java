@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import kr.co.wingle.common.util.AES256Util;
 import kr.co.wingle.community.util.CommunityUtil;
 import kr.co.wingle.community.util.ProcessedPersonalInformation;
 import kr.co.wingle.profile.ProfileService;
@@ -36,9 +35,7 @@ public class ArticleMapper {
 		if (list != null) {
 			articleResponseDto.images(new ArrayList<String>(list));
 		}
-		articleResponseDto.isMine(processedPersonalInformation.isMine());
-		articleResponseDto.userId(
-			AES256Util.encrypt(article.getMember().getId().toString(), article.getId().toString()));
+		articleResponseDto.userId(processedPersonalInformation.getProcessedMemberId());
 		articleResponseDto.userImage(profileService.getProfileByMemberId(article.getMember().getId()).getImageUrl());
 		articleResponseDto.userNation(profileService.getProfileByMemberId(article.getMember().getId()).getNation());
 		articleResponseDto.userSchoolName(processedPersonalInformation.getSchoolName());
