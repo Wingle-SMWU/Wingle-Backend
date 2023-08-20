@@ -25,13 +25,12 @@ public class ArticleMapper {
 
 		ArticleResponseDto.ArticleResponseDtoBuilder articleResponseDto = ArticleResponseDto.builder();
 
-		if (article != null) {
-			articleResponseDto.articleId(article.getId());
-			articleResponseDto.createdTime(article.getCreatedTime());
-			articleResponseDto.updatedTime(article.getUpdatedTime());
-			articleResponseDto.content(article.getContent());
-			articleResponseDto.likeCount(article.getLikeCount());
-		}
+		articleResponseDto.articleId(article.getId());
+		articleResponseDto.createdTime(article.getCreatedTime());
+		articleResponseDto.updatedTime(article.getUpdatedTime());
+		articleResponseDto.content(article.getContent());
+		articleResponseDto.likeCount(article.getLikeCount());
+
 		articleResponseDto.userNickname(processedPersonalInformation.getNickname());
 		List<String> list = images;
 		if (list != null) {
@@ -43,7 +42,9 @@ public class ArticleMapper {
 		articleResponseDto.userImage(profileService.getProfileByMemberId(article.getMember().getId()).getImageUrl());
 		articleResponseDto.userNation(profileService.getProfileByMemberId(article.getMember().getId()).getNation());
 		articleResponseDto.userSchoolName(processedPersonalInformation.getSchoolName());
+
 		articleResponseDto.forumId(article.getForum().getId());
+		articleResponseDto.isMine(processedPersonalInformation.isMine());
 
 		return articleResponseDto.build();
 	}
