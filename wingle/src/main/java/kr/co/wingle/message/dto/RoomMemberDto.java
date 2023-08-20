@@ -16,9 +16,10 @@ public class RoomMemberDto {
 	private String email;
 	private int permission;
 	private String schoolName;
+	private boolean isDeleted;
 
 	public static RoomMemberDto of(Long roomId, OriginType originType, Long memberId, String name, String email,
-		int permission, String schoolName) {
+		int permission, String schoolName, boolean isDeleted) {
 		return RoomMemberDto.builder()
 			.roomId(roomId)
 			.originType(originType)
@@ -27,6 +28,7 @@ public class RoomMemberDto {
 			.email(email)
 			.permission(permission)
 			.schoolName(schoolName)
+			.isDeleted(isDeleted)
 			.build();
 	}
 }

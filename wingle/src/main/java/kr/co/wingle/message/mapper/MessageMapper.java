@@ -25,7 +25,8 @@ public class MessageMapper {
 		boolean isMine = writingUtil.isMine(message);
 		Member member = authService.findAcceptedLoggedInMember();
 
-		Profile profile = profileService.getProfileByMemberId(message.getMember().getId());
+		Profile profile = message.getMember().isDeleted() ? Profile.createDummyProfile(message.getMember()) :
+			profileService.getProfileByMemberId(message.getMember().getId());
 
 		// 메세지 송신자가 나 자신일 경우 닉네임 대신 null 반환
 		return MessageResponseDto.of(
