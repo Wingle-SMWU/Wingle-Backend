@@ -3,11 +3,9 @@ name: CI-CD
 on:
   push:
     branches:
-      - main
       - test
   pull_request:
     branches:
-      - main
       - test
   
   workflow_dispatch:
@@ -21,7 +19,6 @@ on:
           required: false
       
 env:
-  S3_BUCKET_NAME: wingle-ci-bucket
   TEST_S3_BUCKET_NAME: wingle-test-ci-bucket
   CODE_DEPLOY_APPLICATION_NAME: wingle-codedeploy-app
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: wingle-codedeploy-group
@@ -48,18 +45,12 @@ jobs:
             '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-  
-      - name: 🚀 PROD - make main application.yml
-        if: github.ref == 'refs/heads/main' 
+
+      - name: Print GitHub Ref
         run: |
-          sudo mkdir -p ./wingle/src/main/resources
-          sudo chmod 777 ./wingle/src/main/resources
-          cd ./wingle/src/main/resources
-          touch ./application.yml
-          echo "${{ secrets.MAIN_YML }}" > ./application.yml 
+          echo "GitHub Ref: ${{ github.ref }}"
 
       - name: 👀 TEST - make stage application.yml
-        if: github.ref == 'refs/heads/test' 
         run: |
           sudo mkdir -p ./wingle/src/main/resources
           sudo chmod 777 ./wingle/src/main/resources
@@ -122,37 +113,7 @@ jobs:
         run: zip -r ./$GITHUB_SHA.zip .
         shell: bash
 
-      - name: 🚀 PROD - Configure AWS credentials
-        if: github.ref == 'refs/heads/main' 
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-  
-      - name: 🚀 PROD - Upload to AWS S3
-        if: github.ref == 'refs/heads/main' 
-        run: |
-          cd ./wingle
-          aws deploy push \
-            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
-            --ignore-hidden-files \
-            --s3-location s3://$S3_BUCKET_NAME/build/$GITHUB_SHA.zip \
-            --source .
-  
-      # S3 버킷에 있는 파일을 대상으로 CodeDeploy 실행
-      - name: 🚀 PROD - Deploy to AWS EC2 from S3
-        if: github.ref == 'refs/heads/main' 
-        run: |
-          aws deploy create-deployment \
-            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
-            --deployment-config-name CodeDeployDefault.AllAtOnce \
-            --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
-            --s3-location bucket=$S3_BUCKET_NAME,key=build/$GITHUB_SHA.zip,bundleType=zip
-
-
       - name: 👀 TEST - Configure AWS credentials
-        if: github.ref == 'refs/heads/test'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
@@ -160,7 +121,6 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
   
       - name: 👀 TEST - Upload to AWS S3
-        if: github.ref == 'refs/heads/test'
         run: |
           cd ./wingle
           aws deploy push \
@@ -171,7 +131,6 @@ jobs:
   
       # S3 버킷에 있는 파일을 대상으로 CodeDeploy 실행
       - name: 👀 TEST - Deploy to AWS EC2 from S3
-        if: github.ref == 'refs/heads/test'
         run: |
           aws deploy create-deployment \
             --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
