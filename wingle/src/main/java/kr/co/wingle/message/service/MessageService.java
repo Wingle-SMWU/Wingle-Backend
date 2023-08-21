@@ -18,8 +18,10 @@ import kr.co.wingle.message.dto.MessageResponseWithRecipentDto;
 import kr.co.wingle.message.dto.RoomMemberDto;
 import kr.co.wingle.message.entity.Message;
 import kr.co.wingle.message.entity.Room;
+import kr.co.wingle.message.entity.RoomMember;
 import kr.co.wingle.message.mapper.MessageMapper;
 import kr.co.wingle.message.repository.MessageRepository;
+import kr.co.wingle.message.repository.RoomMemberRepository;
 import kr.co.wingle.profile.ProfileService;
 import kr.co.wingle.writing.WritingService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class MessageService extends WritingService {
 	private final MessageMapper messageMapper;
 	private final AuthService authService;
 	private final RoomService roomService;
+	private final RoomMemberRepository roomMemberRepository;
 
 	private final ProfileService profileService;
 
@@ -43,6 +46,17 @@ public class MessageService extends WritingService {
 
 		Message message = Message.of(member, messageRequestDto.getContent(), room);
 		messageRepository.save(message);
+
+		// 해당 쪽지방에 있는 모든 유저 찾기
+		List<RoomMember> members = roomMemberRepository.findAllByMemberIdAndIsDeleted(room.getId(), false);
+
+		// 본인을 제외한 유저 안읽은 메시지 수 증가
+		for (RoomMember rm : members) {
+			if (rm.getMember().getId() == member.getId())
+				continue;
+			rm.setUnreadMessageCount(rm.getUnreadMessageCount() + 1);
+		}
+
 		return messageMapper.toResponseDto(message);
 	}
 
