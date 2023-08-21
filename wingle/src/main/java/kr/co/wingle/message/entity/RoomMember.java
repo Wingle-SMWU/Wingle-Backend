@@ -13,6 +13,7 @@ import kr.co.wingle.member.entity.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "room_member")
@@ -26,6 +27,9 @@ public class RoomMember extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id", nullable = false)
 	private Member member;
+
+	@Setter
+	private int unreadMessageCount = 0;
 
 	private RoomMember(Room room, Member member) {
 		Assert.notNull(room, "room must not be null");

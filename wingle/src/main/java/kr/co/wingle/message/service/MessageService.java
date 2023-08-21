@@ -16,10 +16,13 @@ import kr.co.wingle.message.dto.MessageRequestDto;
 import kr.co.wingle.message.dto.MessageResponseDto;
 import kr.co.wingle.message.dto.MessageResponseWithRecipentDto;
 import kr.co.wingle.message.dto.RoomMemberDto;
+import kr.co.wingle.message.dto.UnreadMessageCountResponseDto;
 import kr.co.wingle.message.entity.Message;
 import kr.co.wingle.message.entity.Room;
+import kr.co.wingle.message.entity.RoomMember;
 import kr.co.wingle.message.mapper.MessageMapper;
 import kr.co.wingle.message.repository.MessageRepository;
+import kr.co.wingle.message.repository.RoomMemberRepository;
 import kr.co.wingle.profile.ProfileService;
 import kr.co.wingle.writing.WritingService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +34,7 @@ public class MessageService extends WritingService {
 	private final MessageMapper messageMapper;
 	private final AuthService authService;
 	private final RoomService roomService;
+	private final RoomMemberRepository roomMemberRepository;
 
 	private final ProfileService profileService;
 
@@ -43,10 +47,21 @@ public class MessageService extends WritingService {
 
 		Message message = Message.of(member, messageRequestDto.getContent(), room);
 		messageRepository.save(message);
+
+		// 해당 쪽지방에 있는 모든 유저 찾기
+		List<RoomMember> members = roomMemberRepository.findAllByRoomIdAndIsDeleted(room.getId(), false);
+
+		// 본인을 제외한 유저 안읽은 메시지 수 증가
+		for (RoomMember rm : members) {
+			if (rm.getMember().getId() == member.getId())
+				continue;
+			rm.setUnreadMessageCount(rm.getUnreadMessageCount() + 1);
+		}
+
 		return messageMapper.toResponseDto(message);
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional
 	public MessageResponseWithRecipentDto getListByRoom(Long roomId, int page, int size) {
 		Member member = authService.findAcceptedLoggedInMember();
 		roomService.isValidRoomMember(member.getId(), roomId);
@@ -57,6 +72,15 @@ public class MessageService extends WritingService {
 
 		if (pages.isEmpty()) {
 			return MessageResponseWithRecipentDto.of();
+		}
+
+		//  내가 쪽지 읽으면 안 읽은 쪽지 수 초기화
+		RoomMember roomMember = roomMemberRepository
+			.findByRoomIdAndMemberIdAndIsDeleted(roomId, member.getId(), false)
+			.orElseGet(null);
+
+		if (page == 0 && roomMember != null) {
+			roomMember.setUnreadMessageCount(0);
 		}
 
 		List<MessageResponseDto> messages = pages.stream()
@@ -71,4 +95,13 @@ public class MessageService extends WritingService {
 		);
 	}
 
+	public UnreadMessageCountResponseDto getUnreadMessageCount() {
+		Member member = authService.findAcceptedLoggedInMember();
+		List<RoomMember> roomMembers = roomMemberRepository.findAllByMemberIdAndIsDeleted(member.getId(), false);
+		int unreadMessageCount = 0;
+		for (RoomMember r : roomMembers) {
+			unreadMessageCount += r.getUnreadMessageCount();
+		}
+		return UnreadMessageCountResponseDto.from(unreadMessageCount);
+	}
 }

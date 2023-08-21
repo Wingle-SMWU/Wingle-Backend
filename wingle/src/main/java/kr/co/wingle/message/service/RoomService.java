@@ -168,11 +168,16 @@ public class RoomService {
 				.stream()
 				.map(messageMapper::toResponseDto).collect(Collectors.toList());
 
+			RoomMember roomMember = roomMemberRepository
+				.findByRoomIdAndMemberIdAndIsDeleted(room.getId(), member.getId(), false)
+				.orElseGet(null);
+
 			if (messages.size() > 0)
 				recent = messages.get(0);
 			result.add(
 				RoomResponseDto.roomPreview(room.getId(), otherProfile, recent,
-					otherMember.isDeleted() ? "(알수없음)" : otherMember.getSchool().getName()));
+					otherMember.isDeleted() ? "(알수없음)" : otherMember.getSchool().getName(),
+					roomMember != null ? roomMember.getUnreadMessageCount() : 0));
 		}
 
 		// 최신메시지순
