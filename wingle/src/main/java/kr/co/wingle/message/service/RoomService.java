@@ -157,7 +157,8 @@ public class RoomService {
 			Member otherMember = roomMemberRepository.findAllByRoomIdAndIsDeleted(room.getId(), false)
 				.stream().filter(x -> x.getMember().getId() != member.getId()).collect(Collectors.toList())
 				.get(0).getMember();
-			Profile otherProfile = profileService.getProfileByMemberId(otherMember.getId());
+			Profile otherProfile = otherMember.isDeleted() ? Profile.createDummyProfile(otherMember) :
+				profileService.getProfileByMemberId(otherMember.getId());
 			MessageResponseDto recent = null;
 			// messageService.getListByRoom 이용하고 싶은데 순환구조 생김
 			// List<MessageResponseDto> messages = messageService.getListByRoom(room.getId(), 0, 1);
@@ -170,7 +171,8 @@ public class RoomService {
 			if (messages.size() > 0)
 				recent = messages.get(0);
 			result.add(
-				RoomResponseDto.roomPreview(room.getId(), otherProfile, recent, otherMember.getSchool().getName()));
+				RoomResponseDto.roomPreview(room.getId(), otherProfile, recent,
+					otherMember.isDeleted() ? "(알수없음)" : otherMember.getSchool().getName()));
 		}
 
 		// 최신메시지순
@@ -191,7 +193,8 @@ public class RoomService {
 				dto = RoomMemberDto.of(room.getId(), room.getOriginType(), member.getId(), member.getName(),
 					member.getEmail(),
 					member.getPermission(),
-					member.getSchool().getName());
+					member.getSchool().getName(),
+					member.isDeleted());
 			}
 		}
 

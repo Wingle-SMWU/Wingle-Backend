@@ -21,7 +21,6 @@ import kr.co.wingle.message.entity.Room;
 import kr.co.wingle.message.mapper.MessageMapper;
 import kr.co.wingle.message.repository.MessageRepository;
 import kr.co.wingle.profile.ProfileService;
-import kr.co.wingle.profile.dto.ProfileGetResponseDto;
 import kr.co.wingle.writing.WritingService;
 import lombok.RequiredArgsConstructor;
 
@@ -56,8 +55,6 @@ public class MessageService extends WritingService {
 		Pageable pageable = PageRequest.of(page, size);
 		List<Message> pages = messageRepository.findByRoomIdAndIsDeletedOrderByCreatedTimeDesc(roomId, false, pageable);
 
-		ProfileGetResponseDto profile = profileService.getProfile(recipient.getMemberId());
-
 		if (pages.isEmpty()) {
 			return MessageResponseWithRecipentDto.of();
 		}
@@ -68,8 +65,8 @@ public class MessageService extends WritingService {
 
 		return MessageResponseWithRecipentDto.of(
 			AES256Util.encrypt(recipient.getMemberId().toString()),
-			profile.getImage(),
-			recipient.getSchoolName(),
+			recipient.isDeleted() ? "" : profileService.getProfile(recipient.getMemberId()).getImage(),
+			recipient.isDeleted() ? "(알수없음)" : recipient.getSchoolName(),
 			messages
 		);
 	}

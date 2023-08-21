@@ -2,6 +2,7 @@ package kr.co.wingle.member;
 
 import javax.validation.Valid;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -75,6 +76,12 @@ public class AuthController {
 	@GetMapping("/logout")
 	public ApiResponse<Object> logout(@RequestBody @Valid LogoutRequestDto logoutRequestDto) {
 		authService.logout(logoutRequestDto);
+		return ApiResponse.success(SuccessCode.LOGOUT_SUCCESS, null);
+	}
+
+	@DeleteMapping("/withdrawal")
+	public ApiResponse<Object> withdrawal() {
+		authService.withdrawal();
 		return ApiResponse.success(SuccessCode.LOGOUT_SUCCESS, null);
 	}
 
