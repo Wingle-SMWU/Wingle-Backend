@@ -46,7 +46,8 @@ public class CommunityUtil {
 		}
 
 		// 게시판별 작성자명
-		String nickname = forumService.getNicknameByForum(forum, profile);
+		String nickname = writing.getMember().isDeleted() ? "(알수없음)" :
+			forumService.getNicknameByForum(forum, profile);
 		// 게시판별 멤버id
 		String processedMemberId = ForumCode.from(forum.getName()).equals(ForumCode.EXCHANGE) ?
 			AES256Util.encrypt(writing.getMember().getId().toString()) :
