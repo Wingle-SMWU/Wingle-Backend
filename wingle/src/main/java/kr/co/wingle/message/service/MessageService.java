@@ -9,8 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.co.wingle.common.constants.ErrorCode;
-import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.common.util.AES256Util;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
@@ -62,7 +60,7 @@ public class MessageService extends WritingService {
 		return messageMapper.toResponseDto(message);
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional
 	public MessageResponseWithRecipentDto getListByRoom(Long roomId, int page, int size) {
 		Member member = authService.findAcceptedLoggedInMember();
 		roomService.isValidRoomMember(member.getId(), roomId);
@@ -75,11 +73,12 @@ public class MessageService extends WritingService {
 			return MessageResponseWithRecipentDto.of();
 		}
 
-		//  내가 쪽지 읽으면 안읽은 쪽지 수 초기화
-		if (page == 0) {
-			RoomMember roomMember = roomMemberRepository
-				.findByRoomIdAndMemberIdAndIsDeleted(roomId, member.getId(), false)
-				.orElseThrow(() -> new NotFoundException(ErrorCode.NO_ROOM_MEMBER));
+		//  내가 쪽지 읽으면 안 읽은 쪽지 수 초기화
+		RoomMember roomMember = roomMemberRepository
+			.findByRoomIdAndMemberIdAndIsDeleted(roomId, member.getId(), false)
+			.orElseGet(null);
+
+		if (page == 0 && roomMember != null) {
 			roomMember.setUnreadMessageCount(0);
 		}
 
