@@ -16,6 +16,7 @@ import kr.co.wingle.message.dto.MessageRequestDto;
 import kr.co.wingle.message.dto.MessageResponseDto;
 import kr.co.wingle.message.dto.MessageResponseWithRecipentDto;
 import kr.co.wingle.message.dto.RoomMemberDto;
+import kr.co.wingle.message.dto.UnreadMessageCountResponseDto;
 import kr.co.wingle.message.entity.Message;
 import kr.co.wingle.message.entity.Room;
 import kr.co.wingle.message.entity.RoomMember;
@@ -94,4 +95,13 @@ public class MessageService extends WritingService {
 		);
 	}
 
+	public UnreadMessageCountResponseDto getUnreadMessageCount() {
+		Member member = authService.findAcceptedLoggedInMember();
+		List<RoomMember> roomMembers = roomMemberRepository.findAllByMemberIdAndIsDeleted(member.getId(), false);
+		int unreadMessageCount = 0;
+		for (RoomMember r : roomMembers) {
+			unreadMessageCount += r.getUnreadMessageCount();
+		}
+		return UnreadMessageCountResponseDto.from(unreadMessageCount);
+	}
 }
