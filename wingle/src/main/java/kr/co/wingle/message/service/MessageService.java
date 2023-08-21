@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.co.wingle.common.constants.ErrorCode;
+import kr.co.wingle.common.exception.NotFoundException;
 import kr.co.wingle.common.util.AES256Util;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
@@ -71,6 +73,14 @@ public class MessageService extends WritingService {
 
 		if (pages.isEmpty()) {
 			return MessageResponseWithRecipentDto.of();
+		}
+
+		//  내가 쪽지 읽으면 안읽은 쪽지 수 초기화
+		if (page == 0) {
+			RoomMember roomMember = roomMemberRepository
+				.findByRoomIdAndMemberIdAndIsDeleted(roomId, member.getId(), false)
+				.orElseThrow(() -> new NotFoundException(ErrorCode.NO_ROOM_MEMBER));
+			roomMember.setUnreadMessageCount(0);
 		}
 
 		List<MessageResponseDto> messages = pages.stream()
