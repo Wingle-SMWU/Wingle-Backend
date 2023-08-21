@@ -65,7 +65,7 @@ public class MessageService extends WritingService {
 
 		return MessageResponseWithRecipentDto.of(
 			AES256Util.encrypt(recipient.getMemberId().toString()),
-			recipient.isDeleted() ? null : profileService.getProfile(recipient.getMemberId()).getImage(),
+			recipient.isDeleted() ? "" : profileService.getProfile(recipient.getMemberId()).getImage(),
 			recipient.isDeleted() ? "(알수없음)" : recipient.getSchoolName(),
 			messages
 		);
