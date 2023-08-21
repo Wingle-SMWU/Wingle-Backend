@@ -49,6 +49,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
   
+      - name: Print GitHub Ref
+        run: |
+          echo "GitHub Ref: ${{ github.ref }}"
+  
       - name: 🚀 PROD - make main application.yml
         if: github.ref == 'refs/heads/main' 
         run: |
