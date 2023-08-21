@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.DuplicateException;
 import kr.co.wingle.common.exception.NotFoundException;
-import kr.co.wingle.common.util.AES256Util;
 import kr.co.wingle.common.util.S3Util;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
@@ -47,7 +46,6 @@ public class ProfileService {
 	private final InterestRepository interestRepository;
 	private final SnsRepository snsRepository;
 	private final S3Util s3Util;
-	private final AES256Util aes;
 	private final ProfileUtil profileUtil;
 
 	@Transactional
@@ -147,9 +145,15 @@ public class ProfileService {
 	}
 
 	public Profile getProfileByMemberId(Long memberId) {
-		return profileRepository.findByMemberId(memberId)
+		Profile profile = profileRepository.findByMemberId(memberId)
 			.orElseThrow(() -> new NotFoundException(
 				ErrorCode.NO_PROFILE));
+
+		if (profile.getMember().isDeleted()) {
+			return Profile.createDummyProfile(profile.getMember());
+		} else {
+			return profile;
+		}
 	}
 
 	private String uploadProfileImage(MultipartFile profileImage) {
@@ -197,9 +201,10 @@ public class ProfileService {
 
 	public ProfileGetResponseDto getProfile(Long id) {
 		Member member = memberService.findMemberByMemberId(id);
+		if (member.isDeleted())
+			throw new NotFoundException(ErrorCode.ALREADY_WITHDRAWN);
 
 		ProfileGetResponseDto response = getProfile(member);
-
 		return response;
 	}
 

@@ -4,9 +4,11 @@ import org.springframework.stereotype.Component;
 
 import kr.co.wingle.common.constants.ErrorCode;
 import kr.co.wingle.common.exception.NotFoundException;
+import kr.co.wingle.common.util.AES256Util;
 import kr.co.wingle.community.article.Article;
 import kr.co.wingle.community.comment.Comment;
 import kr.co.wingle.community.forum.Forum;
+import kr.co.wingle.community.forum.ForumCode;
 import kr.co.wingle.community.forum.ForumService;
 import kr.co.wingle.member.entity.Member;
 import kr.co.wingle.member.service.AuthService;
@@ -32,20 +34,26 @@ public class CommunityUtil {
 		Profile profile = profileService.getProfileByMemberId(writing.getMember().getId());
 
 		Forum forum;
+		Article article;
 		if (writing instanceof Article) {
 			forum = ((Article)writing).getForum();
+			article = (Article)writing;
 		} else if (writing instanceof Comment) {
 			forum = ((Comment)writing).getArticle().getForum();
+			article = ((Comment)writing).getArticle();
 		} else {
 			throw new NotFoundException(ErrorCode.BAD_PARAMETER_TYPE);
 		}
+
 		// 게시판별 작성자명
 		String nickname = forumService.getNicknameByForum(forum, profile);
 		// 게시판별 멤버id
-		Long processedMemberId = forumService.processMemberIdByForum(forum,
-			writing.getMember().getId());
+		String processedMemberId = ForumCode.from(forum.getName()).equals(ForumCode.EXCHANGE) ?
+			AES256Util.encrypt(writing.getMember().getId().toString()) :
+			AES256Util.encrypt(writing.getMember().getId().toString(), article.getId().toString());
 		// 게시판별 작성자 학교이름
-		String schoolName = forumService.getSchoolNameByForum(forum, writing.getMember().getSchool());
+		String schoolName = writing.getMember().isDeleted() ? "(알수없음)" :
+			forumService.getSchoolNameByForum(forum, writing.getMember().getSchool());
 		boolean isMine = writingUtil.isMine(writing);
 		return ProcessedPersonalInformation.of(nickname, processedMemberId, schoolName, isMine);
 	}

@@ -18,19 +18,21 @@ public class RoomResponseDto implements Comparable<RoomResponseDto> {
 	private String recentChat;
 	private LocalDateTime createdTime;
 	private String schoolName;
+	private int unreadMessageCount;
 
 	public static RoomResponseDto from(Long roomId) {
 		return RoomResponseDto.builder().roomId(roomId).build();
 	}
 
 	public static RoomResponseDto roomPreview(Long roomId, Profile profile, MessageResponseDto message,
-		String schoolName) {
+		String schoolName, int unreadMessageCount) {
 		RoomResponseDto roomResponseDto = RoomResponseDto.builder()
 			.roomId(roomId)
 			.image(profile.getImageUrl())
 			.nation(profile.getNation())
 			.nickname(profile.getNickname())
 			.schoolName(schoolName)
+			.unreadMessageCount(unreadMessageCount)
 			.build();
 
 		if (message != null) {

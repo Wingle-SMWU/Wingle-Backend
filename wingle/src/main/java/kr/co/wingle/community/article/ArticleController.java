@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -63,4 +64,11 @@ public class ArticleController {
 			articleService.delete(StringUtil.StringToLong(forumId), StringUtil.StringToLong(articleId)));
 	}
 
+	@PutMapping("/{forumId}/articles/{articleId}")
+	public ApiResponse<ArticleResponseDto> editArticle(@PathVariable String forumId,
+		@PathVariable String articleId, @ModelAttribute @Valid ArticleEditRequestDto articleEditRequestDto) {
+		return ApiResponse.success(SuccessCode.GET_SUCCESS,
+			articleService.editArticle(StringUtil.StringToLong(forumId), StringUtil.StringToLong(articleId),
+				articleEditRequestDto));
+	}
 }

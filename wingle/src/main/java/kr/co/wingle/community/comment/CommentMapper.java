@@ -2,7 +2,6 @@ package kr.co.wingle.community.comment;
 
 import org.springframework.stereotype.Component;
 
-import kr.co.wingle.common.util.AES256Util;
 import kr.co.wingle.community.util.CommunityUtil;
 import kr.co.wingle.community.util.ProcessedPersonalInformation;
 import kr.co.wingle.profile.ProfileService;
@@ -22,7 +21,7 @@ public class CommentMapper {
 		CommentResponseDto.CommentResponseDtoBuilder commentResponseDto = CommentResponseDto.builder();
 
 		commentResponseDto.id(comment.getId());
-		commentResponseDto.userId(AES256Util.encrypt(processedPersonalInformation.getProcessedMemberId().toString()));
+		commentResponseDto.userId(processedPersonalInformation.getProcessedMemberId());
 		commentResponseDto.userNickname(processedPersonalInformation.getNickname());
 		commentResponseDto.userImage(profileService.getProfileByMemberId(comment.getMember().getId()).getImageUrl());
 		commentResponseDto.userNation(profileService.getProfileByMemberId(comment.getMember().getId()).getNation());

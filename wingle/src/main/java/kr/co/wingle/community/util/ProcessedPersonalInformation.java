@@ -8,11 +8,11 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProcessedPersonalInformation {
 	private String nickname;
-	private Long processedMemberId;
+	private String processedMemberId;
 	private String schoolName;
 	private boolean isMine;
 
-	public static ProcessedPersonalInformation of(String nickname, Long processedMemberId, String schoolName,
+	public static ProcessedPersonalInformation of(String nickname, String processedMemberId, String schoolName,
 		boolean isMine) {
 		return new ProcessedPersonalInformation(nickname, processedMemberId, schoolName, isMine);
 	}

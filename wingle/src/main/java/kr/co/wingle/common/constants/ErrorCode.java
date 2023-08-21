@@ -22,6 +22,7 @@ public enum ErrorCode {
 	NO_ARTICLE_ID(BAD_REQUEST, "존재하지 않는 게시물 id 입니다"),
 	// 쪽지
 	NO_ROOM(BAD_REQUEST, "쪽지방이 없습니다"),
+	NO_ROOM_MEMBER(BAD_REQUEST, "쪽지방에 회원이 없습니다."),
 	// 파일
 	BAD_FILE_NAME(BAD_REQUEST, "파일 이름이 올바르지 않습니다."),
 	BAD_FILE_EXTENSION(BAD_REQUEST, "지원하지 않는 파일 형식입니다."),

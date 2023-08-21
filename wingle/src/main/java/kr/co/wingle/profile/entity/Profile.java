@@ -69,4 +69,11 @@ public class Profile extends BaseEntity {
 		return to;
 	}
 
+	public static Profile createDummyProfile(Member member) {
+		Profile profile = new Profile();
+		profile.member = member;
+		profile.nickname = "(알수없음)";
+		profile.nation = "(알수없음)";
+		return profile;
+	}
 }
