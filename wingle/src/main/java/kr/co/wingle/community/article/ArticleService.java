@@ -51,10 +51,12 @@ public class ArticleService extends WritingService {
 		articleRepository.save(article);
 
 		ArrayList<String> imageUrlList = new ArrayList<>();
-		for (int i = 0; i < request.getImages().size(); i++) {
-			String imageUrl = s3Util.articleImageUpload(request.getImages().get(i));
-			imageUrlList.add(imageUrl);
-			articleImageRepository.save(new ArticleImage(article, imageUrl, i + 1));
+		if (!(request.getImages().size() == 1 && request.getImages().get(0).getOriginalFilename().isBlank())) {
+			for (int i = 0; i < request.getImages().size(); i++) {
+				String imageUrl = s3Util.articleImageUpload(request.getImages().get(i));
+				imageUrlList.add(imageUrl);
+				articleImageRepository.save(new ArticleImage(article, imageUrl, i + 1));
+			}
 		}
 
 		// TODO: Redis 최신목록에 등록
@@ -72,8 +74,10 @@ public class ArticleService extends WritingService {
 		articleImageRepository.deleteAll(allByArticle);
 
 		ArrayList<String> imageUrlList = (ArrayList<String>)request.getOriginImages();
-		imageUrlList.addAll(request.getNewImages().stream().map(image -> s3Util.articleImageUpload(image))
-			.collect(Collectors.toList()));
+		if (!(request.getNewImages().size() == 1 && request.getNewImages().get(0).getOriginalFilename().isBlank())) {
+			imageUrlList.addAll(request.getNewImages().stream().map(image -> s3Util.articleImageUpload(image))
+				.collect(Collectors.toList()));
+		}
 
 		for (int i = 0; i < imageUrlList.size(); i++) {
 			articleImageRepository.save(new ArticleImage(article, imageUrlList.get(i), i + 1));
