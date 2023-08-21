@@ -50,7 +50,7 @@ public class MessageService extends WritingService {
 		messageRepository.save(message);
 
 		// 해당 쪽지방에 있는 모든 유저 찾기
-		List<RoomMember> members = roomMemberRepository.findAllByMemberIdAndIsDeleted(room.getId(), false);
+		List<RoomMember> members = roomMemberRepository.findAllByRoomIdAndIsDeleted(room.getId(), false);
 
 		// 본인을 제외한 유저 안읽은 메시지 수 증가
 		for (RoomMember rm : members) {
