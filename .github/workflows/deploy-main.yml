@@ -50,10 +50,6 @@ jobs:
         run: |
           echo "GitHub Ref: ${{ github.ref }}"
   
-      - name: Print GitHub Ref
-        run: |
-          echo "GitHub Ref: ${{ github.ref }}"
-  
       - name: 🚀 PROD - make main application.yml
         run: |
           sudo mkdir -p ./wingle/src/main/resources
