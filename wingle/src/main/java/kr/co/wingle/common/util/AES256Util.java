@@ -38,7 +38,7 @@ public class AES256Util {
 	public static String encrypt(String str) {
 		try {
 			Cipher c = Cipher.getInstance("AES/CBC/PKCS5Padding");
-			c.init(Cipher.ENCRYPT_MODE, keySpec, new IvParameterSpec((iv.getBytes())));
+			c.init(Cipher.ENCRYPT_MODE, keySpec, new IvParameterSpec(iv.getBytes()));
 			byte[] encrypted = c.doFinal(str.getBytes("UTF-8"));
 			return Hex.encodeHexString(encrypted);
 		} catch (GeneralSecurityException | UnsupportedEncodingException e) {
