@@ -61,7 +61,7 @@ public class AES256Util {
 	public static String decrypt(String str) {
 		try {
 			SecretKey key = generateKey(KEY);
-			byte[] decrypted = doFinal(Cipher.DECRYPT_MODE, key, IV, decodeBase64(str));
+			byte[] decrypted = doFinal(Cipher.DECRYPT_MODE, key, IV, decodeHex(str));
 			return new String(decrypted, "UTF-8");
 		} catch (Exception e) {
 			throw new InternalServerErrorException(ErrorCode.DECRYPT_FAIL);
@@ -71,7 +71,7 @@ public class AES256Util {
 	public static String decrypt(String str, String salt) {
 		try {
 			SecretKey key = generateKey(KEY, salt);
-			byte[] decrypted = doFinal(Cipher.DECRYPT_MODE, key, IV, decodeBase64(str));
+			byte[] decrypted = doFinal(Cipher.DECRYPT_MODE, key, IV, decodeHex(str));
 			return new String(decrypted, "UTF-8");
 		} catch (Exception e) {
 			throw new InternalServerErrorException(ErrorCode.DECRYPT_FAIL);
