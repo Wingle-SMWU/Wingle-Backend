@@ -25,6 +25,7 @@ public enum SuccessCode {
 	ROOM_FIND_SUCCESS(OK, "쪽지방 찾기 성공"),
 	// 인증
 	SIGNUP_SUCCESS(OK, "회원가입 성공"),
+	WITHDRAW_SUCCESS(OK, "회원탈퇴 성공"),
 	LOGIN_SUCCESS(OK, "로그인 성공"),
 	LOGOUT_SUCCESS(OK, "로그아웃 성공"),
 	ACCOUNT_READ_SUCCESS(OK, "계정 조회 성공"),
