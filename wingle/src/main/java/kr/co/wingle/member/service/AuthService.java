@@ -194,6 +194,12 @@ public class AuthService {
 		redisUtil.setDataExpire(RedisUtil.PREFIX_LOGOUT + accessToken, "logout", TokenInfo.ACCESS_TOKEN_EXPIRE_TIME);
 	}
 
+	@Transactional
+	public void withdrawal() {
+		Member member = findAcceptedLoggedInMember();
+		member.softDelete();
+	}
+
 	public EmailResponseDto sendCodeMail(EmailRequestDto emailRequestDto) {
 		String to = emailRequestDto.getEmail();
 		if (!isSignupAvailableEmail(to)) {

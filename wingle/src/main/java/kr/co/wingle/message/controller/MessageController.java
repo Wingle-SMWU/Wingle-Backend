@@ -16,6 +16,7 @@ import kr.co.wingle.common.util.StringUtil;
 import kr.co.wingle.message.dto.MessageRequestDto;
 import kr.co.wingle.message.dto.MessageResponseDto;
 import kr.co.wingle.message.dto.MessageResponseWithRecipentDto;
+import kr.co.wingle.message.dto.UnreadMessageCountResponseDto;
 import kr.co.wingle.message.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,5 +41,11 @@ public class MessageController {
 			messageService.getListByRoom(StringUtil.StringToLong(roomId),
 				StringUtil.StringToInt(page),
 				StringUtil.StringToInt(size)));
+	}
+
+	@GetMapping("/unread")
+	public ApiResponse<UnreadMessageCountResponseDto> getUnreadMessageCount() {
+		return ApiResponse.success(SuccessCode.GET_SUCCESS,
+			messageService.getUnreadMessageCount());
 	}
 }

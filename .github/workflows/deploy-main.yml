@@ -1,0 +1,140 @@
+name: CI-CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  
+  workflow_dispatch:
+    inputs:
+       logLevel:
+          description: 'Log level'     
+          required: true
+          default: 'warning'
+       tags:
+          description: 'Test scenario tags'
+          required: false
+      
+env:
+  S3_BUCKET_NAME: wingle-ci-bucket
+  CODE_DEPLOY_APPLICATION_NAME: wingle-codedeploy-app
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: wingle-codedeploy-group
+
+jobs:
+  CI-CD:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: zulu
+          java-version: "17"
+
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*',
+            '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Print GitHub Ref
+        run: |
+          echo "GitHub Ref: ${{ github.ref }}"
+  
+      - name: 🚀 PROD - make main application.yml
+        run: |
+          sudo mkdir -p ./wingle/src/main/resources
+          sudo chmod 777 ./wingle/src/main/resources
+          cd ./wingle/src/main/resources
+          touch ./application.yml
+          echo "${{ secrets.MAIN_YML }}" > ./application.yml 
+          
+      # 파일 없으면 빌드 에러
+      - uses: actions/upload-artifact@v3
+        with:
+          name: application.yml
+          path: ./wingle/src/main/resources/application.yml
+          if-no-files-found: 'error'
+
+      - name: make test application.yml
+        run: |
+          sudo mkdir -p ./wingle/src/test/resources
+          sudo chmod 777 ./wingle/src/test/resources
+          cd ./wingle/src/test/resources
+          touch ./application.yml
+          echo "${{ secrets.TEST_YML }}" > ./application.yml 
+          
+      # 파일 없으면 빌드 에러    
+      - uses: actions/upload-artifact@v3
+        with:
+          name: application.yml
+          path: ./wingle/src/test/resources/application.yml
+          if-no-files-found: 'error'
+
+      - name: Make log directories
+        run: |
+          cd ./wingle
+          mkdir log
+          cd ./log
+          mkdir info
+          mkdir warn
+          mkdir error
+          
+      - name: Make asciidoc directories
+        run: |
+          cd ./wingle
+          mkdir build
+          cd ./build
+          pwd
+          mkdir generated-snippets
+          ls
+          
+       
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./wingle/gradlew
+
+      - name: Build with Gradle
+        run: |
+          cd ./wingle
+          ./gradlew clean build -x test
+        shell: bash
+
+      - name: Make zip file
+#         if: contains(github.ref, 'main')
+        run: zip -r ./$GITHUB_SHA.zip .
+        shell: bash
+
+      - name: 🚀 PROD - Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+  
+      - name: 🚀 PROD - Upload to AWS S3
+        run: |
+          cd ./wingle
+          aws deploy push \
+            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+            --ignore-hidden-files \
+            --s3-location s3://$S3_BUCKET_NAME/build/$GITHUB_SHA.zip \
+            --source .
+  
+      # S3 버킷에 있는 파일을 대상으로 CodeDeploy 실행
+      - name: 🚀 PROD - Deploy to AWS EC2 from S3
+        run: |
+          aws deploy create-deployment \
+            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
+            --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
+            --s3-location bucket=$S3_BUCKET_NAME,key=build/$GITHUB_SHA.zip,bundleType=zip
+
