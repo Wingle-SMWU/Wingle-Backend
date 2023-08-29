@@ -67,7 +67,7 @@ public class ArticleController {
 	@PutMapping("/{forumId}/articles/{articleId}")
 	public ApiResponse<ArticleResponseDto> editArticle(@PathVariable String forumId,
 		@PathVariable String articleId, @ModelAttribute @Valid ArticleEditRequestDto articleEditRequestDto) {
-		return ApiResponse.success(SuccessCode.GET_SUCCESS,
+		return ApiResponse.success(SuccessCode.ARTICLE_UPDATE_SUCCESS,
 			articleService.editArticle(StringUtil.StringToLong(forumId), StringUtil.StringToLong(articleId),
 				articleEditRequestDto));
 	}
