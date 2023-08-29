@@ -82,7 +82,7 @@ public class AuthController {
 	@DeleteMapping("/withdrawal")
 	public ApiResponse<Object> withdrawal() {
 		authService.withdrawal();
-		return ApiResponse.success(SuccessCode.LOGOUT_SUCCESS, null);
+		return ApiResponse.success(SuccessCode.WITHDRAW_SUCCESS, null);
 	}
 
 	@PostMapping("/email")
