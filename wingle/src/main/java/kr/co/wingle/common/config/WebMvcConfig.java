@@ -15,7 +15,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	private final String admin = "https://adm-wingle.netlify.app";
 
 	private final String[] web = new String[] {"https://wingle-kder.vercel.app",
-		"https://wingle-national.netlify.app", "dev-wingle.netlify.app"};
+		"https://wingle-national.netlify.app", "https://dev-wingle.netlify.app"};
 	private final String localhost = "http://localhost:";
 	private final int allowedMinPort = 3000;
 	private final int allowedMaxPort = 3010;
